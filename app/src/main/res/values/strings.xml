@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NBN Ad Feed</string>
+    <string name="home_title">NBN 单列广告信息流</string>
+    <string name="home_subtitle">Android Java 21 初始工程已就绪，后续按 Feed、数据与 AI、统计搜索三个方向协作开发。</string>
+    <string name="home_framework_ready">当前版本包含：应用入口、Mock 数据模型、AI 摘要/标签接口占位、曝光点击统计占位、视频播放管理占位、团队文档骨架。</string>
+</resources>
