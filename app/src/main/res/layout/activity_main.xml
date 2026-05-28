@@ -36,5 +36,14 @@
             android:textColor="@color/nbn_text_primary"
             android:textSize="16sp" />
 
+        <!-- 添加搜索按钮样式用于测试，后续可替换为实际样式 -->
+        <Button
+            android:id="@+id/openSearchButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/open_conversational_search"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 </ScrollView>
