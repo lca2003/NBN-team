@@ -1,29 +1,69 @@
 package com.nbn.adfeed.data.mock;
 
-import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
-import com.nbn.adfeed.data.model.InteractionState;
+import com.nbn.adfeed.data.model.AdPage;
+import com.nbn.adfeed.data.model.PageRequest;
 import com.nbn.adfeed.data.repository.AdRepository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 public final class MockAdRepository implements AdRepository {
-    private final List<AdItem> ads = createAds();
+    private static final String ALL_CHANNEL = "全部";
+
+    private final List<AdItem> ads = MockAdFixtures.createAds();
 
     @Override
     public List<AdItem> getInitialAds() {
-        return new ArrayList<>(ads);
+        return getAdsPage(PageRequest.firstPage(null, PageRequest.DEFAULT_PAGE_SIZE)).getItems();
     }
 
     @Override
     public List<AdItem> getAdsByChannel(String channel) {
-        List<AdItem> result = new ArrayList<>();
+        return filterByChannel(channel);
+    }
+
+    @Override
+    public AdPage getAdsPage(PageRequest request) {
+        List<AdItem> filtered = filterByChannel(request.getChannel());
+        int start = (request.getPageNumber() - 1) * request.getPageSize();
+        if (start >= filtered.size()) {
+            return new AdPage(new ArrayList<>(), null, false);
+        }
+
+        int end = Math.min(start + request.getPageSize(), filtered.size());
+        boolean hasMore = end < filtered.size();
+        String nextCursor = hasMore ? "page_" + (request.getPageNumber() + 1) : null;
+        return new AdPage(filtered.subList(start, end), nextCursor, hasMore);
+    }
+
+    @Override
+    public AdItem getAdById(String adId) {
+        if (adId == null) {
+            return null;
+        }
         for (AdItem ad : ads) {
-            if (ad.getChannel().equals(channel)) {
-                result.add(ad);
+            if (ad.getId().equals(adId)) {
+                return ad;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<AdItem> getAdsByTag(String tag) {
+        String normalizedTag = normalize(tag);
+        List<AdItem> result = new ArrayList<>();
+        if (normalizedTag.isEmpty()) {
+            return result;
+        }
+        for (AdItem ad : ads) {
+            for (String adTag : ad.getTags()) {
+                if (normalize(adTag).equals(normalizedTag)) {
+                    result.add(ad);
+                    break;
+                }
             }
         }
         return result;
@@ -31,50 +71,59 @@ public final class MockAdRepository implements AdRepository {
 
     @Override
     public List<AdItem> searchByKeyword(String keyword) {
-        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
+        String normalizedKeyword = normalize(keyword);
         List<AdItem> result = new ArrayList<>();
+        if (normalizedKeyword.isEmpty()) {
+            return result;
+        }
         for (AdItem ad : ads) {
-            String target = (ad.getTitle() + " " + ad.getBrand() + " " + ad.getSummary())
-                    .toLowerCase(Locale.ROOT);
-            if (target.contains(normalizedKeyword)) {
+            if (matches(ad, normalizedKeyword)) {
                 result.add(ad);
             }
         }
         return result;
     }
 
-    private static List<AdItem> createAds() {
-        List<AdItem> items = new ArrayList<>();
-        items.add(new AdItem(
-                "ad_001",
-                "轻量跑鞋新品首发",
-                "NBN Sports",
-                "精选",
-                "适合通勤和夜跑的轻量缓震跑鞋。",
-                AdContentType.LARGE_IMAGE,
-                Arrays.asList("运动", "学生党", "性价比"),
-                new InteractionState()
-        ));
-        items.add(new AdItem(
-                "ad_002",
-                "周末本地咖啡地图",
-                "City Cafe",
-                "本地",
-                "发现附近适合学习和小组讨论的咖啡空间。",
-                AdContentType.SMALL_IMAGE,
-                Arrays.asList("本地", "生活方式", "休闲"),
-                new InteractionState()
-        ));
-        items.add(new AdItem(
-                "ad_003",
-                "智能耳机降噪体验",
-                "Sound Lab",
-                "电商",
-                "主打通勤降噪和长续航的视频广告。",
-                AdContentType.VIDEO,
-                Arrays.asList("数码", "通勤", "视频"),
-                new InteractionState()
-        ));
-        return items;
+    private List<AdItem> filterByChannel(String channel) {
+        String normalizedChannel = normalize(channel);
+        if (normalizedChannel.isEmpty() || normalize(ALL_CHANNEL).equals(normalizedChannel)) {
+            return new ArrayList<>(ads);
+        }
+
+        List<AdItem> result = new ArrayList<>();
+        for (AdItem ad : ads) {
+            if (normalize(ad.getChannel()).equals(normalizedChannel)) {
+                result.add(ad);
+            }
+        }
+        return result;
+    }
+
+    private static boolean matches(AdItem ad, String normalizedKeyword) {
+        if (contains(normalizedKeyword, ad.getTitle())
+                || contains(normalizedKeyword, ad.getBrand())
+                || contains(normalizedKeyword, ad.getChannel())
+                || contains(normalizedKeyword, ad.getDescription())
+                || contains(normalizedKeyword, ad.getSummary())) {
+            return true;
+        }
+        for (String tag : ad.getTags()) {
+            if (contains(normalizedKeyword, tag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean contains(String normalizedKeyword, String value) {
+        String normalizedValue = normalize(value);
+        return normalizedKeyword.contains(normalizedValue) || normalizedValue.contains(normalizedKeyword);
+    }
+
+    private static String normalize(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.trim().toLowerCase(Locale.ROOT);
     }
 }
