@@ -9,4 +9,5 @@ spring:
       api-key: ${DASHSCOPE_API_KEY:not-configured}
       chat:
         options:
-          model: qwen-plus
+          model: qwen3-8b
+          enable-thinking: false
