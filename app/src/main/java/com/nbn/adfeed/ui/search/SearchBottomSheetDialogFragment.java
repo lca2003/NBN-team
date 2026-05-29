@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -21,11 +22,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.nbn.adfeed.R;
-import com.nbn.adfeed.data.mock.MockAdRepository;
-import com.nbn.adfeed.data.model.AdItem;
-import com.nbn.adfeed.data.repository.AdRepository;
+import com.nbn.adfeed.ai.search.AiSearchResult;
+import com.nbn.adfeed.ai.search.AiSearchService;
+import com.nbn.adfeed.ai.search.RemoteAiSearchService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFragment {
@@ -35,11 +35,13 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
         void onSearchResult(List<String> matchedAdIds);
     }
 
-    private final AdRepository adRepository = new MockAdRepository();
+    private final AiSearchService aiSearchService = new RemoteAiSearchService();
 
     private MessageAdapter messageAdapter;
     private EditText searchInput;
+    private Button searchSendButton;
     private RecyclerView conversationList;
+    private boolean searchInProgress;
 
     @Override
     public void onStart() {
@@ -93,6 +95,7 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //按钮
         searchInput = view.findViewById(R.id.searchInput);
+        searchSendButton = view.findViewById(R.id.searchSendButton);
         conversationList = view.findViewById(R.id.searchConversationList);
 
         messageAdapter = new MessageAdapter();
@@ -107,7 +110,7 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
 
         //关闭、点击发送、回车发送功能绑定
         view.findViewById(R.id.searchCloseButton).setOnClickListener(closeView -> dismiss());
-        view.findViewById(R.id.searchSendButton).setOnClickListener(sendView -> sendCurrentMessage());
+        searchSendButton.setOnClickListener(sendView -> sendCurrentMessage());
         searchInput.setOnEditorActionListener((textView, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 sendCurrentMessage();
@@ -137,32 +140,67 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
        });
     }
 
+    // 发送HTTP请求给后端大模型 POST /api/ai/search     TODO 聊天记录本地持久化未完成
     private void sendCurrentMessage() {
+        // 已有搜索进行中，禁止重复发送
+        if (searchInProgress) {
+            return;
+        }
+
         String query = searchInput.getText().toString().trim();
         if (query.isEmpty()) {
             return;
         }
 
         messageAdapter.addMessage(new ChatMessage(query, true));
-
-        List<AdItem> matchedAds = adRepository.searchByKeyword(query);
-        List<String> matchedAdIds = toAdIds(matchedAds);
-        if (matchedAdIds.isEmpty()) {
-            addAssistantMessage(getString(R.string.search_no_results_reply));
-        } else {
-            addAssistantMessage(getString(R.string.search_results_reply, matchedAdIds.size()));
-            notifySearchResult(matchedAdIds);
-        }
-
         searchInput.setText("");
+        setSearchInProgress(true);
+
+        // 异步执行 AI 搜索
+        aiSearchService.search(query, result -> {
+            if (!isAdded()) {
+                return;
+            }
+            requireActivity().runOnUiThread(() -> {
+                if (isAdded()) {
+                    handleSearchResult(result);
+                }
+            });
+        });
     }
 
-    private static List<String> toAdIds(List<AdItem> ads) {
-        List<String> ids = new ArrayList<>();
-        for (AdItem ad : ads) {
-            ids.add(ad.getId());
+        //处理 AI 搜索返回的结果
+    private void handleSearchResult(AiSearchResult result) {
+        setSearchInProgress(false);
+
+        // 处理回答文本
+        boolean hasAnswer = result.getAnswer() != null && !result.getAnswer().trim().isEmpty();
+        if (hasAnswer) {
+            addAssistantMessage(result.getAnswer());
         }
-        return ids;
+
+        List<String> matchedAdIds = result.getMatchedAdIds();
+        if (matchedAdIds.isEmpty()) {
+            // 无匹配广告：如果没有回答，则显示默认的无结果文案
+            if (!hasAnswer) {
+                addAssistantMessage(getString(R.string.search_no_results_reply));
+            }
+            return;
+        }
+
+        // 有匹配广告：如果没有回答，则显示包含匹配数量的结果提示
+        if (!hasAnswer) {
+            addAssistantMessage(getString(R.string.search_results_reply, matchedAdIds.size()));
+        }
+        // 将匹配的广告 ID 通知给外部（例如展示广告列表）
+        notifySearchResult(matchedAdIds);
+    }
+
+    //设置搜索进行中状态，并同步更新输入框和发送按钮的可用性
+    private void setSearchInProgress(boolean inProgress) {
+        searchInProgress = inProgress;
+        searchInput.setEnabled(!inProgress);
+        searchSendButton.setEnabled(!inProgress);
     }
 
     private void notifySearchResult(List<String> matchedAdIds) {
