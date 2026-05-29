@@ -1,17 +1,22 @@
 package com.nbn.adfeed;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.content.Intent;      //增加了intent用于页面跳转
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.data.mock.MockAdRepository;
 import com.nbn.adfeed.data.repository.AdRepository;
-import com.nbn.adfeed.ui.search.SearchActivity;     //引入搜索界面
+import com.nbn.adfeed.ui.search.SearchBottomSheetDialogFragment;
 
-public class MainActivity extends Activity {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity
+        implements SearchBottomSheetDialogFragment.OnSearchResultListener {
     private final AdRepository adRepository = new MockAdRepository();
     private final AnalyticsTracker analyticsTracker = new AnalyticsTracker();
+    private TextView feedStatusText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +25,17 @@ public class MainActivity extends Activity {
 
         analyticsTracker.trackAppOpen();
         adRepository.getInitialAds();
-        //个人分支用于测试搜索页面跳转测试 
+        feedStatusText = findViewById(R.id.feedStatusText);
         findViewById(R.id.openSearchButton).setOnClickListener(view -> {
-            Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
+            // 页面跳转逻辑修改，改成在本页面弹出底部浮层
+            SearchBottomSheetDialogFragment searchSheet = new SearchBottomSheetDialogFragment();
+            searchSheet.show(getSupportFragmentManager(), "SearchBottomSheet");
         });
+    }
+    
+    // TODO 负责显示聊天搜索得到的结果
+    @Override
+    public void onSearchResult(List<String> matchedAdIds) {
+        feedStatusText.setText(getString(R.string.home_search_result_prefix) + String.join(", ", matchedAdIds));
     }
 }

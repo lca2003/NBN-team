@@ -11,5 +11,8 @@
     <string name="search_input_hint">输入你想找的广告</string>
     <string name="search_send">发送</string>
     <string name="search_welcome_message">你好，可以输入“找适合学生党的运动广告”试试。</string>
-    <string name="search_mock_reply">已收到：%1$s。下一步会接入广告匹配结果。</string>      
+    <string name="search_mock_reply">已收到：%1$s。下一步会接入广告匹配结果。</string>
+    <string name="search_results_reply">为你找到 %1$d 条匹配广告，已同步到后方信息流。</string>
+    <string name="search_no_results_reply">暂时没有找到匹配广告，可以换个关键词试试。</string>
+    <string name="home_search_result_prefix">搜索结果广告 ID：</string>
 </resources>

@@ -33,8 +33,10 @@ public final class MockAdRepository implements AdRepository {
     public List<AdItem> searchByKeyword(String keyword) {
         String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
         List<AdItem> result = new ArrayList<>();
+        //title + brand + summary修改为匹配title + brand + summary + channel + tags方便从自然语言到tag匹配
         for (AdItem ad : ads) {
-            String target = (ad.getTitle() + " " + ad.getBrand() + " " + ad.getSummary())
+            String target = (ad.getTitle() + " " + ad.getBrand() + " " + ad.getSummary()
+                    + " " + ad.getChannel() + " " + String.join(" ", ad.getTags()))
                     .toLowerCase(Locale.ROOT);
             if (target.contains(normalizedKeyword)) {
                 result.add(ad);
