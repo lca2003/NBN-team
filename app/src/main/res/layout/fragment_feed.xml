@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 信息流主页面：
+     顶部 TabLayout 切换频道（精选/电商/本地），
+     中部 SwipeRefreshLayout + RecyclerView 承载单列信息流（支持下拉刷新、上拉加载），
+     覆盖层用于首屏的“加载中 / 空态 / 错误态”。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/nbn_surface"
+    android:orientation="vertical">
+
+    <!-- 顶部标题栏 + 搜索入口 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/home_title"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <!-- 对话式搜索入口（人员C 功能，这里只提供入口按钮） -->
+        <Button
+            android:id="@+id/openSearchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="@string/open_conversational_search"
+            android:textAllCaps="false"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- 频道 Tab -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/channelTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/nbn_surface"
+        app:tabGravity="start"
+        app:tabIndicatorColor="@color/nbn_brand"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/nbn_brand"
+        app:tabTextColor="@color/nbn_text_secondary" />
+
+    <!-- 列表 + 状态覆盖层 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/feedRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="12dp"
+                android:scrollbars="vertical" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <!-- 首屏加载中覆盖层 -->
+        <ProgressBar
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <!-- 空态 / 错误态共用的居中提示，点击可重试 -->
+        <TextView
+            android:id="@+id/statusView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:padding="24dp"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="15sp"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

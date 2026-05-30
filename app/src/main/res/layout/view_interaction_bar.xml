@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 三种卡片共用的互动栏：点赞 / 收藏 / 分享 + 曝光点击统计。
+     通过 <include> 复用，避免在每个卡片布局里重复一遍。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <!-- 点赞：图标 + 文案，点击切换并播放彩蛋动画 -->
+    <LinearLayout
+        android:id="@+id/likeContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingVertical="6dp">
+
+        <ImageView
+            android:id="@+id/likeIcon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:contentDescription="@string/feed_action_like"
+            android:src="@drawable/ic_like" />
+
+        <TextView
+            android:id="@+id/likeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="@string/feed_action_like"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- 收藏 -->
+    <LinearLayout
+        android:id="@+id/collectContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingVertical="6dp">
+
+        <ImageView
+            android:id="@+id/collectIcon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:contentDescription="@string/feed_action_collect"
+            android:src="@drawable/ic_collect" />
+
+        <TextView
+            android:id="@+id/collectText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="@string/feed_action_collect"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- 分享 -->
+    <LinearLayout
+        android:id="@+id/shareContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingVertical="6dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:contentDescription="@string/feed_action_share"
+            android:src="@drawable/ic_share" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="@string/feed_action_share"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+</LinearLayout>

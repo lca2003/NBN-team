@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 大图卡：顶部大图占位，下方标题/摘要/标签，底部互动栏。
+     适合品牌与生活方式广告，突出视觉。整张卡片可点击进入详情页。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    android:background="@drawable/bg_feed_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <!-- 大图区域：用渐变占位代替真实封面（imageUrl 待数据层补齐） -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+
+        <ImageView
+            android:id="@+id/mediaImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_media_placeholder"
+            android:contentDescription="@string/feed_sponsored"
+            android:scaleType="centerCrop" />
+
+        <!-- 左上角“广告”角标，符合课题的广告信息流场景 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_sponsored_badge"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:text="@string/feed_sponsored"
+            android:textColor="@color/nbn_brand"
+            android:textSize="11sp" />
+    </FrameLayout>
+
+    <!-- 品牌 -->
+    <TextView
+        android:id="@+id/brandText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/nbn_brand"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="NBN Sports" />
+
+    <!-- 标题 -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/nbn_text_primary"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        tools:text="轻量跑鞋新品首发" />
+
+    <!-- 摘要（AI 摘要将填充于此，当前用 Mock summary） -->
+    <TextView
+        android:id="@+id/summaryText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="@color/nbn_text_secondary"
+        android:textSize="14sp"
+        tools:text="适合通勤和夜跑的轻量缓震跑鞋。" />
+
+    <!-- 标签容器：运行时按 tags 动态填充 TextView chip。
+         用普通 LinearLayout 而非 Material ChipGroup，避免引入对 MaterialComponents 主题的依赖。 -->
+    <LinearLayout
+        android:id="@+id/tagGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" />
+
+    <!-- 曝光/点击统计（本地模拟 + 可视化） -->
+    <TextView
+        android:id="@+id/statsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/nbn_text_secondary"
+        android:textSize="12sp"
+        tools:text="曝光 1 · 点击 0" />
+
+    <!-- 复用互动栏 -->
+    <include layout="@layout/view_interaction_bar" />
+</LinearLayout>

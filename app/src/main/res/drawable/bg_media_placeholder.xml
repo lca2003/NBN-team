@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 图片/视频封面的占位渐变。
+     AdItem 暂未提供 imageUrl/videoUrl（属人员B数据层），这里用渐变占位代替真实封面，
+     等数据层补齐图片地址后，可由人员B在此处接入图片加载库。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="135"
+        android:startColor="@color/nbn_placeholder_start"
+        android:endColor="@color/nbn_placeholder_end" />
+    <corners android:radius="14dp" />
+</shape>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 信息流卡片背景：白底、圆角、浅描边，与现有 card_feed_mock 风格统一。
+     不含 padding，便于卡片内图片铺满圆角区域。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/nbn_card" />
+    <corners android:radius="20dp" />
+    <stroke
+        android:width="1dp"
+        android:color="@color/nbn_card_stroke" />
+</shape>

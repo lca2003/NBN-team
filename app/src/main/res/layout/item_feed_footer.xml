@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 列表底部 footer：承载“加载中… / 没有更多了 / 加载失败点击重试”三种状态，
+     由 FeedAdapter 作为最后一个 item 渲染，配合上拉加载使用。 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/footerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="56dp"
+    android:paddingVertical="16dp">
+
+    <!-- 加载中：进度条 + 文案 -->
+    <LinearLayout
+        android:id="@+id/footerLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            style="?android:attr/progressBarStyleSmall" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/feed_loading_more"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- 文案态：没有更多 / 点击重试，由代码切换文字与点击行为 -->
+    <TextView
+        android:id="@+id/footerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="4dp"
+        android:textColor="@color/nbn_text_secondary"
+        android:textSize="13sp"
+        android:visibility="gone"
+        android:text="@string/feed_no_more" />
+</FrameLayout>

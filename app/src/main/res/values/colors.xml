@@ -6,4 +6,21 @@
     <color name="nbn_card_stroke">#E1D8C8</color>
     <color name="nbn_text_primary">#1E2A24</color>
     <color name="nbn_text_secondary">#657069</color>
+
+    <!-- ===== 信息流 Feed（人员A）相关配色 ===== -->
+    <!-- 点赞激活态：暖红，用于点赞彩蛋 -->
+    <color name="nbn_like_active">#E5484D</color>
+    <!-- 收藏激活态：琥珀金 -->
+    <color name="nbn_collect_active">#E0A82E</color>
+    <!-- 卡片上的“广告”角标背景 -->
+    <color name="nbn_badge_bg">#33176B4D</color>
+    <!-- 占位图渐变色，模拟图片/视频封面 -->
+    <color name="nbn_placeholder_start">#D8E6DE</color>
+    <color name="nbn_placeholder_end">#B7CFC2</color>
+    <!-- 视频遮罩与播放按钮 -->
+    <color name="nbn_video_scrim">#55000000</color>
+    <!-- 标签 chip 背景与文字 -->
+    <color name="nbn_tag_bg">#EAF2EC</color>
+    <color name="nbn_divider">#ECE5D8</color>
+
 </resources>
