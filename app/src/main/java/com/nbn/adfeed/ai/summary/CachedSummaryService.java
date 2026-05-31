@@ -2,31 +2,34 @@ package com.nbn.adfeed.ai.summary;
 
 import com.nbn.adfeed.ai.AiGenerationException;
 import com.nbn.adfeed.ai.AiOutputSource;
+import com.nbn.adfeed.ai.AiResponse;
+import com.nbn.adfeed.ai.AiSummaryService;
+import com.nbn.adfeed.ai.cache.AiCache;
 import com.nbn.adfeed.ai.cache.AiCacheKey;
-import com.nbn.adfeed.ai.cache.AiOutputCache;
 import com.nbn.adfeed.data.model.AdItem;
 
-public final class CachedSummaryService {
+public final class CachedSummaryService implements AiSummaryService {
     public static final String PROMPT_VERSION = "summary_v1";
     private static final int MAX_SUMMARY_LENGTH = 40;
 
-    private final AiOutputCache cache;
+    private final AiCache cache;
     private final SummaryGenerator remoteGenerator;
 
     public CachedSummaryService() {
-        this(new AiOutputCache(), null);
+        this(new AiCache(), null);
     }
 
-    public CachedSummaryService(AiOutputCache cache, SummaryGenerator remoteGenerator) {
-        this.cache = cache;
+    public CachedSummaryService(AiCache cache, SummaryGenerator remoteGenerator) {
+        this.cache = cache == null ? new AiCache() : cache;
         this.remoteGenerator = remoteGenerator;
     }
 
-    public AiSummaryResult summarize(AdItem item) {
+    @Override
+    public AiResponse<String> summarize(AdItem item) {
         AiCacheKey key = AiCacheKey.forAd(item, PROMPT_VERSION);
         String cachedSummary = cache.getSummary(key);
         if (cachedSummary != null) {
-            return new AiSummaryResult(item.getId(), cachedSummary, AiOutputSource.CACHE, true);
+            return AiResponse.success(cachedSummary, AiOutputSource.CACHE, true);
         }
 
         if (remoteGenerator != null) {
@@ -34,18 +37,26 @@ public final class CachedSummaryService {
                 String remoteSummary = normalize(remoteGenerator.generateSummary(item));
                 if (!remoteSummary.isEmpty()) {
                     cache.putSummary(key, remoteSummary);
-                    return new AiSummaryResult(item.getId(), remoteSummary, AiOutputSource.REMOTE_AI, false);
+                    return AiResponse.success(remoteSummary, AiOutputSource.REMOTE_AI, false);
                 }
             } catch (AiGenerationException ignored) {
-                // Remote failure is expected in offline demo mode; local fallback keeps UI usable.
+                // Offline demo mode falls through to deterministic local output.
             }
         }
 
-        return new AiSummaryResult(item.getId(), fallbackSummary(item), AiOutputSource.LOCAL_FALLBACK, false);
+        String mockSummary = normalize(item.getSummary());
+        if (!mockSummary.isEmpty()) {
+            cache.putSummary(key, mockSummary);
+            return AiResponse.failure(mockSummary, AiOutputSource.MOCK_FALLBACK, "Use mock summary", null);
+        }
+
+        String ruleSummary = fallbackSummary(item);
+        cache.putSummary(key, ruleSummary);
+        return AiResponse.failure(ruleSummary, AiOutputSource.RULE_FALLBACK, "Use rule fallback summary", null);
     }
 
     private static String fallbackSummary(AdItem item) {
-        String source = firstNonBlank(item.getSummary(), item.getDescription(), item.getTitle());
+        String source = firstNonBlank(item.getDescription(), item.getTitle(), item.getBrand(), item.getChannel());
         return normalize(source);
     }
 

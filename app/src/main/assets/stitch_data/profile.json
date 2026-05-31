@@ -1,0 +1,85 @@
+{
+  "userProfile": {
+    "userId": "user_me_001",
+    "nickname": "灵感收集员",
+    "avatarUrl": "stitch_ui/images/stitch-13.png",
+    "level": "Lv.6 创作达人",
+    "bio": "记录通勤、运动和周末本地生活的真实体验。",
+    "stats": {
+      "likedAndCollectedCount": 12880,
+      "followingCount": 86,
+      "followerCount": 3420,
+      "postCount": 18
+    },
+    "achievements": [
+      {
+        "achievementId": "ach_checkin_7",
+        "title": "连续签到",
+        "description": "连续 7 天发布或收藏内容",
+        "icon": "local_fire_department",
+        "unlocked": true
+      },
+      {
+        "achievementId": "ach_liked_10k",
+        "title": "获赞破万",
+        "description": "笔记累计获赞与收藏超过 10000",
+        "icon": "favorite",
+        "unlocked": true
+      },
+      {
+        "achievementId": "ach_creator",
+        "title": "创作达人",
+        "description": "广告体验笔记被 AI 推荐收录",
+        "icon": "edit_document",
+        "unlocked": true
+      }
+    ]
+  },
+  "posts": [
+    {
+      "postId": "post_note_001",
+      "tab": "notes",
+      "title": "夜跑鞋真实通勤一周体验",
+      "coverUrl": "https://loremflickr.com/600/400/athletic,shoes?lock=101",
+      "sourceAdId": "ad_001",
+      "likeCount": 1200,
+      "timeText": "2 天前"
+    },
+    {
+      "postId": "post_collection_001",
+      "tab": "collections",
+      "title": "周末咖啡地图收藏清单",
+      "coverUrl": "https://loremflickr.com/600/400/coffee,shop?lock=102",
+      "sourceAdId": "ad_002",
+      "likeCount": 856,
+      "timeText": "昨天"
+    },
+    {
+      "postId": "post_liked_001",
+      "tab": "liked",
+      "title": "通勤降噪耳机体验片",
+      "coverUrl": "https://loremflickr.com/600/400/headphones,commute?lock=103",
+      "sourceAdId": "ad_003",
+      "likeCount": 2300,
+      "timeText": "今天"
+    }
+  ],
+  "followers": [
+    {
+      "relationId": "rel_follower_001",
+      "userId": "user_1024",
+      "targetUserId": "user_me_001",
+      "relationType": "follower",
+      "following": false
+    }
+  ],
+  "following": [
+    {
+      "relationId": "rel_following_001",
+      "userId": "user_me_001",
+      "targetUserId": "creator_sports_01",
+      "relationType": "following",
+      "following": true
+    }
+  ]
+}

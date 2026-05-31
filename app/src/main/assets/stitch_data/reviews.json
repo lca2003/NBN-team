@@ -1,0 +1,68 @@
+{
+  "reviewsByAd": {
+    "ad_001": [
+      {
+        "reviewId": "review_001",
+        "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+        "nickname": "晚课后夜跑",
+        "timeText": "2 小时前",
+        "content": "鞋底回弹明显，宿舍到操场来回走也不累。",
+        "likeCount": 28
+      },
+      {
+        "reviewId": "review_003",
+        "userAvatarUrl": "stitch_ui/images/stitch-14.png",
+        "nickname": "通勤两站地",
+        "timeText": "今天",
+        "content": "反光条很实用，晚上骑车能被看见。",
+        "likeCount": 19
+      }
+    ],
+    "ad_002": [
+      {
+        "reviewId": "review_002",
+        "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+        "nickname": "周末写论文",
+        "timeText": "昨天",
+        "content": "二楼比较安静，插座多，适合带电脑。",
+        "likeCount": 41
+      }
+    ],
+    "ad_003": [
+      {
+        "reviewId": "review_004",
+        "userAvatarUrl": "stitch_ui/images/stitch-14.png",
+        "nickname": "地铁早八人",
+        "timeText": "今天",
+        "content": "视频里能看到耳机佩戴和降噪场景，比只看封面更可信。",
+        "likeCount": 35
+      }
+    ]
+  },
+  "comments": [
+    {
+      "commentId": "comment_001",
+      "targetType": "ad",
+      "targetId": "ad_001",
+      "parentCommentId": "",
+      "content": "有 41 码库存吗？",
+      "timeText": "刚刚"
+    },
+    {
+      "commentId": "comment_004",
+      "targetType": "ad",
+      "targetId": "ad_003",
+      "parentCommentId": "",
+      "content": "地铁里降噪效果明显吗？",
+      "timeText": "6 分钟前"
+    },
+    {
+      "commentId": "comment_003",
+      "targetType": "review",
+      "targetId": "review_001",
+      "parentCommentId": "comment_001",
+      "content": "客服说今晚补货。",
+      "timeText": "1 分钟前"
+    }
+  ]
+}

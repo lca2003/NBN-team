@@ -1,0 +1,86 @@
+{
+  "remoteConfig": {
+    "aiEnabled": true,
+    "requestTimeoutMillis": 3000,
+    "featureSwitches": [
+      {
+        "key": "stitch_data_driven_home",
+        "enabled": true,
+        "description": "首页信息流读取 stitch_data/home_feed.json"
+      },
+      {
+        "key": "ai_search_demo_remote",
+        "enabled": true,
+        "description": "AI 搜索优先展示 demo remote 结果，失败后使用 fallback"
+      },
+      {
+        "key": "profile_edit_enabled",
+        "enabled": false,
+        "description": "资料编辑 UI 第二阶段接入"
+      }
+    ],
+    "channels": [
+      {
+        "channelId": "featured",
+        "title": "精选",
+        "visible": true,
+        "sortIndex": 0
+      },
+      {
+        "channelId": "smart_feed",
+        "title": "灵动信息流",
+        "visible": true,
+        "sortIndex": 1
+      },
+      {
+        "channelId": "local",
+        "title": "本地",
+        "visible": true,
+        "sortIndex": 2
+      }
+    ]
+  },
+  "assetManifest": [
+    {
+      "assetId": "asset_home_001",
+      "localAssetName": "stitch_ui/images/stitch-01.png",
+      "remoteUrl": "https://loremflickr.com/1200/800/athletic,shoes?lock=1",
+      "assetType": "image",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "assetId": "asset_search_003",
+      "localAssetName": "stitch_ui/images/stitch-03.png",
+      "remoteUrl": "https://loremflickr.com/1200/800/headphones,commute?lock=3",
+      "assetType": "image",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "assetId": "asset_video_003",
+      "localAssetName": "raw/ad_video_headphones.mp4",
+      "remoteUrl": "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+      "assetType": "video",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "analyticsSummary": {
+    "eventTypes": [
+      "APP_OPEN",
+      "AD_EXPOSURE",
+      "AD_CLICK",
+      "AD_LIKE",
+      "AD_COLLECT",
+      "AD_SHARE",
+      "SEARCH",
+      "DETAIL_OPEN"
+    ],
+    "exposureRule": {
+      "minVisiblePercent": 50,
+      "minDwellMillis": 1000,
+      "dedupeByAdAndPosition": true
+    }
+  }
+}

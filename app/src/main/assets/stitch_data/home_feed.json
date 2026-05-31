@@ -1,0 +1,215 @@
+{
+  "channels": [
+    {
+      "id": "featured",
+      "title": "精选",
+      "subtitle": "AI 挑选高互动广告",
+      "enabled": true,
+      "sortIndex": 0
+    },
+    {
+      "id": "smart_feed",
+      "title": "灵动信息流",
+      "subtitle": "多素材卡片与沉浸视频",
+      "enabled": true,
+      "sortIndex": 1
+    },
+    {
+      "id": "local",
+      "title": "本地",
+      "subtitle": "周边餐饮、运动与生活服务",
+      "enabled": true,
+      "sortIndex": 2
+    }
+  ],
+  "page": {
+    "cursor": "page_1",
+    "nextCursor": "",
+    "hasMore": false,
+    "totalCount": 3,
+    "items": [
+      {
+        "adId": "ad_001",
+        "title": "轻量跑鞋新品首发",
+        "subtitle": "校园通勤和夜跑都能兼顾",
+        "description": "主打轻量缓震和夜跑反光设计，适合校园通勤、夜跑和日常训练。",
+        "cover": {
+          "url": "https://loremflickr.com/1200/800/athletic,shoes?lock=1",
+          "localAssetName": "stitch_ui/images/stitch-01.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "NBN Sports",
+        "category": "运动",
+        "publishTime": "2026-05-31T09:30:00+08:00",
+        "creator": {
+          "userId": "creator_sports_01",
+          "nickname": "NBN 运动实验室",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "专注学生党和城市跑者装备测评"
+        },
+        "tags": [
+          {
+            "id": "tag_sport",
+            "name": "运动",
+            "category": "interest"
+          },
+          {
+            "id": "tag_student",
+            "name": "学生党",
+            "category": "audience"
+          },
+          {
+            "id": "tag_value",
+            "name": "性价比",
+            "category": "value"
+          }
+        ],
+        "stats": {
+          "likeCount": 320,
+          "commentCount": 42,
+          "collectCount": 180,
+          "shareCount": 46,
+          "exposureCount": 1680,
+          "clickCount": 268
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        }
+      },
+      {
+        "adId": "ad_002",
+        "title": "周末本地咖啡地图",
+        "subtitle": "步行 800 米内的安静咖啡馆",
+        "description": "精选适合自习、约会和轻办公的本地咖啡店，附距离、营业时间和优惠。",
+        "cover": {
+          "url": "https://loremflickr.com/1200/800/coffee,shop?lock=2",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "City Cafe",
+        "category": "本地餐饮",
+        "publishTime": "2026-05-31T10:10:00+08:00",
+        "creator": {
+          "userId": "creator_local_02",
+          "nickname": "周边生活精选",
+          "avatarUrl": "stitch_ui/images/stitch-10.png",
+          "verified": true,
+          "bio": "把附近值得去的店整理成可直接行动的清单"
+        },
+        "tags": [
+          {
+            "id": "tag_local",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_food",
+            "name": "餐饮",
+            "category": "interest"
+          },
+          {
+            "id": "tag_social",
+            "name": "社交",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 268,
+          "commentCount": 35,
+          "collectCount": 144,
+          "shareCount": 31,
+          "exposureCount": 1320,
+          "clickCount": 226
+        },
+        "interactionState": {
+          "liked": true,
+          "collected": true,
+          "followingCreator": false,
+          "shared": false
+        }
+      },
+      {
+        "adId": "ad_003",
+        "title": "通勤降噪耳机体验片",
+        "subtitle": "地铁、办公室、宿舍三种场景实测",
+        "description": "视频展示自适应降噪、轻量佩戴和多设备切换，适合白领与学生通勤。",
+        "cover": {
+          "url": "https://loremflickr.com/1200/800/headphones,commute?lock=3",
+          "localAssetName": "stitch_ui/images/stitch-03.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        },
+        "video": {
+          "url": "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+          "localAssetName": "raw/ad_video_headphones.mp4",
+          "width": 1280,
+          "height": 720,
+          "cropStrategy": "fitCenter",
+          "dominantColor": "#26384f",
+          "blurHash": "L35#xT00%Mxu_4t7Rjay~qxuogj["
+        },
+        "adType": "VIDEO",
+        "brand": "NBN Audio",
+        "category": "科技数码",
+        "publishTime": "2026-05-31T11:00:00+08:00",
+        "creator": {
+          "userId": "creator_tech_03",
+          "nickname": "通勤科技站",
+          "avatarUrl": "stitch_ui/images/stitch-11.png",
+          "verified": true,
+          "bio": "用短视频讲清楚数码产品真实体验"
+        },
+        "tags": [
+          {
+            "id": "tag_tech",
+            "name": "科技感",
+            "category": "interest"
+          },
+          {
+            "id": "tag_white_collar",
+            "name": "白领",
+            "category": "audience"
+          },
+          {
+            "id": "tag_commute",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 410,
+          "commentCount": 58,
+          "collectCount": 236,
+          "shareCount": 55,
+          "exposureCount": 1880,
+          "clickCount": 342
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": true,
+          "followingCreator": true,
+          "shared": false
+        }
+      }
+    ]
+  }
+}

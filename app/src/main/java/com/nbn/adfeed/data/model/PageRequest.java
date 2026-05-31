@@ -7,18 +7,30 @@ public final class PageRequest {
     private final String channel;
     private final String cursor;
     private final int pageSize;
+    private final boolean refresh;
+    private final String sourcePage;
 
     public PageRequest(String channel, String cursor, int pageSize) {
+        this(channel, cursor, pageSize, false, "");
+    }
+
+    public PageRequest(String channel, String cursor, int pageSize, boolean refresh, String sourcePage) {
         if (pageSize <= 0) {
             throw new IllegalArgumentException("pageSize must be greater than 0");
         }
-        this.channel = channel;
+        this.channel = normalize(channel);
         this.cursor = normalizeCursor(cursor);
         this.pageSize = pageSize;
+        this.refresh = refresh;
+        this.sourcePage = normalize(sourcePage);
     }
 
     public static PageRequest firstPage(String channel, int pageSize) {
-        return new PageRequest(channel, FIRST_CURSOR, pageSize);
+        return new PageRequest(channel, FIRST_CURSOR, pageSize, true, "feed");
+    }
+
+    public static PageRequest nextPage(String channel, String cursor, int pageSize) {
+        return new PageRequest(channel, cursor, pageSize, false, "feed");
     }
 
     public String getChannel() {
@@ -33,6 +45,14 @@ public final class PageRequest {
         return pageSize;
     }
 
+    public boolean isRefresh() {
+        return refresh || FIRST_CURSOR.equals(cursor);
+    }
+
+    public String getSourcePage() {
+        return sourcePage;
+    }
+
     public int getPageNumber() {
         if (!cursor.startsWith("page_")) {
             return 1;
@@ -45,9 +65,11 @@ public final class PageRequest {
     }
 
     private static String normalizeCursor(String cursor) {
-        if (cursor == null || cursor.trim().isEmpty()) {
-            return FIRST_CURSOR;
-        }
-        return cursor.trim();
+        String normalized = normalize(cursor);
+        return normalized.isEmpty() ? FIRST_CURSOR : normalized;
+    }
+
+    private static String normalize(String value) {
+        return value == null ? "" : value.trim();
     }
 }

@@ -1,21 +1,58 @@
 package com.nbn.adfeed.data.repository;
 
-import com.nbn.adfeed.data.model.AdPage;
 import com.nbn.adfeed.data.model.AdItem;
+import com.nbn.adfeed.data.model.AdPage;
+import com.nbn.adfeed.data.model.DataResult;
+import com.nbn.adfeed.data.model.InteractionAction;
 import com.nbn.adfeed.data.model.PageRequest;
+import com.nbn.adfeed.data.model.PageResult;
+import com.nbn.adfeed.data.model.SearchRequest;
 
+import java.util.Collections;
 import java.util.List;
 
 public interface AdRepository {
-    List<AdItem> getInitialAds();
+    DataResult<PageResult<AdItem>> loadAds(PageRequest request);
 
-    List<AdItem> getAdsByChannel(String channel);
+    DataResult<AdItem> getAdById(String adId);
 
-    AdPage getAdsPage(PageRequest request);
+    DataResult<PageResult<AdItem>> searchAds(SearchRequest request);
 
-    AdItem getAdById(String adId);
+    DataResult<AdItem> updateInteraction(String adId, InteractionAction action);
 
-    List<AdItem> getAdsByTag(String tag);
+    default List<AdItem> getInitialAds() {
+        return pageItems(loadAds(PageRequest.firstPage("", PageRequest.DEFAULT_PAGE_SIZE)));
+    }
 
-    List<AdItem> searchByKeyword(String keyword);
+    default List<AdItem> getAdsByChannel(String channel) {
+        return pageItems(loadAds(PageRequest.firstPage(channel, PageRequest.DEFAULT_PAGE_SIZE)));
+    }
+
+    default AdPage getAdsPage(PageRequest request) {
+        PageRequest safeRequest = request == null
+                ? PageRequest.firstPage("", PageRequest.DEFAULT_PAGE_SIZE)
+                : request;
+        PageResult<AdItem> page = pageData(loadAds(safeRequest));
+        if (page == null) {
+            return new AdPage(Collections.emptyList(), null, false);
+        }
+        return new AdPage(page.getItems(), page.getNextCursor(), page.hasMore());
+    }
+
+    default List<AdItem> getAdsByTag(String tag) {
+        return pageItems(searchAds(SearchRequest.tag(tag)));
+    }
+
+    default List<AdItem> searchByKeyword(String keyword) {
+        return pageItems(searchAds(SearchRequest.keyword(keyword)));
+    }
+
+    private static List<AdItem> pageItems(DataResult<PageResult<AdItem>> result) {
+        PageResult<AdItem> page = pageData(result);
+        return page == null ? Collections.emptyList() : page.getItems();
+    }
+
+    private static PageResult<AdItem> pageData(DataResult<PageResult<AdItem>> result) {
+        return result == null ? null : result.getData();
+    }
 }

@@ -1,40 +1,35 @@
 package com.nbn.adfeed.data.model;
 
 public final class InteractionState {
-    private boolean liked;
-    private boolean collected;
-    private int exposureCount;
-    private int clickCount;
+    private final boolean liked;
+    private final boolean collected;
+
+    public InteractionState() {
+        this(false, false);
+    }
+
+    public InteractionState(boolean liked, boolean collected) {
+        this.liked = liked;
+        this.collected = collected;
+    }
+
+    public static InteractionState empty() {
+        return new InteractionState(false, false);
+    }
 
     public boolean isLiked() {
         return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
     }
 
     public boolean isCollected() {
         return collected;
     }
 
-    public void setCollected(boolean collected) {
-        this.collected = collected;
+    public InteractionState withLiked(boolean nextLiked) {
+        return new InteractionState(nextLiked, collected);
     }
 
-    public int getExposureCount() {
-        return exposureCount;
-    }
-
-    public void increaseExposureCount() {
-        exposureCount += 1;
-    }
-
-    public int getClickCount() {
-        return clickCount;
-    }
-
-    public void increaseClickCount() {
-        clickCount += 1;
+    public InteractionState withCollected(boolean nextCollected) {
+        return new InteractionState(liked, nextCollected);
     }
 }

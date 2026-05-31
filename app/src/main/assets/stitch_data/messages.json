@@ -1,0 +1,78 @@
+{
+  "notificationSummary": {
+    "likeUnreadCount": 12,
+    "collectUnreadCount": 5,
+    "followerUnreadCount": 3,
+    "commentUnreadCount": 8
+  },
+  "notifications": [
+    {
+      "notificationId": "nt_like_001",
+      "type": "like",
+      "sourceUserId": "user_1024",
+      "targetAdId": "ad_001",
+      "content": "晚课后夜跑赞了你的跑鞋笔记",
+      "timeText": "5 分钟前",
+      "read": false
+    },
+    {
+      "notificationId": "nt_collect_001",
+      "type": "collect",
+      "sourceUserId": "user_2048",
+      "targetAdId": "ad_002",
+      "content": "周末写论文收藏了你的咖啡地图",
+      "timeText": "18 分钟前",
+      "read": false
+    },
+    {
+      "notificationId": "nt_comment_001",
+      "type": "comment",
+      "sourceUserId": "user_4096",
+      "targetAdId": "ad_003",
+      "content": "有人问降噪耳机是否支持多设备切换",
+      "timeText": "1 小时前",
+      "read": true
+    }
+  ],
+  "conversations": [
+    {
+      "conversationId": "conv_ai_assistant",
+      "avatarUrl": "stitch_ui/images/stitch-09.png",
+      "title": "AI 广告助手",
+      "lastMessage": "本周通勤和本地餐饮内容互动上升 18%。",
+      "timeText": "刚刚",
+      "unreadCount": 1,
+      "groupChat": false
+    },
+    {
+      "conversationId": "conv_creator_ops",
+      "avatarUrl": "stitch_ui/images/stitch-11.png",
+      "title": "创作者运营",
+      "lastMessage": "你发布的咖啡地图适合加一个优惠卡片。",
+      "timeText": "昨天",
+      "unreadCount": 0,
+      "groupChat": false
+    }
+  ],
+  "messages": [
+    {
+      "messageId": "dm_001",
+      "conversationId": "conv_ai_assistant",
+      "senderUserId": "ai_assistant",
+      "content": "你的本地生活内容收藏率高，可以继续发布周末目的地清单。",
+      "timeText": "刚刚",
+      "messageType": "text"
+    }
+  ],
+  "aiAssistantDigest": {
+    "digestId": "digest_week_2026_22",
+    "title": "本周互动摘要",
+    "summary": "跑鞋、咖啡、降噪耳机三类内容贡献了 72% 的新增互动。",
+    "recommendationAdIds": [
+      "ad_001",
+      "ad_002",
+      "ad_003"
+    ],
+    "generatedAtText": "2026-05-31 12:00"
+  }
+}

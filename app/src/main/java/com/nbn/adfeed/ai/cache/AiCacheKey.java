@@ -16,13 +16,16 @@ public final class AiCacheKey {
     }
 
     public static AiCacheKey forAd(AdItem item, String promptVersion) {
-        String contentHash = Integer.toHexString(Objects.hash(
-                item.getTitle(),
-                item.getBrand(),
-                item.getDescription(),
-                item.getSummary(),
-                item.getTags()
-        ));
+        String contentHash = item.getContentHash();
+        if (contentHash == null || contentHash.trim().isEmpty()) {
+            contentHash = Integer.toHexString(Objects.hash(
+                    item.getTitle(),
+                    item.getBrand(),
+                    item.getDescription(),
+                    item.getSummary(),
+                    item.getTags()
+            ));
+        }
         return new AiCacheKey(item.getId(), contentHash, promptVersion);
     }
 

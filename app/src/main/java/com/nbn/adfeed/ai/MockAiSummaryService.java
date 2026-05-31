@@ -1,29 +1,29 @@
 package com.nbn.adfeed.ai;
 
-import com.nbn.adfeed.ai.cache.AiOutputCache;
+import com.nbn.adfeed.ai.cache.AiCache;
 import com.nbn.adfeed.ai.summary.CachedSummaryService;
 import com.nbn.adfeed.ai.tagging.CachedTaggingService;
 import com.nbn.adfeed.data.model.AdItem;
 
 import java.util.List;
 
-public final class MockAiSummaryService implements AiSummaryService {
+public final class MockAiSummaryService implements AiSummaryService, AiTaggingService {
     private final CachedSummaryService summaryService;
     private final CachedTaggingService taggingService;
 
     public MockAiSummaryService() {
-        AiOutputCache cache = new AiOutputCache();
+        AiCache cache = new AiCache();
         summaryService = new CachedSummaryService(cache, null);
         taggingService = new CachedTaggingService(cache, null);
     }
 
     @Override
-    public String summarize(AdItem item) {
-        return summaryService.summarize(item).getSummary();
+    public AiResponse<String> summarize(AdItem item) {
+        return summaryService.summarize(item);
     }
 
     @Override
-    public List<String> generateTags(AdItem item) {
-        return taggingService.generateTags(item).getTags();
+    public AiResponse<List<String>> generateTags(AdItem item) {
+        return taggingService.generateTags(item);
     }
 }

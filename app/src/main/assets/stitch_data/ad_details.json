@@ -1,0 +1,227 @@
+{
+  "details": [
+    {
+      "adId": "ad_001",
+      "title": "轻量跑鞋新品首发",
+      "longCopy": "鞋面采用透气工程网布，前掌回弹泡棉降低长时间通勤疲劳，夜跑反光条提升校园和城市夜间可见性。",
+      "aiDeepInsight": "适合预算敏感但需要真实缓震体验的学生党，卖点集中在轻量、通勤、夜跑安全三个场景。",
+      "sellingPoints": [
+        "单只约 238g，适合日常通勤",
+        "夜跑反光条提升安全感",
+        "首发价覆盖学生预算"
+      ],
+      "mediaAssets": [
+        {
+          "url": "https://loremflickr.com/1200/800/athletic,shoes?lock=1",
+          "localAssetName": "stitch_ui/images/stitch-01.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_nbn_sports",
+        "name": "NBN Sports 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-09.png",
+        "rating": 4.8,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_001",
+        "priceText": "¥168",
+        "originalPriceText": "¥239",
+        "discountText": "首发立减 71 元",
+        "ctaText": "立即购买 ¥168"
+      },
+      "stats": {
+        "exposureText": "1,680",
+        "clickText": "268",
+        "likeText": "320",
+        "collectText": "180"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_001",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "nickname": "晚课后夜跑",
+          "timeText": "2 小时前",
+          "content": "鞋底回弹明显，宿舍到操场来回走也不累。",
+          "likeCount": 28
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_001",
+          "targetType": "ad",
+          "targetId": "ad_001",
+          "parentCommentId": "",
+          "content": "有 41 码库存吗？",
+          "timeText": "刚刚"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_009",
+          "title": "夜跑反光运动外套",
+          "imageUrl": "https://loremflickr.com/600/400/running,jacket?lock=9",
+          "reason": "同为夜跑装备",
+          "ctaText": "查看搭配"
+        }
+      ]
+    },
+    {
+      "adId": "ad_002",
+      "title": "周末本地咖啡地图",
+      "longCopy": "整理 3 家适合学习、轻办公和见朋友的咖啡馆，包含插座、噪音、桌距、营业时间和团购券。",
+      "aiDeepInsight": "推荐理由来自本地距离、环境安静度和收藏率，适合周末做轻社交或复习计划。",
+      "sellingPoints": [
+        "距离 800m 内",
+        "支持安静自习",
+        "下午茶双人券可用"
+      ],
+      "mediaAssets": [
+        {
+          "url": "https://loremflickr.com/1200/800/coffee,shop?lock=2",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_city_cafe",
+        "name": "City Cafe 人民广场店",
+        "avatarUrl": "stitch_ui/images/stitch-10.png",
+        "rating": 4.7,
+        "address": "人民广场步行街 18 号",
+        "distance": "800m",
+        "businessStatus": "营业中 · 22:00 打烊"
+      },
+      "offer": {
+        "offerId": "offer_ad_002",
+        "priceText": "¥39",
+        "originalPriceText": "¥68",
+        "discountText": "双人下午茶券",
+        "ctaText": "领取附近优惠"
+      },
+      "stats": {
+        "exposureText": "890",
+        "clickText": "120",
+        "likeText": "88",
+        "collectText": "76"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_002",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "nickname": "周末写论文",
+          "timeText": "昨天",
+          "content": "二楼比较安静，插座多，适合带电脑。",
+          "likeCount": 41
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_002",
+          "targetType": "ad",
+          "targetId": "ad_002",
+          "parentCommentId": "",
+          "content": "周日下午人多吗？",
+          "timeText": "12 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_014",
+          "title": "图书馆周边自习空间",
+          "imageUrl": "https://loremflickr.com/600/400/library,study?lock=14",
+          "reason": "同为安静学习场景",
+          "ctaText": "看附近"
+        }
+      ]
+    },
+    {
+      "adId": "ad_003",
+      "title": "通勤降噪耳机体验片",
+      "longCopy": "围绕地铁、图书馆和宿舍三个高频场景，展示降噪、续航和轻量佩戴体验。",
+      "aiDeepInsight": "适合需要安静学习和通勤降噪的用户，视频能直接证明佩戴场景和核心卖点，不再只是静态封面。",
+      "sellingPoints": [
+        "地铁通勤主动降噪",
+        "轻量佩戴适合长时间学习",
+        "本地视频素材可离线预览"
+      ],
+      "mediaAssets": [
+        {
+          "url": "https://loremflickr.com/1200/800/headphones,desk?lock=3",
+          "localAssetName": "stitch_ui/images/stitch-03.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#2d333f",
+          "blurHash": "L25OQm?bIUxu%MWBj[Rj4nWBt7of"
+        }
+      ],
+      "video": {
+        "localResourceUrl": "file:///android_res/raw/ad_video_headphones.mp4",
+        "caption": "本地打包视频，可验证播放/暂停/进度条，不依赖外部 CDN。"
+      },
+      "merchant": {
+        "merchantId": "merchant_sound_lab",
+        "name": "Sound Lab 数码旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-11.png",
+        "rating": 4.6,
+        "address": "线上旗舰店",
+        "distance": "次日达",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_003",
+        "priceText": "¥299",
+        "originalPriceText": "¥399",
+        "discountText": "通勤套装立减 100 元",
+        "ctaText": "查看耳机 ¥299"
+      },
+      "stats": {
+        "exposureText": "1,240",
+        "clickText": "214",
+        "likeText": "156",
+        "collectText": "98"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_003",
+          "userAvatarUrl": "stitch_ui/images/stitch-14.png",
+          "nickname": "地铁早八人",
+          "timeText": "今天",
+          "content": "降噪开关和续航说明很直接，适合通勤前快速判断。",
+          "likeCount": 35
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_003",
+          "targetType": "ad",
+          "targetId": "ad_003",
+          "parentCommentId": "",
+          "content": "能连两台设备吗？",
+          "timeText": "6 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_020",
+          "title": "平板键盘效率套装",
+          "imageUrl": "https://loremflickr.com/600/400/tablet,keyboard?lock=20",
+          "reason": "同为学习和通勤数码装备",
+          "ctaText": "查看搭配"
+        }
+      ]
+    }
+  ]
+}
