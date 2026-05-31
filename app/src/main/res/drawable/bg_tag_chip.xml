@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 智能标签 chip 背景：浅绿圆角胶囊。 -->
+<!-- 智能标签 chip 背景（升级版）：浅绿底 + 品牌色微描边 + 圆角胶囊。 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="@color/nbn_tag_bg" />
-    <corners android:radius="12dp" />
+    <corners android:radius="14dp" />
+    <stroke
+        android:width="0.5dp"
+        android:color="@color/nbn_brand_light" />
 </shape>

@@ -61,7 +61,9 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private ProgressBar loadingView;
+    private View statusContainer;
     private TextView statusView;
+    private View statusRetryHint;
     private FeedAdapter adapter;
 
     // 分页与状态。
@@ -123,7 +125,9 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         swipeRefresh = view.findViewById(R.id.swipeRefresh);
         recyclerView = view.findViewById(R.id.feedRecyclerView);
         loadingView = view.findViewById(R.id.loadingView);
+        statusContainer = view.findViewById(R.id.statusContainer);
         statusView = view.findViewById(R.id.statusView);
+        statusRetryHint = view.findViewById(R.id.statusRetryHint);
     }
 
     private void setupRecyclerView() {
@@ -298,7 +302,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
 
     private void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
-        statusView.setVisibility(View.GONE);
+        statusContainer.setVisibility(View.GONE);
     }
 
     private void hideLoading() {
@@ -306,19 +310,21 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     }
 
     private void showEmpty() {
-        statusView.setVisibility(View.VISIBLE);
+        statusContainer.setVisibility(View.VISIBLE);
         statusView.setText(R.string.feed_empty);
-        statusView.setOnClickListener(v -> refreshChannel(currentChannel, true));
+        statusRetryHint.setVisibility(View.VISIBLE);
+        statusContainer.setOnClickListener(v -> refreshChannel(currentChannel, true));
     }
 
     private void showError(String message) {
-        statusView.setVisibility(View.VISIBLE);
+        statusContainer.setVisibility(View.VISIBLE);
         statusView.setText(message != null ? message : getString(R.string.feed_error));
-        statusView.setOnClickListener(v -> refreshChannel(currentChannel, true));
+        statusRetryHint.setVisibility(View.VISIBLE);
+        statusContainer.setOnClickListener(v -> refreshChannel(currentChannel, true));
     }
 
     private void hideStatus() {
-        statusView.setVisibility(View.GONE);
+        statusContainer.setVisibility(View.GONE);
     }
 
     // ---- FeedInteractionListener 实现 ----

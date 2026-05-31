@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 信息流主页面：
-     顶部 TabLayout 切换频道（精选/电商/本地），
-     中部 SwipeRefreshLayout + RecyclerView 承载单列信息流（支持下拉刷新、上拉加载），
-     覆盖层用于首屏的“加载中 / 空态 / 错误态”。 -->
+<!-- 信息流主页面（视觉升级版）：
+     顶部标题栏 + 精致搜索按钮 → 频道 Tab（带底线）→ 列表 → 空态/错误态带装饰图。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -16,26 +14,30 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="6dp">
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:letterSpacing="0.02"
             android:text="@string/home_title"
             android:textColor="@color/nbn_text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
 
-        <!-- 对话式搜索入口（人员C 功能，这里只提供入口按钮） -->
-        <Button
+        <!-- 搜索入口：品牌浅底色胶囊按钮，比默认 Button 更精致 -->
+        <TextView
             android:id="@+id/openSearchButton"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_search_button_feed"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
             android:text="@string/open_conversational_search"
-            android:textAllCaps="false"
+            android:textColor="@color/nbn_brand"
             android:textSize="13sp" />
     </LinearLayout>
 
@@ -43,13 +45,24 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/channelTabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:background="@color/nbn_surface"
         app:tabGravity="start"
         app:tabIndicatorColor="@color/nbn_brand"
+        app:tabIndicatorHeight="3dp"
         app:tabMode="scrollable"
+        app:tabPaddingStart="20dp"
+        app:tabPaddingEnd="20dp"
+        app:tabRippleColor="@color/nbn_brand_light"
         app:tabSelectedTextColor="@color/nbn_brand"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
         app:tabTextColor="@color/nbn_text_secondary" />
+
+    <!-- Tab 底部细线，增加层次分隔 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/nbn_divider" />
 
     <!-- 列表 + 状态覆盖层 -->
     <FrameLayout
@@ -67,29 +80,60 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingBottom="12dp"
-                android:scrollbars="vertical" />
+                android:overScrollMode="never"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp"
+                android:scrollbars="none" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <!-- 首屏加载中覆盖层 -->
+        <!-- 首屏加载中：居中进度条 -->
         <ProgressBar
             android:id="@+id/loadingView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
+            android:indeterminateTint="@color/nbn_brand"
             android:visibility="gone" />
 
-        <!-- 空态 / 错误态共用的居中提示，点击可重试 -->
-        <TextView
-            android:id="@+id/statusView"
+        <!-- 空态 / 错误态：带装饰图 + 文案，整体居中，点击可重试 -->
+        <LinearLayout
+            android:id="@+id/statusContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="?attr/selectableItemBackground"
             android:gravity="center"
-            android:padding="24dp"
-            android:textColor="@color/nbn_text_secondary"
-            android:textSize="15sp"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <!-- 装饰图：同心圆视觉 -->
+            <View
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/bg_empty_state" />
+
+            <TextView
+                android:id="@+id/statusView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/nbn_text_secondary"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/statusRetryHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_search_button_feed"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="8dp"
+                android:text="点击重试"
+                android:textColor="@color/nbn_brand"
+                android:textSize="14sp" />
+        </LinearLayout>
     </FrameLayout>
 </LinearLayout>

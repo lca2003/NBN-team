@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 信息流卡片背景：白底、圆角、浅描边，与现有 card_feed_mock 风格统一。
-     不含 padding，便于卡片内图片铺满圆角区域。 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/nbn_card" />
-    <corners android:radius="20dp" />
-    <stroke
-        android:width="1dp"
-        android:color="@color/nbn_card_stroke" />
-</shape>
+<!-- 信息流卡片背景（升级版）：白底、大圆角、柔和阴影层次。
+     通过 layer-list 叠加一层半透明底色模拟阴影（兼容无 elevation 的场景），
+     实际运行时卡片还会通过代码设置 elevation 获得系统阴影。 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 底层：模拟柔和投影（向下偏移 2dp） -->
+    <item
+        android:bottom="0dp"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/nbn_card_shadow" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+    <!-- 上层：白色卡片主体 -->
+    <item
+        android:bottom="2dp"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/nbn_card" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+</layer-list>

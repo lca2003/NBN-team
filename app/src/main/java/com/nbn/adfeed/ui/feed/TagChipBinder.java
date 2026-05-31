@@ -55,14 +55,14 @@ public final class TagChipBinder {
         chip.setGravity(Gravity.CENTER);
         chip.setBackgroundResource(R.drawable.bg_tag_chip);
         // 内边距用像素，按屏幕密度换算，保证不同分辨率下视觉一致。
-        int padH = dp(context, 10);
-        int padV = dp(context, 4);
+        int padH = dp(context, 12);
+        int padV = dp(context, 5);
         chip.setPadding(padH, padV, padH, padV);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.rightMargin = dp(context, 6);
+        params.rightMargin = dp(context, 8);
         chip.setLayoutParams(params);
         return chip;
     }

@@ -23,4 +23,22 @@
     <color name="nbn_tag_bg">#EAF2EC</color>
     <color name="nbn_divider">#ECE5D8</color>
 
+    <!-- ===== UI 精细化增补配色 ===== -->
+    <!-- 卡片阴影色（用于 elevation 或手动阴影层） -->
+    <color name="nbn_card_shadow">#1A000000</color>
+    <!-- 品牌浅底色：用于按钮背景、高亮区域 -->
+    <color name="nbn_brand_light">#E8F5EE</color>
+    <!-- 品牌深色：用于按钮按压态 -->
+    <color name="nbn_brand_dark">#0F5038</color>
+    <!-- 占位图上的品牌 icon 色 -->
+    <color name="nbn_placeholder_icon">#9BBFAC</color>
+    <!-- 空态/错误态的插图底色 -->
+    <color name="nbn_empty_bg">#F0EDE5</color>
+    <!-- 互动栏分割线 -->
+    <color name="nbn_interaction_divider">#F0EBE2</color>
+    <!-- 搜索按钮背景 -->
+    <color name="nbn_search_btn_bg">#E8F5EE</color>
+    <!-- footer 背景 -->
+    <color name="nbn_footer_bg">#FAFAF7</color>
+
 </resources>
