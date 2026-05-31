@@ -1,68 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 信息流主页面（视觉升级版）：
-     顶部标题栏 + 精致搜索按钮 → 频道 Tab（带底线）→ 列表 → 空态/错误态带装饰图。 -->
+<!-- 信息流主页面：
+     顶部 APP 名称 → 胶囊按钮频道选择 → 列表 → 分割线 → 底部导航栏。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/nbn_surface"
     android:orientation="vertical">
 
-    <!-- 顶部标题栏 + 搜索入口 -->
-    <LinearLayout
+    <!-- 顶部 APP 名称，居中 -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp">
+        android:background="@color/nbn_surface"
+        android:gravity="center"
+        android:paddingTop="14dp"
+        android:paddingBottom="6dp"
+        android:text="InformationStream"
+        android:textColor="@color/nbn_text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:letterSpacing="0.02"
-            android:text="@string/home_title"
-            android:textColor="@color/nbn_text_primary"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <!-- 搜索入口：品牌浅底色胶囊按钮，比默认 Button 更精致 -->
-        <TextView
-            android:id="@+id/openSearchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:background="@drawable/bg_search_button_feed"
-            android:gravity="center"
-            android:paddingHorizontal="16dp"
-            android:text="@string/open_conversational_search"
-            android:textColor="@color/nbn_brand"
-            android:textSize="13sp" />
-    </LinearLayout>
-
-    <!-- 频道 Tab -->
-    <com.google.android.material.tabs.TabLayout
+    <!-- 频道胶囊按钮组（替代 TabLayout） -->
+    <LinearLayout
         android:id="@+id/channelTabs"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:background="@color/nbn_surface"
-        app:tabGravity="start"
-        app:tabIndicatorColor="@color/nbn_brand"
-        app:tabIndicatorHeight="3dp"
-        app:tabMode="scrollable"
-        app:tabPaddingStart="20dp"
-        app:tabPaddingEnd="20dp"
-        app:tabRippleColor="@color/nbn_brand_light"
-        app:tabSelectedTextColor="@color/nbn_brand"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        app:tabTextColor="@color/nbn_text_secondary" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="10dp">
 
-    <!-- Tab 底部细线，增加层次分隔 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/nbn_divider" />
+        <TextView
+            android:id="@+id/tabFeatured"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_pill_selector"
+            android:gravity="center"
+            android:text="@string/feed_tab_featured"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tabEcommerce"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/bg_pill_selector"
+            android:gravity="center"
+            android:text="@string/feed_tab_ecommerce"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tabLocal"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_pill_selector"
+            android:gravity="center"
+            android:text="@string/feed_tab_local"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <!-- 列表 + 状态覆盖层 -->
     <FrameLayout
@@ -82,20 +86,20 @@
                 android:clipToPadding="false"
                 android:overScrollMode="never"
                 android:paddingTop="8dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="8dp"
                 android:scrollbars="none" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <!-- 首屏加载中：居中进度条 -->
+        <!-- 首屏加载中 -->
         <ProgressBar
             android:id="@+id/loadingView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_gravity="center"
-            android:indeterminateTint="@color/nbn_brand"
+            android:indeterminateTint="@color/nbn_text_primary"
             android:visibility="gone" />
 
-        <!-- 空态 / 错误态：带装饰图 + 文案，整体居中，点击可重试 -->
+        <!-- 空态 / 错误态 -->
         <LinearLayout
             android:id="@+id/statusContainer"
             android:layout_width="wrap_content"
@@ -106,34 +110,93 @@
             android:padding="32dp"
             android:visibility="gone">
 
-            <!-- 装饰图：同心圆视觉 -->
-            <View
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/bg_empty_state" />
-
             <TextView
                 android:id="@+id/statusView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:lineSpacingExtra="4dp"
                 android:textColor="@color/nbn_text_secondary"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/statusRetryHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_search_button_feed"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_pill_normal"
                 android:gravity="center"
-                android:paddingHorizontal="20dp"
-                android:paddingVertical="8dp"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="10dp"
                 android:text="点击重试"
-                android:textColor="@color/nbn_brand"
+                android:textColor="@color/nbn_text_primary"
                 android:textSize="14sp" />
         </LinearLayout>
     </FrameLayout>
+
+    <!-- 导航栏与内容之间的浅灰色虚线分割 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/nbn_nav_divider"
+        android:layerType="software" />
+
+    <!-- 底部导航栏：与主页面同色背景 -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/nbn_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- 首页 -->
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="首页"
+                android:src="@drawable/ic_nav_home" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="首页"
+                android:textColor="@color/nbn_text_primary"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <!-- 搜索 -->
+        <LinearLayout
+            android:id="@+id/openSearchButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="搜索"
+                android:src="@drawable/ic_nav_search" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="搜索"
+                android:textColor="@color/nbn_text_secondary"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

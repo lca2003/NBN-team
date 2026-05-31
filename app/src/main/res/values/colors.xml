@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="nbn_brand">#176B4D</color>
-    <color name="nbn_surface">#F5F1E8</color>
-    <color name="nbn_card">#FFFFFF</color>
-    <color name="nbn_card_stroke">#E1D8C8</color>
-    <color name="nbn_text_primary">#1E2A24</color>
-    <color name="nbn_text_secondary">#657069</color>
+    <color name="nbn_surface">#FFF1E8</color>
+    <color name="nbn_card">#FFF1E8</color>
+    <color name="nbn_card_stroke">#F0F0F0</color>
+    <color name="nbn_text_primary">#1A1A1A</color>
+    <color name="nbn_text_secondary">#999999</color>
 
     <!-- ===== 信息流 Feed（人员A）相关配色 ===== -->
     <!-- 点赞激活态：暖红，用于点赞彩蛋 -->
@@ -40,5 +40,19 @@
     <color name="nbn_search_btn_bg">#E8F5EE</color>
     <!-- footer 背景 -->
     <color name="nbn_footer_bg">#FAFAF7</color>
+
+    <!-- Tab 指示器蓝色 -->
+    <color name="nbn_tab_indicator">#4A90D9</color>
+    <!-- 导航栏分割线 -->
+    <color name="nbn_nav_divider">#E0E0E0</color>
+    <!-- 标签多色（每个标签颜色不同） -->
+    <color name="nbn_tag_color_1">#E8F0FE</color>
+    <color name="nbn_tag_text_1">#1967D2</color>
+    <color name="nbn_tag_color_2">#FEE8F0</color>
+    <color name="nbn_tag_text_2">#D91A6B</color>
+    <color name="nbn_tag_color_3">#E8FEF0</color>
+    <color name="nbn_tag_text_3">#1A8C4A</color>
+    <color name="nbn_tag_color_4">#F5E8FE</color>
+    <color name="nbn_tag_text_4">#7B1AD9</color>
 
 </resources>

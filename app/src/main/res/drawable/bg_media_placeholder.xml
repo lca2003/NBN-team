@@ -1,33 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 图片/视频封面占位（升级版）：渐变底色 + 居中的图片图标轮廓，
-     模拟真实 App 中图片加载前的骨架屏效果。 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 底层渐变 -->
-    <item>
-        <shape android:shape="rectangle">
-            <gradient
-                android:angle="135"
-                android:startColor="@color/nbn_placeholder_start"
-                android:endColor="@color/nbn_placeholder_end" />
-            <corners android:radius="12dp" />
-        </shape>
-    </item>
-    <!-- 居中的图片图标（用 oval + 内嵌矩形模拟相机/图片符号） -->
-    <item
-        android:gravity="center"
-        android:width="48dp"
-        android:height="48dp">
-        <shape android:shape="oval">
-            <solid android:color="@color/nbn_placeholder_icon" />
-        </shape>
-    </item>
-    <item
-        android:gravity="center"
-        android:width="20dp"
-        android:height="20dp">
-        <shape android:shape="rectangle">
-            <solid android:color="@color/nbn_placeholder_start" />
-            <corners android:radius="3dp" />
-        </shape>
-    </item>
-</layer-list>
+<!-- 图片/视频封面占位：浅灰渐变，圆角加大让视觉更舒服。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="135"
+        android:startColor="#EAEAEA"
+        android:endColor="#D5D5D5" />
+    <corners android:radius="12dp" />
+</shape>

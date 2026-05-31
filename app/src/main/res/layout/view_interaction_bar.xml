@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 三种卡片共用的互动栏（升级版）：顶部细线分隔 + 点赞/收藏/分享按钮行。
-     通过 <include> 复用，避免在每个卡片布局里重复一遍。 -->
+<!-- 互动栏（胶囊按钮风格）：点赞/收藏/分享都是胶囊按钮。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="14dp"
-    android:orientation="vertical">
+    android:layout_marginTop="12dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <!-- 互动栏顶部分割线，与内容区形成清晰层次 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/nbn_interaction_divider" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-    <!-- 点赞：图标 + 文案，点击切换并播放彩蛋动画 -->
+    <!-- 点赞 -->
     <LinearLayout
         android:id="@+id/likeContainer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="34dp"
         android:layout_weight="1"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginEnd="6dp"
+        android:background="@drawable/bg_pill_normal"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="6dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/likeIcon"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:contentDescription="@string/feed_action_like"
             android:src="@drawable/ic_like" />
 
@@ -42,27 +29,27 @@
             android:id="@+id/likeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="4dp"
             android:text="@string/feed_action_like"
             android:textColor="@color/nbn_text_secondary"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <!-- 收藏 -->
     <LinearLayout
         android:id="@+id/collectContainer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="34dp"
         android:layout_weight="1"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginHorizontal="3dp"
+        android:background="@drawable/bg_pill_normal"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="6dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/collectIcon"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:contentDescription="@string/feed_action_collect"
             android:src="@drawable/ic_collect" />
 
@@ -70,36 +57,35 @@
             android:id="@+id/collectText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="4dp"
             android:text="@string/feed_action_collect"
             android:textColor="@color/nbn_text_secondary"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <!-- 分享 -->
     <LinearLayout
         android:id="@+id/shareContainer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="34dp"
         android:layout_weight="1"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginStart="6dp"
+        android:background="@drawable/bg_pill_normal"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="6dp">
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:contentDescription="@string/feed_action_share"
             android:src="@drawable/ic_share" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="4dp"
             android:text="@string/feed_action_share"
             android:textColor="@color/nbn_text_secondary"
-            android:textSize="13sp" />
-    </LinearLayout>
+            android:textSize="12sp" />
     </LinearLayout>
 </LinearLayout>

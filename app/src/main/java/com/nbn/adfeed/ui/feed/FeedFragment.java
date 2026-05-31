@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.tabs.TabLayout;
 import com.nbn.adfeed.R;
 import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.data.model.AdItem;
@@ -56,7 +55,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     private final InteractionStore interactionStore = InteractionStore.get();
 
     // 视图。
-    private TabLayout channelTabs;
+    private TextView[] tabButtons;
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -121,7 +120,12 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     }
 
     private void bindViews(View view) {
-        channelTabs = view.findViewById(R.id.channelTabs);
+        // 频道胶囊按钮组
+        tabButtons = new TextView[]{
+                view.findViewById(R.id.tabFeatured),
+                view.findViewById(R.id.tabEcommerce),
+                view.findViewById(R.id.tabLocal)
+        };
         swipeRefresh = view.findViewById(R.id.swipeRefresh);
         recyclerView = view.findViewById(R.id.feedRecyclerView);
         loadingView = view.findViewById(R.id.loadingView);
@@ -162,28 +166,27 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     }
 
     private void setupChannelTabs() {
-        // 动态添加频道 Tab。
-        for (String channel : CHANNELS) {
-            channelTabs.addTab(channelTabs.newTab().setText(channel));
+        // 为每个胶囊按钮绑定点击事件，点击切换频道并更新选中态。
+        for (int i = 0; i < tabButtons.length; i++) {
+            final int index = i;
+            tabButtons[i].setOnClickListener(v -> selectTab(index));
         }
-        channelTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                String channel = CHANNELS.get(tab.getPosition());
-                // 切换频道即联动刷新数据。
-                refreshChannel(channel, true);
-            }
+        // 默认选中第一个（精选）。
+        selectTab(0);
+    }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // 再次点击当前频道：回到顶部并刷新，符合常见信息流交互。
-                recyclerView.smoothScrollToPosition(0);
-            }
-        });
+    /** 切换频道胶囊按钮的选中态，并刷新数据。 */
+    private void selectTab(int index) {
+        for (int i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].setSelected(i == index);
+        }
+        String channel = CHANNELS.get(index);
+        if (!channel.equals(currentChannel)) {
+            refreshChannel(channel, true);
+        } else {
+            // 再次点击当前频道：回到顶部。
+            recyclerView.smoothScrollToPosition(0);
+        }
     }
 
     private void setupSearchEntry(View view) {

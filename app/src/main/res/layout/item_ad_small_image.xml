@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 小图卡：左侧标题/摘要/标签，右侧小图占位，底部互动栏。
-     信息密度更高，适合本地/电商列表场景。整张卡片可点击进入详情页。 -->
+<!-- 小图卡（参考图风格）：左文右小图，紧凑干净。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="6dp"
-    android:layout_marginBottom="10dp"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/bg_feed_card"
     android:clickable="true"
-    android:elevation="3dp"
+    android:elevation="2dp"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="14dp">
 
     <!-- 上半部分：左文右图 -->
     <LinearLayout
@@ -32,22 +30,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/brandText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/nbn_brand"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                tools:text="City Cafe" />
-
-            <TextView
                 android:id="@+id/titleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:textColor="@color/nbn_text_primary"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
                 tools:text="周末本地咖啡地图" />
 
             <TextView
@@ -60,37 +50,29 @@
                 android:textColor="@color/nbn_text_secondary"
                 android:textSize="13sp"
                 tools:text="发现附近适合学习和小组讨论的咖啡空间。" />
-        </LinearLayout>
-
-        <!-- 右侧小图占位 + 广告角标 -->
-        <FrameLayout
-            android:layout_width="104dp"
-            android:layout_height="104dp"
-            android:layout_marginStart="12dp">
-
-            <ImageView
-                android:id="@+id/mediaImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_media_placeholder"
-                android:contentDescription="@string/feed_sponsored"
-                android:scaleType="centerCrop" />
 
             <TextView
+                android:id="@+id/brandText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|top"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_sponsored_badge"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="2dp"
-                android:text="@string/feed_sponsored"
-                android:textColor="@color/nbn_brand"
-                android:textSize="10sp" />
-        </FrameLayout>
+                android:layout_marginTop="8dp"
+                android:textColor="@color/nbn_text_secondary"
+                android:textSize="12sp"
+                tools:text="City Cafe" />
+        </LinearLayout>
+
+        <!-- 右侧小图 -->
+        <ImageView
+            android:id="@+id/mediaImage"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_media_placeholder"
+            android:contentDescription="@string/feed_sponsored"
+            android:scaleType="centerCrop" />
     </LinearLayout>
 
-    <!-- 标签容器：运行时按 tags 动态填充 TextView chip（不依赖 Material 主题） -->
+    <!-- 标签容器 -->
     <LinearLayout
         android:id="@+id/tagGroup"
         android:layout_width="match_parent"
@@ -98,16 +80,16 @@
         android:layout_marginTop="10dp"
         android:orientation="horizontal" />
 
-    <!-- 曝光/点击统计 -->
+    <!-- 统计 -->
     <TextView
         android:id="@+id/statsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textColor="@color/nbn_text_secondary"
-        android:textSize="12sp"
+        android:textSize="11sp"
         tools:text="曝光 1 · 点击 0" />
 
-    <!-- 复用互动栏 -->
+    <!-- 互动栏 -->
     <include layout="@layout/view_interaction_bar" />
 </LinearLayout>

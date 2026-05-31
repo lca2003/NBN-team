@@ -25,6 +25,21 @@ public final class TagChipBinder {
     private TagChipBinder() {
     }
 
+    /** 标签背景色数组（循环使用，每个标签颜色不同）。 */
+    private static final int[] TAG_BG_COLORS = {
+            R.color.nbn_tag_color_1,
+            R.color.nbn_tag_color_2,
+            R.color.nbn_tag_color_3,
+            R.color.nbn_tag_color_4
+    };
+    /** 标签文字色数组，与背景色一一对应。 */
+    private static final int[] TAG_TEXT_COLORS = {
+            R.color.nbn_tag_text_1,
+            R.color.nbn_tag_text_2,
+            R.color.nbn_tag_text_3,
+            R.color.nbn_tag_text_4
+    };
+
     /**
      * 用 tags 重建 container 的子 View。
      *
@@ -42,21 +57,30 @@ public final class TagChipBinder {
         Context context = container.getContext();
         int count = Math.min(tags.size(), MAX_TAGS);
         for (int i = 0; i < count; i++) {
-            container.addView(createChip(context, tags.get(i)));
+            container.addView(createChip(context, tags.get(i), i));
         }
     }
 
-    /** 创建单个标签 chip。 */
-    private static TextView createChip(Context context, String tag) {
+    /** 创建单个标签 chip，根据 index 循环选取不同颜色。胶囊形状，可点击。 */
+    private static TextView createChip(Context context, String tag, int index) {
         TextView chip = new TextView(context);
         chip.setText(tag);
         chip.setTextSize(11f);
-        chip.setTextColor(context.getColor(R.color.nbn_brand));
+        // 每个标签颜色不同，循环使用 4 种配色。
+        int colorIndex = index % TAG_BG_COLORS.length;
+        chip.setTextColor(context.getColor(TAG_TEXT_COLORS[colorIndex]));
+        // 动态设置背景色（用 GradientDrawable 实现胶囊圆角 + 不同底色）。
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setColor(context.getColor(TAG_BG_COLORS[colorIndex]));
+        bg.setCornerRadius(dp(context, 16));
+        chip.setBackground(bg);
         chip.setGravity(Gravity.CENTER);
-        chip.setBackgroundResource(R.drawable.bg_tag_chip);
+        // 可点击（后续可接入标签过滤搜索）。
+        chip.setClickable(true);
+        chip.setFocusable(true);
         // 内边距用像素，按屏幕密度换算，保证不同分辨率下视觉一致。
-        int padH = dp(context, 12);
-        int padV = dp(context, 5);
+        int padH = dp(context, 10);
+        int padV = dp(context, 4);
         chip.setPadding(padH, padV, padH, padV);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
