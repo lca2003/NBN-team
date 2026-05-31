@@ -1,51 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- 主界面：作为 FeedFragment 的容器。
+     信息流的标题栏、频道 Tab、搜索入口都在 fragment_feed 内部，这里只留一个容器。 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/feedContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:fitsSystemWindows="true">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/home_title"
-            android:textColor="@color/nbn_text_primary"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/home_subtitle"
-            android:textColor="@color/nbn_text_secondary"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/feedStatusText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/card_feed_mock"
-            android:padding="18dp"
-            android:text="@string/home_framework_ready"
-            android:textColor="@color/nbn_text_primary"
-            android:textSize="16sp" />
-
-        <!-- 添加搜索按钮样式用于测试，后续可替换为实际样式 -->
-        <Button
-            android:id="@+id/openSearchButton"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/open_conversational_search"
-            android:textAllCaps="false" />
-
-    </LinearLayout>
-</ScrollView>
+    android:fitsSystemWindows="true" />
