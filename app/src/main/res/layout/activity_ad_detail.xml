@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 广告详情页：顶部返回栏 + 封面（图文/视频占位）+ 标题/品牌/摘要 + 智能标签 + 统计 + 底部互动栏。
+     与信息流共享 InteractionStore，点赞/收藏状态实时同步；返回信息流时位置自动保持。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/nbn_surface"
+    android:orientation="vertical">
+
+    <!-- 顶部返回栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="8dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/detail_back"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/detail_title"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/nbn_divider" />
+
+    <!-- 可滚动内容区 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 封面区：图文用占位图；视频额外显示遮罩+播放按钮 -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="220dp">
+
+                <ImageView
+                    android:id="@+id/detailMedia"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_media_placeholder"
+                    android:contentDescription="@string/detail_title"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:id="@+id/detailVideoScrim"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_video_scrim"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/detailPlayButton"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/feed_play"
+                    android:src="@drawable/ic_play"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/detailVideoState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_margin="10dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp"
+                    android:visibility="gone"
+                    tools:text="已暂停" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/detailBrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/nbn_brand"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="NBN Sports" />
+
+            <TextView
+                android:id="@+id/detailTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/nbn_text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                tools:text="轻量跑鞋新品首发" />
+
+            <TextView
+                android:id="@+id/detailSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/nbn_text_secondary"
+                android:textSize="15sp"
+                tools:text="适合通勤和夜跑的轻量缓震跑鞋。" />
+
+            <!-- 智能标签标题 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/detail_tags_title"
+                android:textColor="@color/nbn_text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/detailTagGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:id="@+id/detailStats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/nbn_text_secondary"
+                android:textSize="13sp"
+                tools:text="曝光 1 · 点击 1" />
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/nbn_divider" />
+
+    <!-- 底部互动栏（复用同一个互动栏布局，保证视觉与信息流一致） -->
+    <include
+        layout="@layout/view_interaction_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

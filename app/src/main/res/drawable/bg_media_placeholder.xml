@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 图片/视频封面占位：浅灰渐变，圆角加大让视觉更舒服。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="135"
+        android:startColor="#EAEAEA"
+        android:endColor="#D5D5D5" />
+    <corners android:radius="12dp" />
+</shape>
