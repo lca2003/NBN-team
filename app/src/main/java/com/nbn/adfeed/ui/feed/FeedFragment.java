@@ -76,6 +76,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
 
     // 分页与状态。
     private String currentChannel = CHANNEL_FEATURED;
+    private String currentTagFilter = null;
     private int currentPage = 0;
     private boolean hasMore = true;
     private boolean isLoading = false;
@@ -193,6 +194,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         }
         String channel = CHANNELS.get(index);
         if (!channel.equals(currentChannel)) {
+            currentTagFilter = null;
             refreshChannel(channel, true);
         } else {
             // 再次点击当前频道：回到顶部。
@@ -228,7 +230,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         adapter.setFooterState(FooterState.HIDDEN);
 
         String channelParam = toChannelParam(channel);
-        adCatalog.loadPage(channelParam, 0, false, new AdCatalog.Callback() {
+        // 增加currentTagFilter刷新
+        adCatalog.loadPage(channelParam, currentTagFilter, 0, false, new AdCatalog.Callback() {
             @Override
             public void onSuccess(FeedPage page) {
                 if (!isAdded()) {
@@ -283,7 +286,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         boolean failOnPurpose = shouldFailNextLoadMore;
         shouldFailNextLoadMore = false; // 只失败一次，重试即成功。
 
-        adCatalog.loadPage(toChannelParam(currentChannel), nextPage, failOnPurpose,
+        adCatalog.loadPage(toChannelParam(currentChannel), currentTagFilter, nextPage, failOnPurpose,
                 new AdCatalog.Callback() {
                     @Override
                     public void onSuccess(FeedPage page) {
@@ -480,6 +483,20 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         android.widget.Toast.makeText(requireContext(),
                 getString(R.string.feed_shared_toast, ad.getTitle()),
                 android.widget.Toast.LENGTH_SHORT).show();
+    }
+    // tag点击时把事件转发给FeedFragment
+    @Override
+    public void onTagClick(AdItem ad, String tag, int position) {
+        if (tag == null || tag.isEmpty()) {
+            return;
+        }
+        // 重复点击逻辑处理
+        if (tag.equals(currentTagFilter)) {     
+            currentTagFilter = null;
+        } else {
+            currentTagFilter = tag;
+        }
+        refreshChannel(currentChannel, true);
     }
 
     @Override

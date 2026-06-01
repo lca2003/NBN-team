@@ -22,6 +22,8 @@ public interface FeedInteractionListener {
 
     /** 点击分享。 */
     void onShareClick(AdItem ad, int position);
+    // 点击标签
+    void onTagClick(AdItem ad, String tag, int position);
 
     /** 点击视频卡的播放按钮（仅视频卡触发）。 */
     void onVideoPlayClick(AdItem ad, int position);
