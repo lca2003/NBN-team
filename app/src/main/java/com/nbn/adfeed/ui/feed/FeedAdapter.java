@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nbn.adfeed.R;
@@ -82,6 +83,15 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public boolean isEmpty() {
         return items.isEmpty();
+    }
+
+    //让 FeedFragment 能根据 RecyclerView 位置拿到对应广告数据
+    @Nullable
+    public AdItem getAdAt(int position) {
+        if (position < 0 || position >= items.size()) {
+            return null;
+        }
+        return items.get(position);
     }
 
     /** 列表项数 = 数据条数 + 1 个 footer。 */
