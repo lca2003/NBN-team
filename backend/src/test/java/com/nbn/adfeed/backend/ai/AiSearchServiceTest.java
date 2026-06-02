@@ -40,15 +40,15 @@ class AiSearchServiceTest {
         verify(requestSpec).system(systemPrompt.capture());
         verify(requestSpec).user(userPrompt.capture());
         assertThat(systemPrompt.getValue())
-                .contains("Return only valid JSON")
+                .contains("JSON")
                 .contains("matchedAdIds")
-                .contains("recommendation reason")
-                .contains("selected ads");
+                .contains("candidateAds")
+                .contains("answer");
         assertThat(userPrompt.getValue())
                 .contains("student sports ads")
                 .contains("candidateAds")
                 .contains("ad_001")
-                .contains("StrideNow");
+                .contains("NBN Sports");
         assertThat(response.answer()).isEqualTo("matched ads");
         assertThat(response.matchedAdIds()).containsExactly("ad_001");
         assertThat(response.fallback()).isFalse();

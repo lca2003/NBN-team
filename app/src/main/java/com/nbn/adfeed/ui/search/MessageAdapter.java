@@ -32,6 +32,14 @@ public final class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder
     public int getItemCount() {
         return messages.size();
     }
+    // 用于从SQLite恢复历史记录
+    public void submitMessages(List<ChatMessage> newMessages) {
+        messages.clear();
+        if (newMessages != null) {
+            messages.addAll(newMessages);
+        }
+        notifyDataSetChanged();
+    }
 
     public void addMessage(ChatMessage message) {
         messages.add(message);

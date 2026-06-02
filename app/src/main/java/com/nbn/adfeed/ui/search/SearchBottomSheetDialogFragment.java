@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +28,12 @@ import com.nbn.adfeed.ai.search.AiSearchResult;
 import com.nbn.adfeed.ai.search.AiSearchService;
 import com.nbn.adfeed.ai.search.RemoteAiSearchService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+// AI 搜索弹窗的控制器，负责 UI、发送搜索、恢复/保存聊天记录，以及把搜索命中的广告 ID 通知给外层
 public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFragment {
     private static final float SHEET_HEIGHT_RATIO = 0.9f;
 
@@ -41,7 +47,11 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
     private EditText searchInput;
     private Button searchSendButton;
     private RecyclerView conversationList;
+    private ChatMessageStore messageStore;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private ExecutorService persistenceExecutor;
     private boolean searchInProgress;
+    private boolean historyLoaded;
 
     @Override
     public void onStart() {
@@ -97,6 +107,8 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
         searchInput = view.findViewById(R.id.searchInput);
         searchSendButton = view.findViewById(R.id.searchSendButton);
         conversationList = view.findViewById(R.id.searchConversationList);
+        messageStore = new ChatMessageStore(requireContext());
+        persistenceExecutor = Executors.newSingleThreadExecutor();
 
         messageAdapter = new MessageAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -118,8 +130,8 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
             }
             return false;
         });
-
-        addAssistantMessage(getString(R.string.search_welcome_message));
+        //载入聊天对话历史
+        loadHistory();
 
         // 强制弹窗初始高度为屏幕的 90%
        view.post(() -> {
@@ -140,8 +152,12 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
        });
     }
 
-    // 发送HTTP请求给后端大模型 POST /api/ai/search     TODO 聊天记录本地持久化未完成
+    // 发送HTTP请求给后端大模型 POST /api/ai/search
     private void sendCurrentMessage() {
+        //历史未载入则初始化
+        if (!historyLoaded) {
+            return;
+        }
         // 已有搜索进行中，禁止重复发送
         if (searchInProgress) {
             return;
@@ -152,7 +168,7 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
             return;
         }
 
-        messageAdapter.addMessage(new ChatMessage(query, true));
+        addPersistentMessage(new ChatMessage(query, true));
         searchInput.setText("");
         setSearchInProgress(true);
 
@@ -162,7 +178,7 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
                 return;
             }
             requireActivity().runOnUiThread(() -> {
-                if (isAdded()) {
+                if (isAdded() && getView() != null && messageAdapter != null) {
                     handleSearchResult(result);
                 }
             });
@@ -175,23 +191,22 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
 
         // 处理回答文本
         boolean hasAnswer = result.getAnswer() != null && !result.getAnswer().trim().isEmpty();
-        if (hasAnswer) {
-            addAssistantMessage(result.getAnswer());
-        }
-
         List<String> matchedAdIds = result.getMatchedAdIds();
+        String assistantText = hasAnswer ? result.getAnswer() : null;
         if (matchedAdIds.isEmpty()) {
             // 无匹配广告：如果没有回答，则显示默认的无结果文案
-            if (!hasAnswer) {
-                addAssistantMessage(getString(R.string.search_no_results_reply));
+            if (assistantText == null) {
+                assistantText = getString(R.string.search_no_results_reply);
             }
+            addPersistentMessage(new ChatMessage(assistantText, false));
             return;
         }
 
         // 有匹配广告：如果没有回答，则显示包含匹配数量的结果提示
-        if (!hasAnswer) {
-            addAssistantMessage(getString(R.string.search_results_reply, matchedAdIds.size()));
+        if (assistantText == null) {
+            assistantText = getString(R.string.search_results_reply, matchedAdIds.size());
         }
+        addPersistentMessage(new ChatMessage(assistantText, false, matchedAdIds));
         // 将匹配的广告 ID 通知给外部（例如展示广告列表）
         notifySearchResult(matchedAdIds);
     }
@@ -199,8 +214,16 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
     //设置搜索进行中状态，并同步更新输入框和发送按钮的可用性
     private void setSearchInProgress(boolean inProgress) {
         searchInProgress = inProgress;
-        searchInput.setEnabled(!inProgress);
-        searchSendButton.setEnabled(!inProgress);
+        updateInputEnabled();
+    }
+
+    private void updateInputEnabled() {
+        if (searchInput == null || searchSendButton == null) {
+            return;
+        }
+        boolean enabled = historyLoaded && !searchInProgress;
+        searchInput.setEnabled(enabled);
+        searchSendButton.setEnabled(enabled);
     }
 
     private void notifySearchResult(List<String> matchedAdIds) {
@@ -209,12 +232,115 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
         }
     }
 
+    //从SQLite载入历史
+    private void loadHistory() {
+        //暂时禁用输入框和发送按钮，避免用户在历史记录还没恢复时发送消息
+        historyLoaded = false;
+        updateInputEnabled();
+        // 拿到子线程执行器和 SQLite 存储对象
+        ExecutorService executor = persistenceExecutor;
+        if (executor == null) {
+            return;
+        }
+        ChatMessageStore store = messageStore;
+        if (store == null) {
+            return;
+        }
+
+        executor.execute(() -> {
+            List<ChatMessage> messages;
+            try {
+                //读取SQLite
+                messages = store.loadAll();
+            } catch (RuntimeException exception) {
+                messages = Collections.emptyList();
+            }
+            List<ChatMessage> loadedMessages = messages;
+            //更新ui
+            mainHandler.post(() -> {
+                if (!isAdded() || getView() == null || messageAdapter == null) {
+                    return;
+                }
+                historyLoaded = true;
+                // 更新聊天列表
+                messageAdapter.submitMessages(loadedMessages);
+                if (loadedMessages.isEmpty()) {
+                    addAssistantMessage(getString(R.string.search_welcome_message));
+                } else {
+                    // 有聊天记录，滚动到聊天记录底部查看最新
+                    scrollConversationToBottom();
+                }
+                updateInputEnabled();
+            });
+        });
+    }
+
+    private void addPersistentMessage(ChatMessage message) {
+        addMessageToUi(message);
+        persistMessage(message);
+    }
+
+    private void persistMessage(ChatMessage message) {
+        ExecutorService executor = persistenceExecutor;
+        if (executor == null || executor.isShutdown()) {
+            return;
+        }
+        ChatMessageStore store = messageStore;
+        if (store == null) {
+            return;
+        }
+        executor.execute(() -> {
+            try {
+                long id = store.insert(message);
+                message.setId(id);
+            } catch (RuntimeException ignored) {
+                // 聊天展示不能被本地持久化失败阻断。
+            }
+        });
+    }
+
     private void addAssistantMessage(String text) {
-        messageAdapter.addMessage(new ChatMessage(text, false));
+        addMessageToUi(new ChatMessage(text, false));
+    }
+
+    private void addMessageToUi(ChatMessage message) {
+        if (messageAdapter == null || conversationList == null) {
+            return;
+        }
+        messageAdapter.addMessage(message);
+        scrollConversationToBottom();
+    }
+
+    private void scrollConversationToBottom() {
+        if (conversationList == null || messageAdapter == null) {
+            return;
+        }
         conversationList.post(() -> {
-            if (conversationList.canScrollVertically(1)) {
+            if (conversationList != null && messageAdapter != null && conversationList.canScrollVertically(1)) {
                 conversationList.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        mainHandler.removeCallbacksAndMessages(null);
+        ExecutorService executor = persistenceExecutor;
+        ChatMessageStore store = messageStore;
+        persistenceExecutor = null;
+        if (executor != null && !executor.isShutdown()) {
+            executor.execute(() -> {
+                if (store != null) {
+                    store.close();
+                }
+            });
+            executor.shutdown();
+        }
+        messageStore = null;
+        messageAdapter = null;
+        searchInput = null;
+        searchSendButton = null;
+        conversationList = null;
+        super.onDestroyView();
     }
 }

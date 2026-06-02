@@ -100,7 +100,7 @@ public class AiSearchService {
 
         Set<String> validIds = adMemoryService.findAll()
                 .stream()
-                .map(AdItem::id)
+                .map(AdItem::getId)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         List<String> matchedIds = result.matchedAdIds() == null
                 ? List.of()
@@ -139,12 +139,12 @@ public class AiSearchService {
     ) {
         private static CandidateAd from(AdItem ad) {
             return new CandidateAd(
-                    ad.id(),
-                    ad.title(),
-                    ad.brand(),
-                    ad.channel(),
-                    ad.description(),
-                    ad.tags()
+                    ad.getId(),
+                    ad.getTitle(),
+                    ad.getBrand(),
+                    ad.getChannel(),
+                    ad.getSummary(),
+                    ad.getTags()
             );
         }
     }

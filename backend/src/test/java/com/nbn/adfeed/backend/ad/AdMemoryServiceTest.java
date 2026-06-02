@@ -12,14 +12,21 @@ class AdMemoryServiceTest {
     void providesAtLeastSixAdsAcrossRequiredChannels() {
         assertThat(service.findAll()).hasSizeGreaterThanOrEqualTo(6);
         assertThat(service.findAll())
-                .extracting(AdItem::channel)
+                .extracting(AdItem::getChannel)
                 .contains("精选", "电商", "本地");
     }
 
     @Test
     void returnsReadOnlyAds() {
         assertThatThrownBy(() -> service.findAll().add(new AdItem(
-                "x", "title", "brand", "精选", "description", java.util.List.of("tag")
+                "x",
+                "title",
+                "brand",
+                "精选",
+                "description",
+                AdContentType.SMALL_IMAGE,
+                java.util.List.of("tag"),
+                new InteractionState()
         ))).isInstanceOf(UnsupportedOperationException.class);
     }
 }
