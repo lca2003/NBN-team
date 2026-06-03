@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity
 
     // 全 App 共享的数据源与统计器：注入给 FeedFragment，保证状态/口径一致。
     private final AdRepository adRepository = AppRepositoryProvider.getAdRepository();
-    private final AnalyticsTracker analyticsTracker = new AnalyticsTracker();
+    // 统计器需要 Activity Context 创建 SQLiteOpenHelper，因此放到 onCreate 中初始化。
+    private AnalyticsTracker analyticsTracker;
 
     private FeedFragment feedFragment;
     private ImageView navHomeIcon;
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 用带 Context 的构造函数启用曝光/点击事件的 SQLite 持久化。
+        analyticsTracker = new AnalyticsTracker(this);
         analyticsTracker.trackAppOpen();
         bindBottomNav();
         restoreOrCreateFeedFragment();

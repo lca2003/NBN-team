@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.nbn.adfeed.R;
 import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.analytics.exposure.ExposureTracker;
+import com.nbn.adfeed.analytics.event.AdAnalyticsEventCounts;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.InteractionState;
 import com.nbn.adfeed.data.repository.AdRepository;
@@ -116,7 +117,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
             adCatalog = new AdCatalog(new com.nbn.adfeed.data.mock.MockAdRepository());
         }
         if (analyticsTracker == null) {
-            analyticsTracker = new AnalyticsTracker();
+            analyticsTracker = new AnalyticsTracker(requireContext());
         }
 
         bindViews(view);
@@ -262,6 +263,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
                 }
 
                 adapter.submit(firstItems);
+                // 载入曝光点击数据
+                hydratePersistentCounts(firstItems);
                 //曝光检测
                 recyclerView.post(exposureCheckRunnable);
                 hideStatus();
@@ -308,7 +311,9 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
                         }
                         isLoading = false;
                         currentPage = nextPage;
-                        adapter.append(page.getItems());
+                        List<AdItem> moreItems = page.getItems();
+                        adapter.append(moreItems);
+                        hydratePersistentCounts(moreItems);
                         //曝光检测，避免新加载出来的广告未记录
                         recyclerView.post(exposureCheckRunnable);
                         hasMore = page.hasMore();
@@ -330,6 +335,24 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     /** “精选”当作全部初始流，传空字符串给 AdCatalog。 */
     private String toChannelParam(String channel) {
         return CHANNEL_FEATURED.equals(channel) ? "" : channel;
+    }
+    
+    // 从SQLite取曝光点击次数
+    private void hydratePersistentCounts(List<AdItem> ads) {
+        if (ads == null || ads.isEmpty() || analyticsTracker == null) {
+            return;
+        }
+        Map<String, AdAnalyticsEventCounts> countsByAdId = analyticsTracker.loadCountsByAdId();
+        if (countsByAdId.isEmpty()) {
+            return;
+        }
+        for (AdItem ad : ads) {
+            AdAnalyticsEventCounts counts = countsByAdId.get(ad.getId());
+            if (counts != null) {
+                interactionStore.applyCounts(ad, counts.getExposureCount(), counts.getClickCount());
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private void checkVisibleExposures() {
@@ -371,9 +394,11 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         for (String adId : exposedAdIds) {
             AdItem ad = visibleAds.get(adId);
             Integer position = visiblePositions.get(adId);
-            if (ad != null && position != null) {
+            // 曝光落库需要记录触发时的可见比例，因此从同一轮检测结果里取回。
+            Float visibleRatio = visibleRatios.get(adId);
+            if (ad != null && position != null && visibleRatio != null) {
                 //记录曝光数据
-                recordExposure(ad, position);
+                recordExposure(ad, position, visibleRatio);
             }
         }
         //安排下一次检查
@@ -400,11 +425,11 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         return Math.min(1f, (float) visibleArea / (float) totalArea);
     }
 
-    private void recordExposure(AdItem ad, int position) {
+    private void recordExposure(AdItem ad, int position, float visibleRatio) {
         InteractionState state = interactionStore.stateOf(ad);
         state.increaseExposureCount();
-        // TODO 目前是内存数据修改，后续异步上传要考虑防止网络IO阻塞
-        analyticsTracker.trackExposure(ad.getId());
+        // TODO 目前是内存数据修改，后续异步上传要考虑防止网络IO阻塞，内存状态用于立即刷新 UI，AnalyticsTracker 负责把同一事件追加写入 SQLite。
+        analyticsTracker.trackExposure(ad.getId(), visibleRatio, ExposureTracker.DEFAULT_DWELL_MILLIS);
         //更新RecyclerView上的卡片数据
         adapter.notifyItemChanged(position);
     }
