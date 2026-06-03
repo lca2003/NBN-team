@@ -203,7 +203,20 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     }
 
     private void setupSearchEntry(View view) {
-        view.findViewById(R.id.openSearchButton).setOnClickListener(v -> {
+        // 搜索入口已迁移到底部导航，由 MainActivity 承载；这里兼容旧布局中仍存在入口按钮的情况。
+        int searchButtonId = getResources().getIdentifier(
+                "openSearchButton",
+                "id",
+                requireContext().getPackageName()
+        );
+        if (searchButtonId == 0) {
+            return;
+        }
+        View openSearchButton = view.findViewById(searchButtonId);
+        if (openSearchButton == null) {
+            return;
+        }
+        openSearchButton.setOnClickListener(v -> {
             if (getActivity() instanceof FeedHost) {
                 ((FeedHost) getActivity()).onOpenSearch();
             }

@@ -55,4 +55,9 @@
     <color name="nbn_tag_color_4">#F5E8FE</color>
     <color name="nbn_tag_text_4">#7B1AD9</color>
 
+    <!-- ===== 统计页图表配色 ===== -->
+    <color name="nbn_chart_large_image">#176B4D</color>
+    <color name="nbn_chart_small_image">#4A90D9</color>
+    <color name="nbn_chart_video">#E0A82E</color>
+
 </resources>
