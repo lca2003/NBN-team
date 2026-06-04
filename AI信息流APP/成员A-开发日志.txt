@@ -1,0 +1,169 @@
+========================================================================
+成员A 开发日志 —— 信息流 UI 与交互
+课题：AI 广告推荐信息流（Android 单列广告信息流 App）
+角色：人员A（信息流 UI 与交互）
+分支：feature/feed
+记录日期：2026-05-30
+========================================================================
+
+
+【一、本轮目标】
+------------------------------------------------------------------------
+按课题《训练营课题：AI广告推荐信息流.pdf》中“团队分工参考·人员A”的职责，
+在“只动 UI 层、不修改队友 B/C 文件”的约定下，一次性实现成员A的全部 6 块职责，
+并通过构建验证。
+
+
+【二、完成的功能清单】
+------------------------------------------------------------------------
+[✅] 1. 单列信息流列表布局与滚动优化
+       - 使用 RecyclerView + LinearLayoutManager 实现单列信息流。
+       - 多 viewType 复用机制（cell 复用），满足课题“资源复用”要求。
+
+[✅] 2. 广告卡片多样式（要求至少 3 种，已实现 3 种）
+       - 大图卡：顶部大图占位 + 品牌/标题/摘要/标签/统计 + 互动栏。
+       - 小图卡：左文右小图横向布局，信息密度更高。
+       - 视频卡：封面 + 半透明遮罩 + 播放按钮 + “视频”角标，默认暂停态。
+       - 每张卡左上角带“广告”角标，符合广告信息流场景。
+
+[✅] 3. 顶部 Tab 切换与联动刷新
+       - TabLayout 三个频道：精选 / 电商 / 本地。
+       - 切换 Tab 即刷新对应频道数据；再次点击当前 Tab 回到顶部。
+
+[✅] 4. 下拉刷新、上拉加载（含三态）
+       - 下拉刷新：SwipeRefreshLayout，刷新后回到顶部。
+       - 上拉加载更多：滚动接近底部自动预取下一页。
+       - 加载中态：底部 footer 显示“加载中…”转圈。
+       - 空态：频道无数据时居中提示，可点击重试。
+       - 错误态：加载失败 footer 显示“加载失败，点击重试”，点击可重试。
+
+[✅] 5. 广告详情页 UI 与返回位置保持
+       - 独立 AdDetailActivity：返回栏 + 封面 + 标题/品牌/摘要 + 智能标签 + 统计 + 互动栏。
+       - 视频详情：默认暂停，点击播放按钮切换“已暂停/播放中”。
+       - 返回信息流时列表滚动位置自动保持（不重建列表）。
+
+[✅] 6. 点赞 / 收藏 / 分享交互 UI 与动画
+       - 点赞：心形图标灰→红切换，点亮时播放“放大回弹”彩蛋动画。
+       - 收藏：图标灰→金切换。
+       - 分享：弹出系统分享面板 + Toast 提示。
+       - 页面切换动画：进入详情 slide_in_left，返回 slide_out_right。
+       - 跨页状态同步：详情页点赞/收藏后，返回信息流自动同步（共享 InteractionStore）。
+
+【三、关键技术决策（含原因，便于答辩陈述）】
+------------------------------------------------------------------------
+1. 多样式卡片用 RecyclerView 多 viewType
+   - 按 AdContentType（大图/小图/视频）返回不同 viewType，复用对应 ViewHolder。
+   - 三种卡片布局控件 id 统一命名，共用一个 AdViewHolder，差异仅视频卡多播放按钮，减少重复代码。
+
+2. 标签 chip 用 TextView 自绘，不引入 Material Chip
+   - 当前主题是 Theme.AppCompat，引入 Material Chip 需改 B/C 共用的 styles.xml，风险大。
+   - 用 TextView + 圆角背景自绘 chip（TagChipBinder），零主题依赖，信息流与详情页共用。
+
+3. 分页与上拉加载：UI 层垫片，不碰数据层
+   - 现状：队友B 的 MockAdRepository 只有 3 条种子数据、无分页接口。
+   - 方案对比：
+       方案A：直接改 B 的 Repository 加分页 —— 越界，违反协作约定，否决。
+       方案B（采用）：在 ui.feed 加分页垫片 AdCatalog，只通过 AdRepository 接口读种子数据，
+                      客户端循环合成多页 + 模拟网络延迟/失败。
+   - 收益：上拉加载、加载中/空态/错误态都能完整演示；等 B 出真实分页接口，只替换
+           AdCatalog.loadPage 内部实现，UI 层零改动。
+
+4. 跨页状态同步：单一数据源 InteractionStore
+   - 课题要求详情页和信息流的点赞/收藏状态同步。
+   - 在 ui.feed 建进程内单例 InteractionStore，按 adId 统一保存 InteractionState（复用 B 的模型）。
+   - Feed 卡片与详情页读写同一份状态，避免各页复制孤立状态。
+
+5. 列表位置保持
+   - 详情页用独立 Activity，信息流 Fragment 留在返回栈，RecyclerView 位置由系统保留。
+   - 返回时只在 onResume 刷新可见项互动状态，不重建列表，位置不丢。
+
+6. 视频卡占位说明
+   - AdItem 暂无 videoUrl（属 B 数据层），视频卡做状态化占位：默认遮罩+播放按钮（暂停），
+     点击切换播放态文案。真实播放器接入点预留对接 C 的 VideoPlaybackManager。
+
+
+【四、本轮新增 / 修改文件】
+------------------------------------------------------------------------
+新增 Java（app/src/main/java/com/nbn/adfeed/）：
+   ui/feed/InteractionStore.java        互动状态单一数据源（跨页同步）
+   ui/feed/AdCatalog.java               UI 层分页数据源（垫片）
+   ui/feed/FeedPage.java                分页结果模型
+   ui/feed/FeedFragment.java            信息流主页面（Tab/刷新/加载/状态/交互中枢）
+   ui/feed/FeedAdapter.java             多样式卡片 + footer 适配器
+   ui/feed/FeedInteractionListener.java 交互回调接口
+   ui/feed/FooterState.java             footer 三态枚举
+   ui/feed/TagChipBinder.java           标签 chip 渲染工具
+   ui/detail/AdDetailActivity.java      广告详情页
+
+新增布局（app/src/main/res/layout/）：
+   fragment_feed.xml            信息流页面（Tab + 列表 + 状态层）
+   item_ad_large_image.xml      大图卡
+   item_ad_small_image.xml      小图卡
+   item_ad_video.xml            视频卡
+   item_feed_footer.xml         底部加载 footer（三态合一）
+   view_interaction_bar.xml     点赞/收藏/分享互动栏（include 复用）
+   activity_ad_detail.xml       详情页
+
+新增 drawable：
+   ic_like / ic_collect / ic_share / ic_play / ic_arrow_back（图标）
+   bg_feed_card / bg_media_placeholder / bg_sponsored_badge / bg_tag_chip
+   bg_video_scrim / bg_video_badge（背景）
+
+修改 values：
+   colors.xml   增补 Feed/详情配色（点赞红、收藏金、占位渐变、标签底色等）
+   strings.xml  增补 Feed/详情文案
+
+修改（UI 范畴）：
+   MainActivity.java       改为承载 FeedFragment，保留搜索入口，注入共享数据源/统计器
+   activity_main.xml       改为 Fragment 容器
+   AndroidManifest.xml     注册 AdDetailActivity
+   app/build.gradle        新增 androidx.swiperefreshlayout 依赖（下拉刷新）
+
+
+【五、协作边界（未触碰队友文件）】
+------------------------------------------------------------------------
+- 未改 队友B 数据层：AdItem / AdRepository / MockAdRepository / InteractionState。
+- 未改 队友C 模块：ui.search.* / analytics.* / video.*。
+- 仅通过接口/公开方法调用：AdRepository（取数据）、AnalyticsTracker（上报曝光/点击）、
+  SearchBottomSheetDialogFragment（搜索入口）。
+
+
+【六、验证记录】
+------------------------------------------------------------------------
+- 构建命令：./gradlew.bat assembleDebug
+- 结果：BUILD SUCCESSFUL
+- 产物：app/build/outputs/apk/debug/app-debug.apk（约 5.7 MB）
+- 单独 Java 编译：compileDebugJavaWithJavac → BUILD SUCCESSFUL（确认无真实编译错误）
+
+注：开发过程中 Android Studio 曾报“Cannot resolve symbol appcompat”等红字，
+   原因是修改 build.gradle 新增依赖后未 Gradle Sync，属 IDE 索引未刷新，
+   非真实编译错误（命令行编译通过）。点击 Sync Project with Gradle Files 即可消除。
+
+
+【七、演示路径（自测要点）】
+------------------------------------------------------------------------
+1. 启动 App → “精选”频道单列信息流，含大图/小图/视频三种卡片。
+2. 下拉 → 刷新转圈 → 回到顶部。
+3. 持续上滑 → 底部“加载中…” → 追加卡片 → 到底显示“没有更多了”。
+4. 切换“电商/本地”Tab → 列表联动刷新；无数据频道显示空态。
+5. 点卡片 → 滑入详情页 → 点赞（变红+彩蛋）→ 返回 → 信息流点赞态已同步。
+6. 收藏变金 / 分享弹出系统面板。
+7. 视频卡详情页点播放 → “已暂停/播放中”切换。
+
+
+【八、待办与后续（交接点）】
+------------------------------------------------------------------------
+- 图片/视频为占位视觉：待 B 在 AdItem 补 imageUrl/videoUrl 后，由 B 接图片加载库、C 接真实播放器。
+- 分页为客户端模拟：待 B 提供真实分页接口，替换 AdCatalog.loadPage 内部即可。
+- 曝光统计口径（可见>50% 且停留≥1s）：建议与 C 对齐后在 Feed 滚动监听里补充（统计口径归 C）。
+- 信息流形态：本轮为全广告流（符合课题硬性要求）。“内容+广告混排”为可选增强，暂不做。
+
+
+【九、AI 声明】
+------------------------------------------------------------------------
+本轮信息流 UI 与交互代码在 AI 辅助下完成。功能理解、协作边界、技术取舍由人工确认；
+AI 产出已通过 assembleDebug 构建验证与上述自测路径核对。关键逻辑均加中文注释说明设计原因。
+
+========================================================================
+日志结束
+========================================================================
