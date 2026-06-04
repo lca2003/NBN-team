@@ -8,9 +8,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="${usesCleartextTraffic}"         
         android:theme="@style/AppTheme">
         <activity android:name=".ui.search.SearchActivity" />           <!-- 注册搜索页面 -->
         <activity android:name=".ui.detail.AdDetailActivity" />         <!-- 注册广告详情页（人员A） -->
+        <activity
+            android:name=".ui.stats.StatsActivity"
+            android:launchMode="singleTop" />                           <!-- 注册独立统计页（人员C） -->
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -67,4 +67,12 @@ public final class InteractionStore {
         state.setCollected(!state.isCollected());
         return state.isCollected();
     }
+
+    /** 用 SQLite 汇总结果覆盖曝光/点击计数，点赞/收藏状态保持不变。 */
+    public void applyCounts(AdItem ad, int exposureCount, int clickCount) {
+        InteractionState state = stateOf(ad);
+        state.setExposureCount(exposureCount);
+        state.setClickCount(clickCount);
+    }
+
 }

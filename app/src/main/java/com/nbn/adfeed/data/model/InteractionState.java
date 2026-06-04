@@ -26,12 +26,20 @@ public final class InteractionState {
         return exposureCount;
     }
 
+    public void setExposureCount(int exposureCount) {
+        this.exposureCount = Math.max(0, exposureCount);
+    }
+
     public void increaseExposureCount() {
         exposureCount += 1;
     }
 
     public int getClickCount() {
         return clickCount;
+    }
+
+    public void setClickCount(int clickCount) {
+        this.clickCount = Math.max(0, clickCount);
     }
 
     public void increaseClickCount() {

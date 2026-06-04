@@ -1,6 +1,8 @@
 package com.nbn.adfeed.ui.feed;
 
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.nbn.adfeed.R;
 import com.nbn.adfeed.analytics.AnalyticsTracker;
+import com.nbn.adfeed.analytics.exposure.ExposureTracker;
+import com.nbn.adfeed.analytics.event.AdAnalyticsEventCounts;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.InteractionState;
 import com.nbn.adfeed.data.repository.AdRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 信息流主页面（人员A 核心）。
@@ -53,6 +60,10 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     private AdCatalog adCatalog;
     private AnalyticsTracker analyticsTracker;
     private final InteractionStore interactionStore = InteractionStore.get();
+    // 曝光捕获引入
+    private final ExposureTracker exposureTracker = new ExposureTracker();
+    //用于在加载、列表滚动、从详情页返回时异步调用曝光检查逻辑
+    private final Runnable exposureCheckRunnable = this::checkVisibleExposures;
 
     // 视图。
     private TextView[] tabButtons;
@@ -67,6 +78,9 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
 
     // 分页与状态。
     private String currentChannel = CHANNEL_FEATURED;
+    private String currentTagFilter = null;
+    //搜索结果
+    private List<String> currentSearchAdIds = null;
     private int currentPage = 0;
     private boolean hasMore = true;
     private boolean isLoading = false;
@@ -106,7 +120,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
             adCatalog = new AdCatalog(new com.nbn.adfeed.data.mock.MockAdRepository());
         }
         if (analyticsTracker == null) {
-            analyticsTracker = new AnalyticsTracker();
+            analyticsTracker = new AnalyticsTracker(requireContext());
         }
 
         bindViews(view);
@@ -146,6 +160,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
+                //曝光检测
+                checkVisibleExposures();
                 if (dy <= 0) {
                     return; // 只在向下滚动时考虑预取。
                 }
@@ -182,6 +198,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         }
         String channel = CHANNELS.get(index);
         if (!channel.equals(currentChannel)) {
+            currentTagFilter = null;
+            currentSearchAdIds = null;
             refreshChannel(channel, true);
         } else {
             // 再次点击当前频道：回到顶部。
@@ -190,11 +208,34 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     }
 
     private void setupSearchEntry(View view) {
-        view.findViewById(R.id.openSearchButton).setOnClickListener(v -> {
+        // 搜索入口已迁移到底部导航，由 MainActivity 承载；这里兼容旧布局中仍存在入口按钮的情况。
+        int searchButtonId = getResources().getIdentifier(
+                "openSearchButton",
+                "id",
+                requireContext().getPackageName()
+        );
+        if (searchButtonId == 0) {
+            return;
+        }
+        View openSearchButton = view.findViewById(searchButtonId);
+        if (openSearchButton == null) {
+            return;
+        }
+        openSearchButton.setOnClickListener(v -> {
             if (getActivity() instanceof FeedHost) {
                 ((FeedHost) getActivity()).onOpenSearch();
             }
         });
+    }
+    // 应用搜索结果刷新界面
+    public void applySearchResult(List<String> matchedAdIds) {
+        currentTagFilter = null;
+        currentSearchAdIds = (matchedAdIds == null || matchedAdIds.isEmpty())
+                ? null
+                : new ArrayList<>(matchedAdIds);
+        if (adapter != null) {
+            refreshChannel(currentChannel, true);
+        }
     }
 
     /**
@@ -217,7 +258,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         adapter.setFooterState(FooterState.HIDDEN);
 
         String channelParam = toChannelParam(channel);
-        adCatalog.loadPage(channelParam, 0, false, new AdCatalog.Callback() {
+        // 增加currentTagFilter刷新
+        adCatalog.loadPage(channelParam, currentTagFilter, currentSearchAdIds, 0, false, new AdCatalog.Callback() {
             @Override
             public void onSuccess(FeedPage page) {
                 if (!isAdded()) {
@@ -235,6 +277,10 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
                 }
 
                 adapter.submit(firstItems);
+                // 载入曝光点击数据
+                hydratePersistentCounts(firstItems);
+                //曝光检测
+                recyclerView.post(exposureCheckRunnable);
                 hideStatus();
                 hasMore = page.hasMore();
                 adapter.setFooterState(hasMore ? FooterState.HIDDEN : FooterState.NO_MORE);
@@ -270,7 +316,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         boolean failOnPurpose = shouldFailNextLoadMore;
         shouldFailNextLoadMore = false; // 只失败一次，重试即成功。
 
-        adCatalog.loadPage(toChannelParam(currentChannel), nextPage, failOnPurpose,
+        adCatalog.loadPage(toChannelParam(currentChannel), currentTagFilter, currentSearchAdIds, nextPage, failOnPurpose,
                 new AdCatalog.Callback() {
                     @Override
                     public void onSuccess(FeedPage page) {
@@ -279,7 +325,11 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
                         }
                         isLoading = false;
                         currentPage = nextPage;
-                        adapter.append(page.getItems());
+                        List<AdItem> moreItems = page.getItems();
+                        adapter.append(moreItems);
+                        hydratePersistentCounts(moreItems);
+                        //曝光检测，避免新加载出来的广告未记录
+                        recyclerView.post(exposureCheckRunnable);
                         hasMore = page.hasMore();
                         adapter.setFooterState(hasMore ? FooterState.HIDDEN : FooterState.NO_MORE);
                     }
@@ -299,6 +349,112 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     /** “精选”当作全部初始流，传空字符串给 AdCatalog。 */
     private String toChannelParam(String channel) {
         return CHANNEL_FEATURED.equals(channel) ? "" : channel;
+    }
+    
+    // 从SQLite取曝光点击次数
+    private void hydratePersistentCounts(List<AdItem> ads) {
+        if (ads == null || ads.isEmpty() || analyticsTracker == null) {
+            return;
+        }
+        Map<String, AdAnalyticsEventCounts> countsByAdId = analyticsTracker.loadCountsByAdId();
+        if (countsByAdId.isEmpty()) {
+            return;
+        }
+        for (AdItem ad : ads) {
+            AdAnalyticsEventCounts counts = countsByAdId.get(ad.getId());
+            if (counts != null) {
+                interactionStore.applyCounts(ad, counts.getExposureCount(), counts.getClickCount());
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void checkVisibleExposures() {
+        if (recyclerView == null || layoutManager == null || adapter == null) {
+            return;
+        }
+
+        Map<String, Float> visibleRatios = new HashMap<>();
+        Map<String, AdItem> visibleAds = new HashMap<>();
+        Map<String, Integer> visiblePositions = new HashMap<>();
+
+        //获取当前可见的广告位置范围
+        int firstVisible = layoutManager.findFirstVisibleItemPosition();
+        int lastVisible = layoutManager.findLastVisibleItemPosition();
+        if (firstVisible != RecyclerView.NO_POSITION && lastVisible != RecyclerView.NO_POSITION) {
+            for (int position = firstVisible; position <= lastVisible; position++) {
+                //1、取广告数据
+                AdItem ad = adapter.getAdAt(position);
+                if (ad == null) {
+                    continue;
+                }
+                //2、根据位置获取ViewHolder
+                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+                if (holder == null) {
+                    continue;
+                }
+                //3、计算ViewHolder可见比例
+                float visibleRatio = visibleRatioOf(holder.itemView);
+                //4、构建临时数据
+                visibleRatios.put(ad.getId(), visibleRatio);
+                visibleAds.put(ad.getId(), ad);
+                visiblePositions.put(ad.getId(), position);
+            }
+        }
+
+        long nowMillis = SystemClock.elapsedRealtime();
+        //将当前可见广告比例和时间戳传入，返回触发曝光逻辑的id
+        List<String> exposedAdIds = exposureTracker.onVisibilityChanged(visibleRatios, nowMillis);
+        for (String adId : exposedAdIds) {
+            AdItem ad = visibleAds.get(adId);
+            Integer position = visiblePositions.get(adId);
+            // 曝光落库需要记录触发时的可见比例，因此从同一轮检测结果里取回。
+            Float visibleRatio = visibleRatios.get(adId);
+            if (ad != null && position != null && visibleRatio != null) {
+                //记录曝光数据
+                recordExposure(ad, position, visibleRatio);
+            }
+        }
+        //安排下一次检查
+        scheduleNextExposureCheck(nowMillis);
+    }
+
+    private float visibleRatioOf(View itemView) {
+        int width = itemView.getWidth();
+        int height = itemView.getHeight();
+        if (width <= 0 || height <= 0) {
+            return 0f;
+        }
+
+        Rect visibleRect = new Rect();
+        if (!itemView.getGlobalVisibleRect(visibleRect)) {
+            return 0f;
+        }
+
+        int visibleArea = visibleRect.width() * visibleRect.height();
+        int totalArea = width * height;
+        if (totalArea <= 0) {
+            return 0f;
+        }
+        return Math.min(1f, (float) visibleArea / (float) totalArea);
+    }
+
+    private void recordExposure(AdItem ad, int position, float visibleRatio) {
+        InteractionState state = interactionStore.stateOf(ad);
+        state.increaseExposureCount();
+        // TODO 目前是内存数据修改，后续异步上传要考虑防止网络IO阻塞，内存状态用于立即刷新 UI，AnalyticsTracker 负责把同一事件追加写入 SQLite。
+        analyticsTracker.trackExposure(ad.getId(), visibleRatio, ExposureTracker.DEFAULT_DWELL_MILLIS);
+        //更新RecyclerView上的卡片数据
+        adapter.notifyItemChanged(position);
+    }
+
+    private void scheduleNextExposureCheck(long nowMillis) {
+        recyclerView.removeCallbacks(exposureCheckRunnable);
+        long delayMillis = exposureTracker.nextCheckDelayMillis(nowMillis);
+        if (delayMillis >= 0L) {
+            //延时执行同一个曝光检查
+            recyclerView.postDelayed(exposureCheckRunnable, delayMillis);
+        }
     }
 
     // ---- 首屏状态切换 ----
@@ -380,6 +536,21 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
                 getString(R.string.feed_shared_toast, ad.getTitle()),
                 android.widget.Toast.LENGTH_SHORT).show();
     }
+    // tag点击时把事件转发给FeedFragment
+    @Override
+    public void onTagClick(AdItem ad, String tag, int position) {
+        if (tag == null || tag.isEmpty()) {
+            return;
+        }
+        // 重复点击逻辑处理
+        currentSearchAdIds = null;
+        if (tag.equals(currentTagFilter)) {     
+            currentTagFilter = null;
+        } else {
+            currentTagFilter = tag;
+        }
+        refreshChannel(currentChannel, true);
+    }
 
     @Override
     public void onVideoPlayClick(AdItem ad, int position) {
@@ -427,6 +598,31 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         // 这里刷新可见项，保证信息流与详情页状态同步。
         if (adapter != null && !adapter.isEmpty()) {
             adapter.notifyDataSetChanged();
+            //刷新后补充一次曝光检查
+            if (recyclerView != null) {
+                recyclerView.post(exposureCheckRunnable);
+            }
         }
+    }
+
+    
+    @Override
+    public void onPause() {
+        // 离开页面时停止曝光
+        if (recyclerView != null) {
+            recyclerView.removeCallbacks(exposureCheckRunnable);
+        }
+        //通过传入空的可见广告取消任务执行
+        exposureTracker.onVisibilityChanged(new HashMap<>(), SystemClock.elapsedRealtime());
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        //销毁时停止曝光
+        if (recyclerView != null) {
+            recyclerView.removeCallbacks(exposureCheckRunnable);
+        }
+        super.onDestroyView();
     }
 }

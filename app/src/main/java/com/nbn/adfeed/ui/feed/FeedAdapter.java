@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nbn.adfeed.R;
@@ -82,6 +83,15 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public boolean isEmpty() {
         return items.isEmpty();
+    }
+
+    //让 FeedFragment 能根据 RecyclerView 位置拿到对应广告数据
+    @Nullable
+    public AdItem getAdAt(int position) {
+        if (position < 0 || position >= items.size()) {
+            return null;
+        }
+        return items.get(position);
     }
 
     /** 列表项数 = 数据条数 + 1 个 footer。 */
@@ -185,7 +195,13 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             brandText.setText(ad.getBrand());
             titleText.setText(ad.getTitle());
             summaryText.setText(ad.getSummary());
-            TagChipBinder.bind(tagGroup, ad.getTags());
+            //标签点击时把事件转发给 FeedFragment
+            TagChipBinder.bind(tagGroup, ad.getTags(), tag -> {
+                int pos = getBindingAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    listener.onTagClick(ad, tag, pos);
+                }
+            });
 
             // 互动状态统一从 Store 读取，保证与详情页一致。
             InteractionState state = interactionStore.stateOf(ad);

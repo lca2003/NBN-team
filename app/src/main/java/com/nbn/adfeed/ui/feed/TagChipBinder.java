@@ -24,6 +24,10 @@ public final class TagChipBinder {
 
     private TagChipBinder() {
     }
+    // 外部可以传入一个监听器，当某个标签被点击时，把这个标签文本回传出去
+    public interface OnTagClickListener {
+        void onTagClick(String tag);
+    }
 
     /** 标签背景色数组（循环使用，每个标签颜色不同）。 */
     private static final int[] TAG_BG_COLORS = {
@@ -47,6 +51,10 @@ public final class TagChipBinder {
      * @param tags      广告标签列表
      */
     public static void bind(LinearLayout container, List<String> tags) {
+        bind(container, tags, null);
+    }
+    //重载bind创建每个 chip 时把 listener 传进去
+    public static void bind(LinearLayout container, List<String> tags, OnTagClickListener listener) {
         container.removeAllViews();
         if (tags == null || tags.isEmpty()) {
             container.setVisibility(ViewGroup.GONE);
@@ -57,12 +65,15 @@ public final class TagChipBinder {
         Context context = container.getContext();
         int count = Math.min(tags.size(), MAX_TAGS);
         for (int i = 0; i < count; i++) {
-            container.addView(createChip(context, tags.get(i), i));
+            container.addView(createChip(context, tags.get(i), i, listener));
         }
     }
 
     /** 创建单个标签 chip，根据 index 循环选取不同颜色。胶囊形状，可点击。 */
-    private static TextView createChip(Context context, String tag, int index) {
+    private static TextView createChip(Context context,
+                                       String tag,
+                                       int index,
+                                       OnTagClickListener listener) {
         TextView chip = new TextView(context);
         chip.setText(tag);
         chip.setTextSize(11f);
@@ -78,6 +89,12 @@ public final class TagChipBinder {
         // 可点击（后续可接入标签过滤搜索）。
         chip.setClickable(true);
         chip.setFocusable(true);
+        //给 chip 设置点击事件做标签过滤
+        chip.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onTagClick(tag);
+            }
+        });
         // 内边距用像素，按屏幕密度换算，保证不同分辨率下视觉一致。
         int padH = dp(context, 10);
         int padV = dp(context, 4);
