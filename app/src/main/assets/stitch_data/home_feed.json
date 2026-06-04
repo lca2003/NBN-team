@@ -1,0 +1,396 @@
+{
+  "channels": [
+    {
+      "id": "featured",
+      "title": "精选",
+      "subtitle": "AI 挑选高互动广告",
+      "enabled": true,
+      "sortIndex": 0
+    },
+    {
+      "id": "ecommerce",
+      "title": "电商",
+      "subtitle": "可购买商品与视频种草",
+      "enabled": true,
+      "sortIndex": 1
+    },
+    {
+      "id": "local",
+      "title": "本地",
+      "subtitle": "周边餐饮、运动与生活服务",
+      "enabled": true,
+      "sortIndex": 2
+    }
+  ],
+  "page": {
+    "cursor": "page_1",
+    "nextCursor": "",
+    "hasMore": false,
+    "totalCount": 5,
+    "items": [
+      {
+        "adId": "ad_001",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "featured": true,
+        "title": "轻量跑鞋新品首发",
+        "subtitle": "校园通勤和夜跑都能兼顾",
+        "description": "主打轻量缓震和夜跑反光设计，适合校园通勤、夜跑和日常训练。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "NBN Sports",
+        "category": "运动",
+        "publishTime": "2026-05-31T09:30:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_sport",
+            "name": "运动",
+            "category": "interest"
+          },
+          {
+            "id": "tag_student",
+            "name": "学生党",
+            "category": "audience"
+          },
+          {
+            "id": "tag_value",
+            "name": "性价比",
+            "category": "value"
+          }
+        ],
+        "stats": {
+          "likeCount": 2,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 1,
+          "exposureCount": 1680,
+          "clickCount": 268
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_runner_001",
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_student_002"
+        ],
+        "sharedUserIds": [
+          "user_runner_001"
+        ]
+      },
+      {
+        "adId": "ad_002",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "周末本地咖啡地图",
+        "subtitle": "步行 800 米内的安静咖啡馆",
+        "description": "精选适合自习、约会和轻办公的本地咖啡店，附距离、营业时间和优惠。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "City Cafe",
+        "category": "本地餐饮",
+        "publishTime": "2026-05-31T10:10:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_local",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_food",
+            "name": "餐饮",
+            "category": "interest"
+          },
+          {
+            "id": "tag_social",
+            "name": "社交",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 1320,
+          "clickCount": 226
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_runner_001",
+          "user_student_002"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_003",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "featured": true,
+        "title": "通勤降噪耳机体验片",
+        "subtitle": "地铁、办公室、宿舍三种场景实测",
+        "description": "视频展示自适应降噪、轻量佩戴和多设备切换，适合白领与学生通勤。",
+        "cover": {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        },
+        "video": {
+          "url": "raw/ad_video_headphones.mp4",
+          "localAssetName": "raw/ad_video_headphones.mp4",
+          "width": 1280,
+          "height": 720,
+          "cropStrategy": "fitCenter",
+          "dominantColor": "#26384f",
+          "blurHash": "L35#xT00%Mxu_4t7Rjay~qxuogj["
+        },
+        "adType": "VIDEO",
+        "brand": "NBN Audio",
+        "category": "科技数码",
+        "publishTime": "2026-05-31T11:00:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_tech",
+            "name": "科技感",
+            "category": "interest"
+          },
+          {
+            "id": "tag_white_collar",
+            "name": "白领",
+            "category": "audience"
+          },
+          {
+            "id": "tag_commute",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 1,
+          "exposureCount": 1880,
+          "clickCount": 342
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_commuter_003"
+        ],
+        "collectedUserIds": [
+          "user_commuter_003"
+        ],
+        "sharedUserIds": [
+          "user_student_002"
+        ]
+      },
+      {
+        "adId": "ad_004",
+        "channelIds": [
+          "ecommerce"
+        ],
+        "title": "宿舍桌面收纳套装",
+        "subtitle": "小空间也能整理出学习区",
+        "description": "面向宿舍、出租屋和小书桌场景，提供可拆分收纳盒、理线夹和桌面增高架组合。",
+        "cover": {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Tiny Space",
+        "category": "宿舍生活",
+        "publishTime": "2026-05-31T13:20:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_dorm",
+            "name": "宿舍",
+            "category": "scene"
+          },
+          {
+            "id": "tag_storage",
+            "name": "收纳",
+            "category": "interest"
+          },
+          {
+            "id": "tag_budget",
+            "name": "低预算",
+            "category": "value"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 980,
+          "clickCount": 154
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "collectedUserIds": [
+          "user_student_002",
+          "user_dorm_004"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_005",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "城市骑行轻风夹克",
+        "subtitle": "通勤、夜骑、防小雨一件解决",
+        "description": "主打防泼水、反光条和可折叠收纳，适合共享单车通勤和周末城市骑行。",
+        "cover": {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Urban Ride",
+        "category": "城市户外",
+        "publishTime": "2026-05-31T14:10:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_cycling",
+            "name": "骑行",
+            "category": "interest"
+          },
+          {
+            "id": "tag_weather",
+            "name": "防泼水",
+            "category": "feature"
+          },
+          {
+            "id": "tag_commute",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 1,
+          "exposureCount": 1180,
+          "clickCount": 205
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_rider_005"
+        ],
+        "collectedUserIds": [
+          "user_rider_005"
+        ],
+        "sharedUserIds": [
+          "user_runner_001"
+        ]
+      }
+    ]
+  }
+}

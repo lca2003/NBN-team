@@ -1,0 +1,1189 @@
+[
+  {
+    "id": "ad_001",
+    "title": "轻量跑鞋新品首发",
+    "brand": "NBN Sports",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "主打轻量缓震和夜跑反光设计，适合校园通勤、夜跑和日常训练。",
+    "summary": "轻量缓震跑鞋，适合通勤夜跑。",
+    "imageUrl": "https://loremflickr.com/1200/800/athletic,shoes?lock=1",
+    "thumbnailUrl": "https://loremflickr.com/480/320/athletic,shoes?lock=1",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "运动",
+      "学生党",
+      "性价比",
+      "通勤"
+    ],
+    "stats": {
+      "exposureCount": 1680,
+      "clickCount": 268,
+      "likeCount": 320,
+      "collectCount": 180,
+      "shareCount": 46
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_001",
+    "assetTheme": "featured",
+    "visualLabel": "NBN Sports · 轻量跑鞋新品首发",
+    "ctaIntent": "learn_more"
+  },
+  {
+    "id": "ad_002",
+    "title": "周末本地咖啡地图",
+    "brand": "City Cafe",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "精选附近适合学习、小组讨论和周末放松的咖啡空间。",
+    "summary": "本地咖啡空间，适合学习讨论。",
+    "distanceText": "480m",
+    "districtText": "大学路自习街",
+    "addressText": "大学路 88 号 2 层",
+    "businessHoursText": "08:30 - 22:30",
+    "navigationText": "查看地图 · 步行 7 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/coffee,shop?lock=2",
+    "thumbnailUrl": "https://loremflickr.com/480/320/coffee,shop?lock=2",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "本地",
+      "咖啡",
+      "学习",
+      "休闲"
+    ],
+    "stats": {
+      "exposureCount": 890,
+      "clickCount": 120,
+      "likeCount": 88,
+      "collectCount": 76,
+      "shareCount": 19
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_002",
+    "assetTheme": "local",
+    "visualLabel": "City Cafe · 周末本地咖啡地图",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_003",
+    "title": "智能耳机降噪体验",
+    "brand": "Sound Lab",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "展示通勤降噪、长续航和低延迟游戏模式的视频广告。",
+    "summary": "降噪长续航耳机，适合通勤。",
+    "offerText": "¥699 · 618 到手价 · 24 期免息",
+    "ctaText": "查看商品",
+    "skuText": "曜石黑 / ANC 标准版 / 赠收纳盒",
+    "ratingText": "4.8 分 · 2.1 万条评价",
+    "deliveryText": "今晚 8 点前下单，次日达 · 送运费险",
+    "stockText": "现货 128 件",
+    "similarItems": [
+      "便携蓝牙音箱户外版",
+      "通勤双肩包防泼水",
+      "学生党数码配件包"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/headphones,desk?lock=3",
+    "thumbnailUrl": "https://loremflickr.com/480/320/headphones,desk?lock=3",
+    "videoUrl": "https://res.cloudinary.com/demo/video/upload/du_12/dog.mp4",
+    "contentType": "VIDEO",
+    "tags": [
+      "数码",
+      "通勤",
+      "视频",
+      "降噪"
+    ],
+    "stats": {
+      "exposureCount": 2200,
+      "clickCount": 410,
+      "likeCount": 390,
+      "collectCount": 260,
+      "shareCount": 81
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_003",
+    "assetTheme": "commerce",
+    "visualLabel": "Sound Lab · 智能耳机降噪体验",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_004",
+    "title": "宿舍桌面收纳套装",
+    "brand": "Tiny Space",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "组合式桌面收纳，适合宿舍书桌、租房办公和小空间整理。",
+    "summary": "桌面收纳套装，适合宿舍小空间。",
+    "offerText": "¥79 · 第二件 8 折 · 宿舍收纳套装",
+    "ctaText": "查看商品",
+    "skuText": "奶油白 / 三件套 / 大号桌面盒",
+    "ratingText": "4.7 分 · 6800 条评价",
+    "deliveryText": "48 小时内发货 · 满 99 包邮",
+    "stockText": "现货 326 套",
+    "similarItems": [
+      "学生党平价护眼台灯",
+      "通勤双肩包防泼水",
+      "学生党数码配件包"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/desk,organizer?lock=4",
+    "thumbnailUrl": "https://loremflickr.com/480/320/desk,organizer?lock=4",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "宿舍",
+      "收纳",
+      "学生党",
+      "实用"
+    ],
+    "stats": {
+      "exposureCount": 760,
+      "clickCount": 93,
+      "likeCount": 102,
+      "collectCount": 88,
+      "shareCount": 14
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_004",
+    "assetTheme": "commerce",
+    "visualLabel": "Tiny Space · 宿舍桌面收纳套装",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_005",
+    "title": "城市骑行轻风夹克",
+    "brand": "Urban Ride",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "防风轻薄夹克，适合春秋骑行、短途通勤和户外散步。",
+    "summary": "轻薄防风夹克，适合城市骑行。",
+    "imageUrl": "https://loremflickr.com/1200/800/city,cycling?lock=5",
+    "thumbnailUrl": "https://loremflickr.com/480/320/city,cycling?lock=5",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "骑行",
+      "户外",
+      "通勤",
+      "轻量"
+    ],
+    "stats": {
+      "exposureCount": 1420,
+      "clickCount": 205,
+      "likeCount": 160,
+      "collectCount": 101,
+      "shareCount": 33
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_005",
+    "assetTheme": "featured",
+    "visualLabel": "Urban Ride · 城市骑行轻风夹克",
+    "ctaIntent": "learn_more"
+  },
+  {
+    "id": "ad_006",
+    "title": "本地健身体验课",
+    "brand": "Fit Block",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "附近小团课体验，覆盖力量训练、体态改善和新手入门指导。",
+    "summary": "本地健身小团课，适合新手体验。",
+    "distanceText": "1.2km",
+    "districtText": "体育中心商圈",
+    "addressText": "中山路 166 号 3 层",
+    "businessHoursText": "10:00 - 21:30",
+    "navigationText": "查看地图 · 骑行 8 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/gym,fitness?lock=6",
+    "thumbnailUrl": "https://loremflickr.com/480/320/gym,fitness?lock=6",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "本地",
+      "运动",
+      "新手",
+      "健康"
+    ],
+    "stats": {
+      "exposureCount": 640,
+      "clickCount": 72,
+      "likeCount": 62,
+      "collectCount": 39,
+      "shareCount": 8
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_006",
+    "assetTheme": "local",
+    "visualLabel": "Fit Block · 本地健身体验课",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_007",
+    "title": "AI 学习助手会员",
+    "brand": "Study Mate",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "面向课程复习、资料整理和错题总结的学习助手服务。",
+    "summary": "AI 学习助手，辅助复习整理。",
+    "offerText": "¥19/月 · 学生认证 5 折 · 7 天试用",
+    "ctaText": "查看商品",
+    "skuText": "学期卡 / AI 错题本 / 支持 3 设备",
+    "ratingText": "4.9 分 · 1.4 万条评价",
+    "deliveryText": "支付后即时开通 · 支持 7 天试用",
+    "stockText": "数字权益充足 · 可随时续费",
+    "similarItems": [
+      "轻薄平板键盘套",
+      "学生党平价护眼台灯",
+      "学生党数码配件包"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/students,study?lock=7",
+    "thumbnailUrl": "https://loremflickr.com/480/320/students,study?lock=7",
+    "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "contentType": "VIDEO",
+    "tags": [
+      "AI",
+      "学习",
+      "效率",
+      "学生党"
+    ],
+    "stats": {
+      "exposureCount": 1880,
+      "clickCount": 340,
+      "likeCount": 310,
+      "collectCount": 206,
+      "shareCount": 64
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_007",
+    "assetTheme": "commerce",
+    "visualLabel": "Study Mate · AI 学习助手会员",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_008",
+    "title": "周边周末露营装备",
+    "brand": "Camp Go",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "轻量帐篷、折叠椅和便携照明组合，适合周边短途露营。",
+    "summary": "周末露营装备，轻量便携。",
+    "imageUrl": "https://loremflickr.com/1200/800/camping,gear?lock=8",
+    "thumbnailUrl": "https://loremflickr.com/480/320/camping,gear?lock=8",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "露营",
+      "户外",
+      "周末",
+      "便携"
+    ],
+    "stats": {
+      "exposureCount": 1180,
+      "clickCount": 176,
+      "likeCount": 132,
+      "collectCount": 91,
+      "shareCount": 22
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_008",
+    "assetTheme": "featured",
+    "visualLabel": "Camp Go · 周边周末露营装备",
+    "ctaIntent": "learn_more"
+  },
+  {
+    "id": "ad_009",
+    "title": "通勤双肩包防泼水",
+    "brand": "Metro Bag",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "分层收纳电脑、雨伞和水杯，适合上课、实习和日常通勤。",
+    "summary": "防泼水双肩包，适合上课通勤。",
+    "offerText": "¥159 · 限时立减 30 · 防泼水通勤包",
+    "ctaText": "查看商品",
+    "skuText": "曜夜灰 / 16 寸电脑仓 / 22L",
+    "ratingText": "4.8 分 · 9300 条评价",
+    "deliveryText": "华东仓发货 · 次日达",
+    "stockText": "现货 214 件",
+    "similarItems": [
+      "宿舍桌面收纳套装",
+      "学生党数码配件包",
+      "轻薄平板键盘套"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/backpack,commute?lock=9",
+    "thumbnailUrl": "https://loremflickr.com/480/320/backpack,commute?lock=9",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "通勤",
+      "学生党",
+      "数码",
+      "收纳"
+    ],
+    "stats": {
+      "exposureCount": 1320,
+      "clickCount": 188,
+      "likeCount": 170,
+      "collectCount": 136,
+      "shareCount": 31
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_009",
+    "assetTheme": "commerce",
+    "visualLabel": "Metro Bag · 通勤双肩包防泼水",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_010",
+    "title": "社区早餐新店开业",
+    "brand": "Morning Hub",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "提供热饮、三明治和简餐，适合早八、上班和周末早午餐。",
+    "summary": "社区早餐新店，适合早八通勤。",
+    "distanceText": "650m",
+    "districtText": "南门早餐街",
+    "addressText": "学府南路 31 号 1 层",
+    "businessHoursText": "06:30 - 13:30",
+    "navigationText": "查看地图 · 步行 9 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/breakfast,cafe?lock=10",
+    "thumbnailUrl": "https://loremflickr.com/480/320/breakfast,cafe?lock=10",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "本地",
+      "早餐",
+      "通勤",
+      "生活"
+    ],
+    "stats": {
+      "exposureCount": 510,
+      "clickCount": 64,
+      "likeCount": 41,
+      "collectCount": 35,
+      "shareCount": 6
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_010",
+    "assetTheme": "local",
+    "visualLabel": "Morning Hub · 社区早餐新店开业",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_011",
+    "title": "运动水杯夏季轻量款",
+    "brand": "Hydro Way",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "大容量但便携，适合跑步、骑行、健身和日常校园携带。",
+    "summary": "轻量运动水杯，适合校园健身。",
+    "imageUrl": "https://loremflickr.com/1200/800/water,bottle?lock=11",
+    "thumbnailUrl": "https://loremflickr.com/480/320/water,bottle?lock=11",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "运动",
+      "校园",
+      "轻量",
+      "户外"
+    ],
+    "stats": {
+      "exposureCount": 940,
+      "clickCount": 130,
+      "likeCount": 110,
+      "collectCount": 82,
+      "shareCount": 17
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_011",
+    "assetTheme": "featured",
+    "visualLabel": "Hydro Way · 运动水杯夏季轻量款",
+    "ctaIntent": "learn_more"
+  },
+  {
+    "id": "ad_012",
+    "title": "咖啡豆新鲜烘焙订阅",
+    "brand": "Bean Lab",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "每周小批量烘焙寄送，适合宿舍手冲、办公室分享和周末慢生活。",
+    "summary": "新鲜烘焙咖啡豆，适合手冲。",
+    "offerText": "¥49/周 · 首单减 10 · 新鲜烘焙订阅",
+    "ctaText": "查看商品",
+    "skuText": "深烘拼配 / 250g / 每周一发货",
+    "ratingText": "4.7 分 · 5200 条评价",
+    "deliveryText": "冷链锁鲜发出 · 支持改配送日",
+    "stockText": "本周余量 76 份",
+    "similarItems": [
+      "咖啡通勤保温杯",
+      "社区早餐新店开业",
+      "周末本地咖啡地图"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/coffee,beans?lock=12",
+    "thumbnailUrl": "https://loremflickr.com/480/320/coffee,beans?lock=12",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "咖啡",
+      "电商",
+      "生活方式",
+      "周末"
+    ],
+    "stats": {
+      "exposureCount": 830,
+      "clickCount": 104,
+      "likeCount": 74,
+      "collectCount": 67,
+      "shareCount": 13
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_012",
+    "assetTheme": "commerce",
+    "visualLabel": "Bean Lab · 咖啡豆新鲜烘焙订阅",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_013",
+    "title": "图书馆周边自习空间",
+    "brand": "Quiet Room",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "安静座位、插座和储物柜，适合期末复习、小组讨论和考研自习。",
+    "summary": "本地自习空间，适合复习讨论。",
+    "distanceText": "900m",
+    "districtText": "图书馆北侧自习街",
+    "addressText": "知行路 12 号 4 层",
+    "businessHoursText": "09:00 - 23:00",
+    "navigationText": "查看地图 · 骑行 6 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/library,study?lock=13",
+    "thumbnailUrl": "https://loremflickr.com/480/320/library,study?lock=13",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "本地",
+      "学习",
+      "学生党",
+      "安静"
+    ],
+    "stats": {
+      "exposureCount": 1230,
+      "clickCount": 151,
+      "likeCount": 119,
+      "collectCount": 96,
+      "shareCount": 24
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_013",
+    "assetTheme": "local",
+    "visualLabel": "Quiet Room · 图书馆周边自习空间",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_014",
+    "title": "多场景轻量装备：学生党通勤健身露营组合推荐",
+    "brand": "Urban Kit",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "轻量装备组合覆盖学生党、通勤、运动、露营和数码收纳等多个场景，适合需要一套解决多种日常任务的人群。",
+    "summary": "多场景轻量装备组合推荐。",
+    "imageUrl": "https://loremflickr.com/1200/800/outdoor,gear?lock=14",
+    "thumbnailUrl": "https://loremflickr.com/480/320/outdoor,gear?lock=14",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "长标题",
+      "学生党",
+      "通勤",
+      "运动",
+      "露营"
+    ],
+    "stats": {
+      "exposureCount": 1520,
+      "clickCount": 219,
+      "likeCount": 141,
+      "collectCount": 105,
+      "shareCount": 27
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_014",
+    "assetTheme": "featured",
+    "visualLabel": "Urban Kit · 多场景轻量装备组合推荐",
+    "ctaIntent": "learn_more"
+  },
+  {
+    "id": "ad_015",
+    "title": "便携蓝牙音箱户外版",
+    "brand": "Sound Lab",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "小体积、防泼水、低延迟，适合露营、骑行休息和宿舍影音。",
+    "summary": "便携蓝牙音箱，适合户外宿舍。",
+    "offerText": "¥129 · 户外套装价 · 露营音箱",
+    "ctaText": "查看商品",
+    "skuText": "沙岩绿 / 户外版 / 12 小时续航",
+    "ratingText": "4.8 分 · 8600 条评价",
+    "deliveryText": "仓库直发 · 48 小时内出库",
+    "stockText": "现货 187 件",
+    "similarItems": [
+      "智能耳机降噪体验",
+      "运动恢复筋膜球",
+      "周边周末露营装备"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/bluetooth,speaker?lock=15",
+    "thumbnailUrl": "https://loremflickr.com/480/320/bluetooth,speaker?lock=15",
+    "videoUrl": "https://res.cloudinary.com/demo/video/upload/du_12/elephants.mp4",
+    "contentType": "VIDEO",
+    "tags": [
+      "数码",
+      "露营",
+      "视频",
+      "户外"
+    ],
+    "stats": {
+      "exposureCount": 1750,
+      "clickCount": 286,
+      "likeCount": 250,
+      "collectCount": 183,
+      "shareCount": 58
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_015",
+    "assetTheme": "commerce",
+    "visualLabel": "Sound Lab · 便携蓝牙音箱户外版",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_016",
+    "title": "商圈午餐优惠合集",
+    "brand": "Lunch Map",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "围绕学校和办公区整理的午餐选择，支持快取和多人拼单。",
+    "summary": "本地午餐合集，适合快取拼单。",
+    "distanceText": "1.1km",
+    "districtText": "创业园美食街",
+    "addressText": "创新大道 59 号 B1",
+    "businessHoursText": "11:00 - 20:30",
+    "navigationText": "查看地图 · 骑行 7 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/lunch,market?lock=16",
+    "thumbnailUrl": "https://loremflickr.com/480/320/lunch,market?lock=16",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "本地",
+      "午餐",
+      "通勤",
+      "优惠"
+    ],
+    "stats": {
+      "exposureCount": 700,
+      "clickCount": 91,
+      "likeCount": 55,
+      "collectCount": 46,
+      "shareCount": 9
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_016",
+    "assetTheme": "local",
+    "visualLabel": "Lunch Map · 商圈午餐优惠合集",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_017",
+    "title": "学生党平价护眼台灯",
+    "brand": "Bright Desk",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "",
+    "summary": "护眼台灯，适合宿舍学习。",
+    "offerText": "¥59 · 学生价 · 3 档护眼",
+    "ctaText": "查看商品",
+    "skuText": "暖白光 / USB 供电 / 折叠底座",
+    "ratingText": "4.7 分 · 1.1 万条评价",
+    "deliveryText": "次日达 · 支持 7 天无理由",
+    "stockText": "现货 420 件",
+    "similarItems": [
+      "宿舍桌面收纳套装",
+      "AI 学习助手会员",
+      "学生党数码配件包"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/desk,lamp?lock=17",
+    "thumbnailUrl": "https://loremflickr.com/480/320/desk,lamp?lock=17",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "学生党",
+      "宿舍",
+      "学习",
+      "数码"
+    ],
+    "stats": {
+      "exposureCount": 1010,
+      "clickCount": 140,
+      "likeCount": 134,
+      "collectCount": 112,
+      "shareCount": 21
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_017",
+    "assetTheme": "commerce",
+    "visualLabel": "Bright Desk · 学生党平价护眼台灯",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_018",
+    "title": "城市夜跑路线推荐",
+    "brand": "Run City",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "精选安全照明、补给便利和风景较好的城市夜跑路线。",
+    "summary": "城市夜跑路线，适合下班运动。",
+    "imageUrl": "https://loremflickr.com/1200/800/night,running?lock=18",
+    "thumbnailUrl": "https://loremflickr.com/480/320/night,running?lock=18",
+    "videoUrl": "https://res.cloudinary.com/demo/video/upload/du_12/snow_deer.mp4",
+    "contentType": "VIDEO",
+    "tags": [
+      "运动",
+      "夜跑",
+      "本地",
+      "视频"
+    ],
+    "stats": {
+      "exposureCount": 1360,
+      "clickCount": 198,
+      "likeCount": 148,
+      "collectCount": 96,
+      "shareCount": 38
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_018",
+    "assetTheme": "video",
+    "visualLabel": "Run City · 城市夜跑路线推荐",
+    "ctaIntent": "video"
+  },
+  {
+    "id": "ad_019",
+    "title": "社区宠物友好咖啡馆",
+    "brand": "Paw Cafe",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "可携宠、轻食、露台座位，适合周末放松和朋友聚会。",
+    "summary": "宠物友好咖啡馆，适合周末聚会。",
+    "distanceText": "2.3km",
+    "districtText": "河畔露台区",
+    "addressText": "滨河西路 19 号 1 层",
+    "businessHoursText": "10:00 - 22:00",
+    "navigationText": "查看地图 · 打车 12 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/pet,cafe?lock=19",
+    "thumbnailUrl": "https://loremflickr.com/480/320/pet,cafe?lock=19",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "本地",
+      "咖啡",
+      "宠物",
+      "周末"
+    ],
+    "stats": {
+      "exposureCount": 920,
+      "clickCount": 107,
+      "likeCount": 80,
+      "collectCount": 66,
+      "shareCount": 16
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_019",
+    "assetTheme": "local",
+    "visualLabel": "Paw Cafe · 社区宠物友好咖啡馆",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_020",
+    "title": "轻薄平板键盘套",
+    "brand": "Key Dock",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "兼顾课程笔记、移动办公和短途出差，支持多角度支架。",
+    "summary": "平板键盘套，适合移动学习办公。",
+    "offerText": "¥199 · 键盘套组合价 · 送保护膜",
+    "ctaText": "查看商品",
+    "skuText": "石墨灰 / 11 英寸 / 磁吸版",
+    "ratingText": "4.8 分 · 7400 条评价",
+    "deliveryText": "今日下单明日达 · 附送保护膜",
+    "stockText": "现货 205 件",
+    "similarItems": [
+      "学生党数码配件包",
+      "AI 学习助手会员",
+      "通勤双肩包防泼水"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/tablet,keyboard?lock=20",
+    "thumbnailUrl": "https://loremflickr.com/480/320/tablet,keyboard?lock=20",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "数码",
+      "学习",
+      "通勤",
+      "效率"
+    ],
+    "stats": {
+      "exposureCount": 1580,
+      "clickCount": 238,
+      "likeCount": 201,
+      "collectCount": 164,
+      "shareCount": 42
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_020",
+    "assetTheme": "commerce",
+    "visualLabel": "Key Dock · 轻薄平板键盘套",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_021",
+    "title": "城市徒步补给包",
+    "brand": "Walk Kit",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "包含便携雨衣、能量小食和小型急救包，适合城市徒步和短途探索。",
+    "summary": "城市徒步补给包，轻便实用。",
+    "imageUrl": "https://loremflickr.com/1200/800/hiking,backpack?lock=21",
+    "thumbnailUrl": "https://loremflickr.com/480/320/hiking,backpack?lock=21",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "徒步",
+      "户外",
+      "通勤",
+      "轻量"
+    ],
+    "stats": {
+      "exposureCount": 610,
+      "clickCount": 66,
+      "likeCount": 44,
+      "collectCount": 31,
+      "shareCount": 5
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_021",
+    "assetTheme": "featured",
+    "visualLabel": "Walk Kit · 城市徒步补给包",
+    "ctaIntent": "learn_more"
+  },
+  {
+    "id": "ad_022",
+    "title": "附近篮球馆夜场",
+    "brand": "Hoop Zone",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "工作日夜场和周末拼场信息，适合同学组队和下班运动。",
+    "summary": "附近篮球夜场，适合组队运动。",
+    "distanceText": "1.8km",
+    "districtText": "城东运动中心",
+    "addressText": "体育东路 88 号 2 层",
+    "businessHoursText": "17:00 - 23:00",
+    "navigationText": "查看地图 · 骑行 10 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/basketball,court?lock=22",
+    "thumbnailUrl": "https://loremflickr.com/480/320/basketball,court?lock=22",
+    "videoUrl": "https://res.cloudinary.com/demo/video/upload/du_12/rafting.mp4",
+    "contentType": "VIDEO",
+    "tags": [
+      "本地",
+      "运动",
+      "篮球",
+      "视频"
+    ],
+    "stats": {
+      "exposureCount": 1090,
+      "clickCount": 155,
+      "likeCount": 121,
+      "collectCount": 87,
+      "shareCount": 23
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_022",
+    "assetTheme": "local",
+    "visualLabel": "Hoop Zone · 附近篮球馆夜场",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_023",
+    "title": "咖啡通勤保温杯",
+    "brand": "Bean Bottle",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "适合早八咖啡、办公室热饮和短途出行，杯身易清洗。",
+    "summary": "通勤保温杯，适合咖啡热饮。",
+    "offerText": "¥69 · 通勤杯限时价 · 赠清洁刷",
+    "ctaText": "查看商品",
+    "skuText": "奶杏白 / 480ml / 茶咖分饮盖",
+    "ratingText": "4.7 分 · 5600 条评价",
+    "deliveryText": "江浙沪次日达 · 送杯刷",
+    "stockText": "现货 358 件",
+    "similarItems": [
+      "咖啡豆新鲜烘焙订阅",
+      "社区早餐新店开业",
+      "周末本地咖啡地图"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/travel,mug?lock=23",
+    "thumbnailUrl": "https://loremflickr.com/480/320/travel,mug?lock=23",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "咖啡",
+      "通勤",
+      "电商",
+      "生活"
+    ],
+    "stats": {
+      "exposureCount": 860,
+      "clickCount": 116,
+      "likeCount": 92,
+      "collectCount": 73,
+      "shareCount": 15
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_023",
+    "assetTheme": "commerce",
+    "visualLabel": "Bean Bottle · 咖啡通勤保温杯",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_024",
+    "title": "校园社团招新物料",
+    "brand": "Poster Kit",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "海报、贴纸、桌牌和社媒图模板，适合社团招新和活动宣传。",
+    "summary": "社团招新物料，适合活动宣传。",
+    "imageUrl": "https://loremflickr.com/1200/800/student,poster?lock=24",
+    "thumbnailUrl": "https://loremflickr.com/480/320/student,poster?lock=24",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "校园",
+      "学生党",
+      "设计",
+      "活动"
+    ],
+    "stats": {
+      "exposureCount": 590,
+      "clickCount": 59,
+      "likeCount": 40,
+      "collectCount": 28,
+      "shareCount": 4
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_024",
+    "assetTheme": "featured",
+    "visualLabel": "Poster Kit · 校园社团招新物料",
+    "ctaIntent": "learn_more"
+  },
+  {
+    "id": "ad_025",
+    "title": "本地周末市集指南",
+    "brand": "Market Walk",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "手作、咖啡、轻食和户外摊位集合，适合周末拍照和朋友同行。",
+    "summary": "周末市集指南，覆盖咖啡轻食。",
+    "distanceText": "2.6km",
+    "districtText": "创意园市集区",
+    "addressText": "创意南街 7 号 广场",
+    "businessHoursText": "周六日 10:00 - 19:00",
+    "navigationText": "查看地图 · 公交 18 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/street,market?lock=25",
+    "thumbnailUrl": "https://loremflickr.com/480/320/street,market?lock=25",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "本地",
+      "咖啡",
+      "周末",
+      "生活"
+    ],
+    "stats": {
+      "exposureCount": 1120,
+      "clickCount": 133,
+      "likeCount": 100,
+      "collectCount": 81,
+      "shareCount": 18
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_025",
+    "assetTheme": "local",
+    "visualLabel": "Market Walk · 本地周末市集指南",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_026",
+    "title": "运动恢复筋膜球",
+    "brand": "Fit Block",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "训练后放松工具，适合跑步、健身和久坐通勤后的肌肉放松。",
+    "summary": "运动恢复工具，适合训练后放松。",
+    "offerText": "¥39 · 运动恢复组合 · 入门装",
+    "ctaText": "查看商品",
+    "skuText": "墨绿 / 入门双球 / 附收纳袋",
+    "ratingText": "4.6 分 · 4300 条评价",
+    "deliveryText": "满 59 包邮 · 48 小时内发货",
+    "stockText": "现货 612 组",
+    "similarItems": [
+      "便携蓝牙音箱户外版",
+      "轻量跑鞋新品首发",
+      "本地健身体验课"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/fitness,massage?lock=26",
+    "thumbnailUrl": "https://loremflickr.com/480/320/fitness,massage?lock=26",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "运动",
+      "健身",
+      "通勤",
+      "健康"
+    ],
+    "stats": {
+      "exposureCount": 980,
+      "clickCount": 127,
+      "likeCount": 96,
+      "collectCount": 71,
+      "shareCount": 12
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_026",
+    "assetTheme": "commerce",
+    "visualLabel": "Fit Block · 运动恢复筋膜球",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_027",
+    "title": "城市光影摄影课",
+    "brand": "Lens Local",
+    "channel": "本地",
+    "channelId": "本地",
+    "description": "线下小班课程，覆盖手机摄影、夜景构图和短视频拍摄。",
+    "summary": "本地摄影课，覆盖夜景和短视频。",
+    "distanceText": "1.4km",
+    "districtText": "老城光影街",
+    "addressText": "平安巷 24 号 3 层",
+    "businessHoursText": "13:00 - 21:00",
+    "navigationText": "查看地图 · 骑行 9 分钟",
+    "imageUrl": "https://loremflickr.com/1200/800/street,photography?lock=27",
+    "thumbnailUrl": "https://loremflickr.com/480/320/street,photography?lock=27",
+    "videoUrl": "https://res.cloudinary.com/demo/video/upload/du_12/sea_turtle.mp4",
+    "contentType": "VIDEO",
+    "tags": [
+      "本地",
+      "摄影",
+      "视频",
+      "学习"
+    ],
+    "stats": {
+      "exposureCount": 760,
+      "clickCount": 88,
+      "likeCount": 70,
+      "collectCount": 52,
+      "shareCount": 11
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_027",
+    "assetTheme": "local",
+    "visualLabel": "Lens Local · 城市光影摄影课",
+    "ctaIntent": "store_navigation"
+  },
+  {
+    "id": "ad_028",
+    "title": "学生党数码配件包",
+    "brand": "Cable Box",
+    "channel": "电商",
+    "channelId": "电商",
+    "description": "收纳充电线、转接头、U 盘和耳机，适合宿舍、图书馆和通勤。",
+    "summary": "数码配件包，适合学生通勤。",
+    "offerText": "¥89 · 学生套装价 · 线材全收纳",
+    "ctaText": "查看商品",
+    "skuText": "基础版 / Type-C 全家桶 / 送魔术扎带",
+    "ratingText": "4.8 分 · 6700 条评价",
+    "deliveryText": "次日达 · 支持坏损包赔",
+    "stockText": "现货 265 套",
+    "similarItems": [
+      "通勤双肩包防泼水",
+      "轻薄平板键盘套",
+      "学生党平价护眼台灯"
+    ],
+    "imageUrl": "https://loremflickr.com/1200/800/digital,accessories?lock=28",
+    "thumbnailUrl": "https://loremflickr.com/480/320/digital,accessories?lock=28",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "学生党",
+      "数码",
+      "通勤",
+      "收纳"
+    ],
+    "stats": {
+      "exposureCount": 1460,
+      "clickCount": 230,
+      "likeCount": 210,
+      "collectCount": 170,
+      "shareCount": 36
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_028",
+    "assetTheme": "commerce",
+    "visualLabel": "Cable Box · 学生党数码配件包",
+    "ctaIntent": "product"
+  },
+  {
+    "id": "ad_029",
+    "title": "精选通勤雨伞轻量版",
+    "brand": "Rain Go",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "小包可放、开合顺手，适合梅雨季通勤和校园日常。",
+    "summary": "轻量雨伞，适合通勤校园。",
+    "imageUrl": "https://loremflickr.com/1200/800/umbrella,commute?lock=29",
+    "thumbnailUrl": "https://loremflickr.com/480/320/umbrella,commute?lock=29",
+    "videoUrl": null,
+    "contentType": "SMALL_IMAGE",
+    "tags": [
+      "通勤",
+      "校园",
+      "轻量",
+      "生活"
+    ],
+    "stats": {
+      "exposureCount": 680,
+      "clickCount": 79,
+      "likeCount": 52,
+      "collectCount": 36,
+      "shareCount": 7
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_029",
+    "assetTheme": "featured",
+    "visualLabel": "Rain Go · 精选通勤雨伞轻量版",
+    "ctaIntent": "learn_more"
+  },
+  {
+    "id": "ad_030",
+    "title": "空描述规则降级广告",
+    "brand": "Fallback Lab",
+    "channel": "精选",
+    "channelId": "精选",
+    "description": "",
+    "summary": "",
+    "imageUrl": "https://loremflickr.com/1200/800/product,display?lock=30",
+    "thumbnailUrl": "https://loremflickr.com/480/320/product,display?lock=30",
+    "videoUrl": null,
+    "contentType": "LARGE_IMAGE",
+    "tags": [
+      "降级",
+      "AI",
+      "测试",
+      "精选"
+    ],
+    "stats": {
+      "exposureCount": 430,
+      "clickCount": 38,
+      "likeCount": 22,
+      "collectCount": 17,
+      "shareCount": 3
+    },
+    "interaction": {
+      "liked": false,
+      "collected": false
+    },
+    "contentHash": "mock_030",
+    "assetTheme": "featured",
+    "visualLabel": "Fallback Lab · 空描述规则降级广告",
+    "ctaIntent": "learn_more"
+  }
+]
