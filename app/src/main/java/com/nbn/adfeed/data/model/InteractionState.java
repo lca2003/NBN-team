@@ -6,6 +6,25 @@ public final class InteractionState {
     private int exposureCount;
     private int clickCount;
 
+    public InteractionState() {
+        this(false, false, 0, 0);
+    }
+
+    public InteractionState(boolean liked, boolean collected) {
+        this(liked, collected, 0, 0);
+    }
+
+    private InteractionState(boolean liked, boolean collected, int exposureCount, int clickCount) {
+        this.liked = liked;
+        this.collected = collected;
+        this.exposureCount = exposureCount;
+        this.clickCount = clickCount;
+    }
+
+    public static InteractionState empty() {
+        return new InteractionState(false, false);
+    }
+
     public boolean isLiked() {
         return liked;
     }
@@ -44,5 +63,13 @@ public final class InteractionState {
 
     public void increaseClickCount() {
         clickCount += 1;
+    }
+
+    public InteractionState withLiked(boolean nextLiked) {
+        return new InteractionState(nextLiked, collected, exposureCount, clickCount);
+    }
+
+    public InteractionState withCollected(boolean nextCollected) {
+        return new InteractionState(liked, nextCollected, exposureCount, clickCount);
     }
 }

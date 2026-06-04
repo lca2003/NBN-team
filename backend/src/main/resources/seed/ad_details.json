@@ -1,0 +1,393 @@
+{
+  "details": [
+    {
+      "adId": "ad_001",
+      "title": "轻量跑鞋新品首发",
+      "longCopy": "鞋面采用透气工程网布，前掌回弹泡棉降低长时间通勤疲劳，夜跑反光条提升校园和城市夜间可见性。",
+      "aiDeepInsight": "适合预算敏感但需要真实缓震体验的学生党，卖点集中在轻量、通勤、夜跑安全三个场景。",
+      "sellingPoints": [
+        "单只约 238g，适合日常通勤",
+        "夜跑反光条提升安全感",
+        "首发价覆盖学生预算"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_nbn_sports",
+        "name": "NBN Sports 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-09.png",
+        "rating": 4.8,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_001",
+        "priceText": "¥168",
+        "originalPriceText": "¥239",
+        "discountText": "首发立减 71 元",
+        "ctaText": "立即购买 ¥168"
+      },
+      "stats": {
+        "exposureText": "1,680",
+        "clickText": "268",
+        "likeText": "2",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_001",
+          "userId": "user_runner_001",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "nickname": "晚课后夜跑",
+          "timeText": "2 小时前",
+          "content": "鞋底回弹明显，宿舍到操场来回走也不累。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_001",
+          "targetType": "ad",
+          "targetId": "ad_001",
+          "parentCommentId": "",
+          "userId": "user_student_002",
+          "nickname": "周末写论文",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "content": "有 41 码库存吗？",
+          "timeText": "刚刚"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_009",
+          "title": "夜跑反光运动外套",
+          "imageUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+          "reason": "同为夜跑装备",
+          "ctaText": "查看搭配"
+        }
+      ]
+    },
+    {
+      "adId": "ad_002",
+      "title": "周末本地咖啡地图",
+      "longCopy": "整理 3 家适合学习、轻办公和见朋友的咖啡馆，包含插座、噪音、桌距、营业时间和团购券。",
+      "aiDeepInsight": "推荐理由来自本地距离、环境安静度和收藏率，适合周末做轻社交或复习计划。",
+      "sellingPoints": [
+        "距离 800m 内",
+        "支持安静自习",
+        "下午茶双人券可用"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_city_cafe",
+        "name": "City Cafe 人民广场店",
+        "avatarUrl": "stitch_ui/images/stitch-10.png",
+        "rating": 4.7,
+        "address": "人民广场步行街 18 号",
+        "distance": "800m",
+        "businessStatus": "营业中 · 22:00 打烊"
+      },
+      "offer": {
+        "offerId": "offer_ad_002",
+        "priceText": "¥39",
+        "originalPriceText": "¥68",
+        "discountText": "双人下午茶券",
+        "ctaText": "领取附近优惠"
+      },
+      "stats": {
+        "exposureText": "890",
+        "clickText": "120",
+        "likeText": "1",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_002",
+          "userId": "user_student_002",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "nickname": "周末写论文",
+          "timeText": "昨天",
+          "content": "二楼比较安静，插座多，适合带电脑。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_002",
+          "targetType": "ad",
+          "targetId": "ad_002",
+          "parentCommentId": "",
+          "userId": "user_runner_001",
+          "nickname": "晚课后夜跑",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "content": "周日下午人多吗？",
+          "timeText": "12 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_014",
+          "title": "图书馆周边自习空间",
+          "imageUrl": "stitch_ui/images/ad-desk-storage.svg",
+          "reason": "同为安静学习场景",
+          "ctaText": "看附近"
+        }
+      ]
+    },
+    {
+      "adId": "ad_003",
+      "title": "通勤降噪耳机体验片",
+      "longCopy": "围绕地铁、图书馆和宿舍三个高频场景，展示降噪、续航和轻量佩戴体验。",
+      "aiDeepInsight": "适合需要安静学习和通勤降噪的用户，视频能直接证明佩戴场景和核心卖点，不再只是静态封面。",
+      "sellingPoints": [
+        "地铁通勤主动降噪",
+        "轻量佩戴适合长时间学习",
+        "本地视频素材可离线预览"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#2d333f",
+          "blurHash": "L25OQm?bIUxu%MWBj[Rj4nWBt7of"
+        }
+      ],
+      "video": {
+        "localResourceUrl": "file:///android_res/raw/ad_video_headphones.mp4",
+        "caption": "本地打包视频，可验证播放/暂停/进度条，不依赖外部 CDN。"
+      },
+      "merchant": {
+        "merchantId": "merchant_sound_lab",
+        "name": "Sound Lab 数码旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-11.png",
+        "rating": 4.6,
+        "address": "线上旗舰店",
+        "distance": "次日达",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_003",
+        "priceText": "¥299",
+        "originalPriceText": "¥399",
+        "discountText": "通勤套装立减 100 元",
+        "ctaText": "查看耳机 ¥299"
+      },
+      "stats": {
+        "exposureText": "1,240",
+        "clickText": "214",
+        "likeText": "1",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_004",
+          "userId": "user_commuter_003",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "nickname": "地铁早八人",
+          "timeText": "今天",
+          "content": "降噪开关和续航说明很直接，适合通勤前快速判断。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_004",
+          "targetType": "ad",
+          "targetId": "ad_003",
+          "parentCommentId": "",
+          "userId": "user_commuter_003",
+          "nickname": "地铁早八人",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "content": "能连两台设备吗？",
+          "timeText": "6 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_020",
+          "title": "平板键盘效率套装",
+          "imageUrl": "stitch_ui/images/stitch-06.png",
+          "reason": "同为学习和通勤数码装备",
+          "ctaText": "查看搭配"
+        }
+      ]
+    },
+    {
+      "adId": "ad_004",
+      "title": "宿舍桌面收纳套装",
+      "longCopy": "组合包含桌面分区盒、理线夹、立式文件架和可折叠增高架，适合 90cm 小桌面快速整理。",
+      "aiDeepInsight": "这条广告解决的是学生宿舍真实痛点：桌面乱、线材多、学习用品难分类，低预算也能立刻改善。",
+      "sellingPoints": [
+        "桌面分区盒可拆分组合",
+        "理线夹减少充电线缠绕",
+        "低预算改造学习区"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_tiny_space",
+        "name": "Tiny Space 收纳旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-12.png",
+        "rating": 4.7,
+        "address": "线上旗舰店",
+        "distance": "48 小时内发货",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_004",
+        "priceText": "¥49",
+        "originalPriceText": "¥79",
+        "discountText": "学生专享套装价",
+        "ctaText": "领取收纳套装 ¥49"
+      },
+      "stats": {
+        "exposureText": "980",
+        "clickText": "154",
+        "likeText": "1",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_005",
+          "userId": "user_dorm_004",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "nickname": "期末复习人",
+          "timeText": "今天",
+          "content": "桌面增高架下面正好放键盘，书和充电线也能分开。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_005",
+          "targetType": "ad",
+          "targetId": "ad_004",
+          "parentCommentId": "",
+          "userId": "user_dorm_004",
+          "nickname": "期末复习人",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "content": "这个尺寸适合上床下桌吗？",
+          "timeText": "15 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_007",
+          "title": "AI 学习助手会员",
+          "imageUrl": "stitch_ui/images/stitch-08.png",
+          "reason": "同为学习效率场景",
+          "ctaText": "看学习搭配"
+        }
+      ]
+    },
+    {
+      "adId": "ad_005",
+      "title": "城市骑行轻风夹克",
+      "longCopy": "夹克使用防泼水面料，袖口和背部加入反光条，收纳后可以放进通勤包侧袋。",
+      "aiDeepInsight": "适合骑共享单车、短途夜骑和通勤用户，卖点不是户外极限，而是日常城市天气变化。",
+      "sellingPoints": [
+        "防泼水面料应对小雨",
+        "反光条提升夜骑可见性",
+        "可折叠收纳进通勤包"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_urban_ride",
+        "name": "Urban Ride 城市户外",
+        "avatarUrl": "stitch_ui/images/stitch-15.png",
+        "rating": 4.6,
+        "address": "线上旗舰店",
+        "distance": "次日达",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_005",
+        "priceText": "¥129",
+        "originalPriceText": "¥199",
+        "discountText": "通勤骑行季限时价",
+        "ctaText": "查看骑行夹克 ¥129"
+      },
+      "stats": {
+        "exposureText": "1,180",
+        "clickText": "205",
+        "likeText": "1",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_006",
+          "userId": "user_rider_005",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "nickname": "夜骑下班路",
+          "timeText": "昨天",
+          "content": "背后反光条晚上很明显，收起来也不占包。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_006",
+          "targetType": "ad",
+          "targetId": "ad_005",
+          "parentCommentId": "",
+          "userId": "user_rider_005",
+          "nickname": "夜骑下班路",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "content": "南方梅雨天够用吗？",
+          "timeText": "25 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_009",
+          "title": "通勤双肩包防泼水",
+          "imageUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+          "reason": "同为城市通勤防泼水装备",
+          "ctaText": "查看通勤搭配"
+        }
+      ]
+    }
+  ]
+}
