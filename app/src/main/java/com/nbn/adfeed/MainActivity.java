@@ -125,11 +125,10 @@ public class MainActivity extends AppCompatActivity
     /**
      * 接收对话式搜索返回的匹配广告 ID。
      *
-     * <p>当前阶段把结果提示交回搜索浮层处理；后续可在此把 matchedAdIds 传给 FeedFragment
-     * 做信息流过滤展示（与人员C的标签过滤功能对接）。</p>
+     * <p>搜索结果交给 FeedFragment 做信息流过滤展示，搜索浮层只负责展示对话提示。</p>
      */
     @Override
     public void onSearchResult(List<String> matchedAdIds) {
-        // TODO 把搜索结果联动到信息流（例如只展示匹配广告）。
+        feedFragment.applySearchResult(matchedAdIds);
     }
 }

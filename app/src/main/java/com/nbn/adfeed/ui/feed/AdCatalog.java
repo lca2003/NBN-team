@@ -59,6 +59,15 @@ public final class AdCatalog {
                          int page,
                          boolean failOnPurpose,
                          Callback callback) {
+        loadPage(channel, tagFilter, null, page, failOnPurpose, callback);
+    }
+
+    public void loadPage(String channel,
+                         String tagFilter,
+                         List<String> searchAdIds,
+                         int page,
+                         boolean failOnPurpose,
+                         Callback callback) {
         // 用主线程 Handler 延迟回调，模拟异步网络请求，让 UI 能展示 loading 态。
         mainHandler.postDelayed(() -> {
             if (failOnPurpose) {
@@ -70,6 +79,8 @@ public final class AdCatalog {
             List<AdItem> seed = (channel == null || channel.isEmpty())
                     ? repository.getInitialAds()
                     : repository.getAdsByChannel(channel);
+            //聊天搜索过滤，用于显示搜索结果
+            seed = TagFilter.byAdIds(seed, searchAdIds);
             //按tag过滤 TODO 考虑后端网络请求时修改前面几行代码
             seed = TagFilter.byTag(seed, tagFilter);
 

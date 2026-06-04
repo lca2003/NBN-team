@@ -39,6 +39,20 @@ public final class TagFilterTest {
     }
 
     @Test
+    public void filtersByAdIdsAndKeepsFeedOrder() {
+        AdItem first = ad("ad_001", "运动", "学生党");
+        AdItem second = ad("ad_002", "本地", "休闲");
+        AdItem third = ad("ad_003", "运动", "通勤");
+
+        List<AdItem> result = TagFilter.byAdIds(
+                Arrays.asList(first, second, third),
+                Arrays.asList("ad_003", "missing", "ad_001")
+        );
+
+        assertEquals(Arrays.asList(first, third), result);
+    }
+
+    @Test
     public void doesNotMatchTitleOrSummaryWhenTagIsMissing() {
         AdItem ad = new AdItem(
                 "ad_001",

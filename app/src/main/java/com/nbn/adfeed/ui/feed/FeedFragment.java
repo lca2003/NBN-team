@@ -24,6 +24,7 @@ import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.InteractionState;
 import com.nbn.adfeed.data.repository.AdRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +79,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     // 分页与状态。
     private String currentChannel = CHANNEL_FEATURED;
     private String currentTagFilter = null;
+    //搜索结果
+    private List<String> currentSearchAdIds = null;
     private int currentPage = 0;
     private boolean hasMore = true;
     private boolean isLoading = false;
@@ -196,6 +199,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         String channel = CHANNELS.get(index);
         if (!channel.equals(currentChannel)) {
             currentTagFilter = null;
+            currentSearchAdIds = null;
             refreshChannel(channel, true);
         } else {
             // 再次点击当前频道：回到顶部。
@@ -223,6 +227,16 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
             }
         });
     }
+    // 应用搜索结果刷新界面
+    public void applySearchResult(List<String> matchedAdIds) {
+        currentTagFilter = null;
+        currentSearchAdIds = (matchedAdIds == null || matchedAdIds.isEmpty())
+                ? null
+                : new ArrayList<>(matchedAdIds);
+        if (adapter != null) {
+            refreshChannel(currentChannel, true);
+        }
+    }
 
     /**
      * 刷新某个频道的第一页。
@@ -245,7 +259,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
 
         String channelParam = toChannelParam(channel);
         // 增加currentTagFilter刷新
-        adCatalog.loadPage(channelParam, currentTagFilter, 0, false, new AdCatalog.Callback() {
+        adCatalog.loadPage(channelParam, currentTagFilter, currentSearchAdIds, 0, false, new AdCatalog.Callback() {
             @Override
             public void onSuccess(FeedPage page) {
                 if (!isAdded()) {
@@ -302,7 +316,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         boolean failOnPurpose = shouldFailNextLoadMore;
         shouldFailNextLoadMore = false; // 只失败一次，重试即成功。
 
-        adCatalog.loadPage(toChannelParam(currentChannel), currentTagFilter, nextPage, failOnPurpose,
+        adCatalog.loadPage(toChannelParam(currentChannel), currentTagFilter, currentSearchAdIds, nextPage, failOnPurpose,
                 new AdCatalog.Callback() {
                     @Override
                     public void onSuccess(FeedPage page) {
@@ -529,6 +543,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
             return;
         }
         // 重复点击逻辑处理
+        currentSearchAdIds = null;
         if (tag.equals(currentTagFilter)) {     
             currentTagFilter = null;
         } else {
