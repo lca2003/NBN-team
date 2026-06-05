@@ -1,11 +1,11 @@
 package com.nbn.adfeed.ui.feed;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -18,31 +18,22 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.nbn.adfeed.R;
 import com.nbn.adfeed.analytics.AnalyticsTracker;
-import com.nbn.adfeed.analytics.exposure.ExposureTracker;
-import com.nbn.adfeed.analytics.event.AdAnalyticsEventCounts;
 import com.nbn.adfeed.data.model.AdItem;
-import com.nbn.adfeed.data.model.DataResult;
-import com.nbn.adfeed.data.model.InteractionAction;
-import com.nbn.adfeed.data.model.InteractionState;
 import com.nbn.adfeed.data.repository.AdRepository;
+import com.nbn.adfeed.video.VideoPlaybackManager;
+import com.nbn.adfeed.video.player.Media3VideoPlayerController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 信息流主页面（人员A 核心）。
  *
- * <p>职责：</p>
+ * <p>本类作为薄协调层，将具体职责委托给：</p>
  * <ul>
- *   <li>单列 RecyclerView 列表布局与滚动；</li>
- *   <li>顶部频道 Tab 切换与联动刷新；</li>
- *   <li>下拉刷新、上拉加载更多；</li>
- *   <li>加载中 / 空态 / 错误态切换；</li>
- *   <li>列表位置保持（详情页返回后恢复滚动位置）；</li>
- *   <li>点赞/收藏/分享交互（含点赞彩蛋动画）与统计上报。</li>
+ *   <li>{@link FeedExposureDelegate} — 曝光检测、可见比例计算、定时调度</li>
+ *   <li>{@link FeedInteractionDelegate} — 卡片交互（点赞/收藏/分享/点击/视频播放）与彩蛋动画</li>
+ *   <li>{@link FeedFilterManager} — 标签筛选状态、搜索过滤、筛选栏 UI</li>
+ *   <li>{@link FeedDataController} — 频道切换、分页加载、首屏状态切换</li>
  * </ul>
  *
  * <p>数据来自人员B的 {@link AdRepository}，经 UI 层 {@link AdCatalog} 做分页适配；
@@ -50,25 +41,19 @@ import java.util.Map;
  */
 public final class FeedFragment extends Fragment implements FeedInteractionListener {
 
-    /** 频道列表，对应课题的“精选 / 电商 / 本地”。 */
-    private static final List<String> CHANNELS = Arrays.asList("精选", "电商", "本地");
-    /** “精选”视作全部初始流，传空给 AdCatalog。 */
-    private static final String CHANNEL_FEATURED = "精选";
+    // ---- 委托 ----
+    private final FeedExposureDelegate exposureDelegate = new FeedExposureDelegate();
+    private final FeedInteractionDelegate interactionDelegate = new FeedInteractionDelegate();
+    private final FeedFilterManager filterManager = new FeedFilterManager();
+    private final FeedDataController dataController = new FeedDataController();
 
-    /** 触发上拉加载的预取阈值：距离底部还剩几个时就开始加载下一页。 */
-    private static final int PREFETCH_DISTANCE = 2;
-
-    // 依赖（注入或默认实现）。
+    // ---- 依赖（注入或默认实现） ----
     private AdRepository repository;
     private AdCatalog adCatalog;
     private AnalyticsTracker analyticsTracker;
     private final InteractionStore interactionStore = InteractionStore.get();
-    // 曝光捕获引入
-    private final ExposureTracker exposureTracker = new ExposureTracker();
-    //用于在加载、列表滚动、从详情页返回时异步调用曝光检查逻辑
-    private final Runnable exposureCheckRunnable = this::checkVisibleExposures;
 
-    // 视图。
+    // ---- 视图 ----
     private TextView[] tabButtons;
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerView;
@@ -78,19 +63,17 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     private TextView statusView;
     private View statusRetryHint;
     private FeedAdapter adapter;
+    private View filterBarContainer;
+    private LinearLayout filterBar;
+    private View filterClearAll;
 
-    // 分页与状态。
-    private String currentChannel = CHANNEL_FEATURED;
-    private String currentTagFilter = null;
-    //搜索结果
-    private List<String> currentSearchAdIds = null;
-    private int currentPage = 0;
-    private boolean hasMore = true;
-    private boolean isLoading = false;
-    /** 演示用：让下一次加载更多故意失败一次，展示错误态与重试。 */
-    private boolean shouldFailNextLoadMore = false;
+    /** 滚动曝光检测节流：距上次检测不足此值则跳过，避免 fling 期间每秒 ~60 次冗余检测。 */
+    private static final long EXPOSURE_THROTTLE_MS = 200L;
+    private long lastExposureCheckMs = 0L;
 
-    // 回调宿主：把搜索入口点击交给 Activity 处理，Feed 不直接依赖搜索模块实现。
+    // ---- 回调宿主 ----
+
+    /** 把搜索入口点击交给 Activity 处理，Feed 不直接依赖搜索模块实现。 */
     public interface FeedHost {
         void onOpenSearch();
     }
@@ -106,6 +89,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         }
         this.analyticsTracker = tracker;
     }
+
+    // ---- 生命周期 ----
 
     @Nullable
     @Override
@@ -132,16 +117,58 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
 
         bindViews(view);
         setupRecyclerView();
+        wireDelegates();
         setupSwipeRefresh();
         setupChannelTabs();
         setupSearchEntry(view);
+        wireFilterClearButton();
 
-        // 首次进入加载“精选”频道。
-        refreshChannel(currentChannel, true);
+        dataController.onAttach();
+
+        // 首次进入加载"精选"频道。
+        dataController.refreshChannel(FeedDataController.CHANNELS.get(0), true);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 从详情页返回后，互动状态可能在详情页被改过（如点赞），
+        // 这里只刷新当前可见范围内的项，避免全部 rebind。
+        if (adapter != null && !adapter.isEmpty()) {
+            int first = layoutManager.findFirstVisibleItemPosition();
+            int last = layoutManager.findLastVisibleItemPosition();
+            if (first != RecyclerView.NO_POSITION && last != RecyclerView.NO_POSITION) {
+                adapter.notifyItemRangeChanged(first, last - first + 1);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
+            // 刷新后补充一次曝光检查。
+            if (recyclerView != null) {
+                recyclerView.post(exposureDelegate.getExposureCheckRunnable());
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        // 离开页面时暂停信息流中的视频播放并停止曝光调度。
+        interactionDelegate.pauseActiveVideo();
+        exposureDelegate.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        // 销毁时释放视频播放器资源、停止曝光调度、解除 DataController 标记。
+        interactionDelegate.releaseVideo();
+        exposureDelegate.onDestroyView();
+        dataController.onDetach();
+        super.onDestroyView();
+    }
+
+    // ---- 视图初始化 ----
+
     private void bindViews(View view) {
-        // 频道胶囊按钮组
         tabButtons = new TextView[]{
                 view.findViewById(R.id.tabFeatured),
                 view.findViewById(R.id.tabEcommerce),
@@ -153,78 +180,104 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         statusContainer = view.findViewById(R.id.statusContainer);
         statusView = view.findViewById(R.id.statusView);
         statusRetryHint = view.findViewById(R.id.statusRetryHint);
+        filterBarContainer = view.findViewById(R.id.filterBarContainer);
+        filterBar = view.findViewById(R.id.filterBar);
+        filterClearAll = view.findViewById(R.id.filterClearAll);
     }
 
     private void setupRecyclerView() {
         layoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new FeedAdapter(this);
-        // footer 错误态点击重试：重新加载下一页。
-        adapter.setFooterRetryListener(this::loadMore);
+        adapter.setFooterRetryListener(() -> dataController.loadMore());
         recyclerView.setAdapter(adapter);
 
-        // 监听滚动，接近底部时触发上拉加载更多。
+        // 监听滚动：接近底部时触发上拉加载更多，并执行曝光检测。
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
-                // 滚动回调期间不能直接修改 adapter 数据（曝光刷新、footer 状态），
-                // 否则 RecyclerView 会抛 IllegalStateException。推迟到下一帧执行。
+                // 滚动回调期间不能直接修改 adapter 数据，推迟到下一帧执行。
                 rv.post(() -> {
-                    //曝光检测
-                    checkVisibleExposures();
+                    // fling 期间节流曝光检测：200ms 内只做一次，ExposureTracker 的 1000ms
+                    // dwell 阈值确保不会遗漏曝光。
+                    long now = SystemClock.elapsedRealtime();
+                    if (now - lastExposureCheckMs >= EXPOSURE_THROTTLE_MS) {
+                        lastExposureCheckMs = now;
+                        exposureDelegate.checkVisibleExposures();
+                    }
                     if (dy <= 0) {
                         return; // 只在向下滚动时考虑预取。
                     }
                     int totalCount = layoutManager.getItemCount();
                     int lastVisible = layoutManager.findLastVisibleItemPosition();
-                    // 还有更多、当前空闲、滚动到接近底部 -> 加载下一页。
-                    if (hasMore && !isLoading && lastVisible >= totalCount - 1 - PREFETCH_DISTANCE) {
-                        loadMore();
+                    // 触发上拉加载的预取阈值：距离底部还剩 2 个时开始加载下一页。
+                    if (lastVisible >= totalCount - 1 - 2) {
+                        dataController.loadMore();
                     }
                 });
             }
         });
     }
 
+    /**
+     * 将四个委托与依赖、视图连接起来。
+     * 必须在 {@link #setupRecyclerView()} 之后调用（需要 adapter 和 layoutManager）。
+     */
+    private void wireDelegates() {
+        // 曝光委托：管理广告可见性检测与曝光记录。
+        exposureDelegate.bind(recyclerView, layoutManager, adapter,
+                interactionStore, adCatalog, analyticsTracker);
+
+        // 交互委托：处理点赞/收藏/分享/卡片点击。
+        interactionDelegate.bind(requireContext(), recyclerView, adapter,
+                interactionStore, adCatalog, analyticsTracker);
+
+        // 视频播放：创建成员C的控制器（同一时刻只有一个活跃视频）。
+        VideoPlaybackManager videoPlaybackManager = new VideoPlaybackManager();
+        Media3VideoPlayerController videoController = new Media3VideoPlayerController(
+                requireContext(), videoPlaybackManager);
+        interactionDelegate.bindVideo(videoPlaybackManager, videoController);
+
+        // 筛选管理器：管理标签筛选状态与筛选栏 UI。
+        filterManager.bind(requireContext(), adapter, filterBarContainer, filterBar);
+        filterManager.setOnFilterChangedListener(() ->
+                dataController.refreshChannel(dataController.getCurrentChannel(), true));
+
+        // 数据控制器：管理频道切换、分页加载、首屏状态。
+        dataController.bind(repository, adCatalog, interactionStore, analyticsTracker,
+                adapter, filterManager, exposureDelegate,
+                recyclerView, swipeRefresh, loadingView,
+                statusContainer, statusView, statusRetryHint);
+    }
+
     private void setupSwipeRefresh() {
         swipeRefresh.setColorSchemeResources(R.color.nbn_brand);
         // 下拉刷新：重新加载当前频道第一页。
-        swipeRefresh.setOnRefreshListener(() -> refreshChannel(currentChannel, false));
+        swipeRefresh.setOnRefreshListener(() ->
+                dataController.refreshChannel(dataController.getCurrentChannel(), false));
     }
 
     private void setupChannelTabs() {
-        // 为每个胶囊按钮绑定点击事件，点击切换频道并更新选中态。
+        // 为每个胶囊按钮绑定点击事件。
         for (int i = 0; i < tabButtons.length; i++) {
             final int index = i;
-            tabButtons[i].setOnClickListener(v -> selectTab(index));
+            tabButtons[i].setOnClickListener(v -> {
+                // 更新 Tab UI 选中态。
+                for (int j = 0; j < tabButtons.length; j++) {
+                    tabButtons[j].setSelected(j == index);
+                }
+                // 委托 DataController 处理频道切换与数据刷新。
+                dataController.selectChannel(index, null);
+            });
         }
         // 默认选中第一个（精选）。
-        selectTab(0);
-    }
-
-    /** 切换频道胶囊按钮的选中态，并刷新数据。 */
-    private void selectTab(int index) {
-        for (int i = 0; i < tabButtons.length; i++) {
-            tabButtons[i].setSelected(i == index);
-        }
-        String channel = CHANNELS.get(index);
-        if (!channel.equals(currentChannel)) {
-            currentTagFilter = null;
-            currentSearchAdIds = null;
-            refreshChannel(channel, true);
-        } else {
-            // 再次点击当前频道：回到顶部。
-            recyclerView.smoothScrollToPosition(0);
-        }
+        tabButtons[0].setSelected(true);
     }
 
     private void setupSearchEntry(View view) {
         // 搜索入口已迁移到底部导航，由 MainActivity 承载；这里兼容旧布局中仍存在入口按钮的情况。
         int searchButtonId = getResources().getIdentifier(
-                "openSearchButton",
-                "id",
-                requireContext().getPackageName()
-        );
+                "openSearchButton", "id", requireContext().getPackageName());
         if (searchButtonId == 0) {
             return;
         }
@@ -238,412 +291,52 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
             }
         });
     }
-    // 应用搜索结果刷新界面
+
+    private void wireFilterClearButton() {
+        filterClearAll.setOnClickListener(v -> filterManager.clearAll());
+    }
+
+    // ---- 公开方法 ----
+
+    /** 应用搜索结果刷新界面。 */
     public void applySearchResult(List<String> matchedAdIds) {
-        currentTagFilter = null;
-        currentSearchAdIds = (matchedAdIds == null || matchedAdIds.isEmpty())
-                ? null
-                : new ArrayList<>(matchedAdIds);
+        filterManager.applySearchResult(matchedAdIds);
         if (adapter != null) {
-            refreshChannel(currentChannel, true);
+            dataController.refreshChannel(dataController.getCurrentChannel(), true);
         }
-    }
-
-    /**
-     * 刷新某个频道的第一页。
-     *
-     * @param channel        频道名
-     * @param showFullLoading true=首屏全屏 loading（切频道/首次进入）；false=下拉刷新（用 SwipeRefresh 自带转圈）
-     */
-    private void refreshChannel(String channel, boolean showFullLoading) {
-        currentChannel = channel;
-        currentPage = 0;
-        hasMore = true;
-        isLoading = true;
-
-        // 首屏 loading 与下拉刷新转圈二选一，避免叠加。
-        if (showFullLoading) {
-            showLoading();
-        }
-        hideStatus();
-        adapter.setFooterState(FooterState.HIDDEN);
-
-        String channelParam = toChannelParam(channel);
-        // 增加currentTagFilter刷新
-        adCatalog.loadPage(channelParam, currentTagFilter, currentSearchAdIds, 0, false, new AdCatalog.Callback() {
-            @Override
-            public void onSuccess(FeedPage page) {
-                if (!isAdded()) {
-                    return; // 页面已销毁，丢弃回调，避免 NPE。
-                }
-                isLoading = false;
-                swipeRefresh.setRefreshing(false);
-                hideLoading();
-
-                List<AdItem> firstItems = page.getItems();
-                if (firstItems.isEmpty()) {
-                    adapter.submit(firstItems);
-                    showEmpty(); // 空态
-                    return;
-                }
-
-                adapter.submit(firstItems);
-                // 载入曝光点击数据
-                hydratePersistentCounts(firstItems);
-                //曝光检测
-                recyclerView.post(exposureCheckRunnable);
-                hideStatus();
-                hasMore = page.hasMore();
-                adapter.setFooterState(hasMore ? FooterState.HIDDEN : FooterState.NO_MORE);
-                // 刷新后回到顶部。
-                recyclerView.scrollToPosition(0);
-            }
-
-            @Override
-            public void onError(String message) {
-                if (!isAdded()) {
-                    return;
-                }
-                isLoading = false;
-                swipeRefresh.setRefreshing(false);
-                hideLoading();
-                // 首屏失败：列表为空则展示全屏错误态，否则只提示。
-                if (adapter.isEmpty()) {
-                    showError(message);
-                }
-            }
-        });
-    }
-
-    /** 加载下一页（上拉加载更多）。 */
-    private void loadMore() {
-        if (isLoading || !hasMore) {
-            return;
-        }
-        isLoading = true;
-        adapter.setFooterState(FooterState.LOADING);
-
-        int nextPage = currentPage + 1;
-        boolean failOnPurpose = shouldFailNextLoadMore;
-        shouldFailNextLoadMore = false; // 只失败一次，重试即成功。
-
-        adCatalog.loadPage(toChannelParam(currentChannel), currentTagFilter, currentSearchAdIds, nextPage, failOnPurpose,
-                new AdCatalog.Callback() {
-                    @Override
-                    public void onSuccess(FeedPage page) {
-                        if (!isAdded()) {
-                            return;
-                        }
-                        isLoading = false;
-                        currentPage = nextPage;
-                        List<AdItem> moreItems = page.getItems();
-                        adapter.append(moreItems);
-                        hydratePersistentCounts(moreItems);
-                        //曝光检测，避免新加载出来的广告未记录
-                        recyclerView.post(exposureCheckRunnable);
-                        hasMore = page.hasMore();
-                        adapter.setFooterState(hasMore ? FooterState.HIDDEN : FooterState.NO_MORE);
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        if (!isAdded()) {
-                            return;
-                        }
-                        isLoading = false;
-                        // 加载更多失败：footer 显示重试，点击重试再次 loadMore。
-                        adapter.setFooterState(FooterState.ERROR);
-                    }
-                });
-    }
-
-    /** “精选”当作全部初始流，传空字符串给 AdCatalog。 */
-    private String toChannelParam(String channel) {
-        return CHANNEL_FEATURED.equals(channel) ? "" : channel;
-    }
-    
-    // 从SQLite取曝光点击次数
-    private void hydratePersistentCounts(List<AdItem> ads) {
-        if (ads == null || ads.isEmpty() || analyticsTracker == null) {
-            return;
-        }
-        Map<String, AdAnalyticsEventCounts> countsByAdId = analyticsTracker.loadCountsByAdId();
-        if (countsByAdId.isEmpty()) {
-            return;
-        }
-        for (AdItem ad : ads) {
-            AdAnalyticsEventCounts counts = countsByAdId.get(ad.getId());
-            if (counts != null) {
-                interactionStore.applyCounts(ad, counts.getExposureCount(), counts.getClickCount());
-            }
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    private void checkVisibleExposures() {
-        if (recyclerView == null || layoutManager == null || adapter == null) {
-            return;
-        }
-
-        Map<String, Float> visibleRatios = new HashMap<>();
-        Map<String, AdItem> visibleAds = new HashMap<>();
-        Map<String, Integer> visiblePositions = new HashMap<>();
-
-        //获取当前可见的广告位置范围
-        int firstVisible = layoutManager.findFirstVisibleItemPosition();
-        int lastVisible = layoutManager.findLastVisibleItemPosition();
-        if (firstVisible != RecyclerView.NO_POSITION && lastVisible != RecyclerView.NO_POSITION) {
-            for (int position = firstVisible; position <= lastVisible; position++) {
-                //1、取广告数据
-                AdItem ad = adapter.getAdAt(position);
-                if (ad == null) {
-                    continue;
-                }
-                //2、根据位置获取ViewHolder
-                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-                if (holder == null) {
-                    continue;
-                }
-                //3、计算ViewHolder可见比例
-                float visibleRatio = visibleRatioOf(holder.itemView);
-                //4、构建临时数据
-                visibleRatios.put(ad.getId(), visibleRatio);
-                visibleAds.put(ad.getId(), ad);
-                visiblePositions.put(ad.getId(), position);
-            }
-        }
-
-        long nowMillis = SystemClock.elapsedRealtime();
-        //将当前可见广告比例和时间戳传入，返回触发曝光逻辑的id
-        List<String> exposedAdIds = exposureTracker.onVisibilityChanged(visibleRatios, nowMillis);
-        for (String adId : exposedAdIds) {
-            AdItem ad = visibleAds.get(adId);
-            Integer position = visiblePositions.get(adId);
-            // 曝光落库需要记录触发时的可见比例，因此从同一轮检测结果里取回。
-            Float visibleRatio = visibleRatios.get(adId);
-            if (ad != null && position != null && visibleRatio != null) {
-                //记录曝光数据
-                recordExposure(ad, position, visibleRatio);
-            }
-        }
-        //安排下一次检查
-        scheduleNextExposureCheck(nowMillis);
-    }
-
-    private float visibleRatioOf(View itemView) {
-        int width = itemView.getWidth();
-        int height = itemView.getHeight();
-        if (width <= 0 || height <= 0) {
-            return 0f;
-        }
-
-        Rect visibleRect = new Rect();
-        if (!itemView.getGlobalVisibleRect(visibleRect)) {
-            return 0f;
-        }
-
-        int visibleArea = visibleRect.width() * visibleRect.height();
-        int totalArea = width * height;
-        if (totalArea <= 0) {
-            return 0f;
-        }
-        return Math.min(1f, (float) visibleArea / (float) totalArea);
-    }
-
-    private void recordExposure(AdItem ad, int position, float visibleRatio) {
-        InteractionState state = interactionStore.stateOf(ad);
-        state.increaseExposureCount();
-        // 通过 AdCatalog 后台线程上报曝光事件，避免主线程网络调用。
-        adCatalog.updateInteraction(ad.getId(), InteractionAction.EXPOSE);
-        // 本地 SQLite 持久化曝光记录。
-        analyticsTracker.trackExposure(ad.getId(), visibleRatio, ExposureTracker.DEFAULT_DWELL_MILLIS);
-        //更新RecyclerView上的卡片数据
-        adapter.notifyItemChanged(position);
-    }
-
-    private void scheduleNextExposureCheck(long nowMillis) {
-        recyclerView.removeCallbacks(exposureCheckRunnable);
-        long delayMillis = exposureTracker.nextCheckDelayMillis(nowMillis);
-        if (delayMillis >= 0L) {
-            //延时执行同一个曝光检查
-            recyclerView.postDelayed(exposureCheckRunnable, delayMillis);
-        }
-    }
-
-    // ---- 首屏状态切换 ----
-
-    private void showLoading() {
-        loadingView.setVisibility(View.VISIBLE);
-        statusContainer.setVisibility(View.GONE);
-    }
-
-    private void hideLoading() {
-        loadingView.setVisibility(View.GONE);
-    }
-
-    private void showEmpty() {
-        statusContainer.setVisibility(View.VISIBLE);
-        statusView.setText(R.string.feed_empty);
-        statusRetryHint.setVisibility(View.VISIBLE);
-        statusContainer.setOnClickListener(v -> refreshChannel(currentChannel, true));
-    }
-
-    private void showError(String message) {
-        statusContainer.setVisibility(View.VISIBLE);
-        statusView.setText(message != null ? message : getString(R.string.feed_error));
-        statusRetryHint.setVisibility(View.VISIBLE);
-        statusContainer.setOnClickListener(v -> refreshChannel(currentChannel, true));
-    }
-
-    private void hideStatus() {
-        statusContainer.setVisibility(View.GONE);
     }
 
     // ---- FeedInteractionListener 实现 ----
+    // 每个方法委托给对应的组件，Fragment 作为纯协调层。
 
     @Override
     public void onCardClick(AdItem ad, int position) {
-        // 点击卡片计一次点击，并通过 repository 上报后端。
-        InteractionState state = interactionStore.stateOf(ad);
-        state.increaseClickCount();
-        analyticsTracker.trackClick(ad.getId());
-        // 通过 AdCatalog 后台线程上报点击事件，避免主线程网络调用。
-        adCatalog.updateInteraction(ad.getId(), InteractionAction.CLICK);
-        adapter.notifyItemChanged(position);
-
-        // 跳转详情页。把展示字段通过 Intent 传过去（AdRepository 暂无按 id 查询接口，
-        // 属人员B数据层，这里不改其文件）；互动状态由详情页通过 InteractionStore 按 adId 取共享实例。
-        startActivity(com.nbn.adfeed.ui.detail.AdDetailActivity.newIntent(requireContext(), ad));
-        // 页面切换动画：右进左出的滑入效果。
-        requireActivity().overridePendingTransition(
-                android.R.anim.slide_in_left, android.R.anim.fade_out);
+        interactionDelegate.onCardClick(ad, position);
     }
 
     @Override
     public void onLikeClick(AdItem ad, int position) {
-        boolean liked = interactionStore.toggleLike(ad);
-        // 通过 AdCatalog 后台线程上报切换点赞状态。
-        adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
-        // 刷新该项以更新图标颜色与文案。
-        adapter.notifyItemChanged(position);
-        // 点赞彩蛋：仅在”点亮”时播放一次心形放大动画。
-        if (liked) {
-            playLikeBurst(position);
-        }
+        interactionDelegate.onLikeClick(ad, position);
     }
 
     @Override
     public void onCollectClick(AdItem ad, int position) {
-        interactionStore.toggleCollect(ad);
-        // 通过 AdCatalog 后台线程上报切换收藏状态。
-        adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
-        adapter.notifyItemChanged(position);
+        interactionDelegate.onCollectClick(ad, position);
     }
 
     @Override
     public void onShareClick(AdItem ad, int position) {
-        // 通过 AdCatalog 后台线程上报分享事件。
-        adCatalog.updateInteraction(ad.getId(), InteractionAction.SHARE);
-        // 本地模拟分享：弹出系统分享面板（无真实链接，用标题占位），并提示。
-        android.content.Intent share = new android.content.Intent(android.content.Intent.ACTION_SEND);
-        share.setType("text/plain");
-        share.putExtra(android.content.Intent.EXTRA_TEXT, ad.getTitle() + " · " + ad.getBrand());
-        try {
-            startActivity(android.content.Intent.createChooser(share, getString(R.string.feed_action_share)));
-        } catch (Exception ignored) {
-            // 某些环境无分享目标，降级为 Toast 提示。
-        }
-        android.widget.Toast.makeText(requireContext(),
-                getString(R.string.feed_shared_toast, ad.getTitle()),
-                android.widget.Toast.LENGTH_SHORT).show();
+        interactionDelegate.onShareClick(ad, position);
     }
-    // tag点击时把事件转发给FeedFragment
+
     @Override
     public void onTagClick(AdItem ad, String tag, int position) {
-        if (tag == null || tag.isEmpty()) {
-            return;
-        }
-        // 重复点击逻辑处理
-        currentSearchAdIds = null;
-        if (tag.equals(currentTagFilter)) {     
-            currentTagFilter = null;
-        } else {
-            currentTagFilter = tag;
-        }
-        refreshChannel(currentChannel, true);
+        // 标签点击由 FilterManager 管理状态并自动触发 onFilterChanged → 数据刷新。
+        filterManager.toggleTag(tag);
     }
 
     @Override
     public void onVideoPlayClick(AdItem ad, int position) {
-        // 外流视频：点击播放按钮切换播放状态。这里接入人员C的 VideoPlaybackManager
-        // 思路（同一时刻只有一个活跃视频），由于本类不持有其实例，先做 UI 占位提示。
-        android.widget.Toast.makeText(requireContext(),
-                getString(R.string.detail_playing_hint),
-                android.widget.Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * 点赞彩蛋动画：在被点赞的心形图标上播放一次放大回弹。
-     *
-     * <p>从 RecyclerView 找到该 position 的 ViewHolder，取出心形图标做缩放动画。
-     * 若该项已滚出屏幕（ViewHolder 为 null），则安全跳过。</p>
-     */
-    private void playLikeBurst(int position) {
-        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-        if (!(holder instanceof FeedAdapter.AdViewHolder)) {
-            return;
-        }
-        View likeIcon = holder.itemView.findViewById(R.id.likeIcon);
-        if (likeIcon == null) {
-            return;
-        }
-        likeIcon.animate().cancel();
-        likeIcon.setScaleX(0.7f);
-        likeIcon.setScaleY(0.7f);
-        // 放大并回弹，OvershootInterpolator 制造“弹一下”的彩蛋感。
-        likeIcon.animate()
-                .scaleX(1.25f).scaleY(1.25f)
-                .setDuration(160)
-                .setInterpolator(new android.view.animation.OvershootInterpolator())
-                .withEndAction(() -> likeIcon.animate()
-                        .scaleX(1f).scaleY(1f)
-                        .setDuration(120)
-                        .start())
-                .start();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // 从详情页返回后，互动状态可能在详情页被改过（如点赞），
-        // 这里刷新可见项，保证信息流与详情页状态同步。
-        if (adapter != null && !adapter.isEmpty()) {
-            adapter.notifyDataSetChanged();
-            //刷新后补充一次曝光检查
-            if (recyclerView != null) {
-                recyclerView.post(exposureCheckRunnable);
-            }
-        }
-    }
-
-    
-    @Override
-    public void onPause() {
-        // 离开页面时停止曝光
-        if (recyclerView != null) {
-            recyclerView.removeCallbacks(exposureCheckRunnable);
-        }
-        //通过传入空的可见广告取消任务执行
-        exposureTracker.onVisibilityChanged(new HashMap<>(), SystemClock.elapsedRealtime());
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroyView() {
-        //销毁时停止曝光
-        if (recyclerView != null) {
-            recyclerView.removeCallbacks(exposureCheckRunnable);
-        }
-        super.onDestroyView();
+        interactionDelegate.onVideoPlayClick(ad, position);
     }
 }

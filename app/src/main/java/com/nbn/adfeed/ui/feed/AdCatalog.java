@@ -46,6 +46,19 @@ public final class AdCatalog {
     /** 记录上一次请求返回的 nextCursor，用于加载下一页。 */
     private String nextCursor = null;
 
+    /**
+     * 刷新打乱缓存：每次下拉刷新时把整个频道的数据拉全、随机打乱后缓存在这里，
+     * 加载更多再从这份缓存里按窗口切片。这样在数据层"确定性分页"（每次首屏返回同一批）
+     * 的前提下，让用户每次下拉刷新都能看到不同的卡片组合。
+     *
+     * <p>注意：这是 UI 层的展示性处理，不修改人员B的数据层；真正的"新内容"仍取决于后端。</p>
+     */
+    private List<AdItem> shuffledPool = null;
+    /** shuffledPool 对应的频道，频道切换时缓存失效。 */
+    private String shuffledChannel = null;
+    /** 拉全频道时最多翻多少页，避免对真实后端发起过多请求。 */
+    private static final int MAX_POOL_PAGES = 10;
+
     /** 注入 Repository（来自人员B），便于后续从 Mock 切换到 Remote。 */
     public AdCatalog(AdRepository repository) {
         this.repository = repository;
@@ -76,37 +89,68 @@ public final class AdCatalog {
                          int page,
                          boolean failOnPurpose,
                          Callback callback) {
+        // 把单标签包装成列表，复用多标签实现。
+        List<String> tagFilters = (tagFilter == null || tagFilter.isEmpty())
+                ? null
+                : java.util.Collections.singletonList(tagFilter);
+        loadPageWithTags(channel, tagFilters, searchAdIds, page, failOnPurpose, callback);
+    }
+
+    /**
+     * 多标签筛选版本：tagFilters 中的标签做 AND 过滤（广告需同时包含所有标签）。
+     *
+     * @param tagFilters 筛选标签集合；为空表示不按标签过滤。
+     */
+    public void loadPageWithTags(String channel,
+                                 List<String> tagFilters,
+                                 List<String> searchAdIds,
+                                 int page,
+                                 boolean failOnPurpose,
+                                 Callback callback) {
         // 在后台线程执行 repository 调用（可能涉及网络），避免主线程阻塞。
         executor.execute(() -> {
             try {
-                // 如果有搜索 ID 过滤，走 searchAds 路径。
+                boolean hasTags = tagFilters != null && !tagFilters.isEmpty();
+
+                // 如果有搜索 ID 过滤，走搜索过滤路径（再叠加标签 AND 过滤）。
                 if (searchAdIds != null && !searchAdIds.isEmpty()) {
-                    DataResult<PageResult<AdItem>> result = loadSearchFilteredSync(channel, tagFilter, searchAdIds);
-                    postResult(result, tagFilter, searchAdIds, callback);
+                    DataResult<PageResult<AdItem>> result = loadSearchFilteredSync(channel, tagFilters, searchAdIds);
+                    postDispatch(result, callback);
                     return;
                 }
-                // 如果有 tag 过滤，走 searchAds(tag) 路径。
-                if (tagFilter != null && !tagFilter.isEmpty()) {
-                    SearchRequest searchRequest = SearchRequest.tag(tagFilter);
-                    DataResult<PageResult<AdItem>> result = repository.searchAds(searchRequest);
+                // 如果有标签过滤：加载频道数据后本地 AND 过滤（searchAds 只支持单标签，多标签需本地处理）。
+                if (hasTags) {
+                    DataResult<PageResult<AdItem>> result = loadTagFilteredSync(channel, tagFilters);
                     postDispatch(result, callback);
                     return;
                 }
 
-                // 正式分页：第一页用 firstPage，后续用 nextPage。
+                // 无过滤：刷新（page==0）时拉全频道并打乱缓存，返回首窗口；
+                // 加载更多（page>0）从打乱后的缓存里按窗口切片，保证不重复、不遗漏。
                 String ch = (channel == null) ? "" : channel;
-                PageRequest request;
                 if (page == 0) {
-                    request = PageRequest.firstPage(ch, PAGE_SIZE);
-                    nextCursor = null; // 重置 cursor。
-                } else {
-                    // 如果没有 nextCursor，构造一个 page_N 格式的 cursor。
-                    String cursor = (nextCursor != null) ? nextCursor : "page_" + (page + 1);
-                    request = PageRequest.nextPage(ch, cursor, PAGE_SIZE);
+                    List<AdItem> pool = loadWholeChannelSync(ch);
+                    if (pool.isEmpty()) {
+                        // 拉不到数据（远程异常且 mock 也为空）：回退到原始首屏请求，走正常错误/空态分发。
+                        DataResult<PageResult<AdItem>> result = repository.loadAds(PageRequest.firstPage(ch, PAGE_SIZE));
+                        postDispatch(result, callback);
+                        return;
+                    }
+                    java.util.Collections.shuffle(pool);
+                    shuffledPool = pool;
+                    shuffledChannel = ch;
+                    postDispatch(buildPoolPage(0), callback);
+                    return;
                 }
 
-                DataResult<PageResult<AdItem>> result = repository.loadAds(request);
-                postDispatch(result, callback);
+                // 加载更多：缓存仍属于当前频道才用，否则重新拉全。
+                if (shuffledPool == null || !ch.equals(shuffledChannel)) {
+                    List<AdItem> pool = loadWholeChannelSync(ch);
+                    java.util.Collections.shuffle(pool);
+                    shuffledPool = pool;
+                    shuffledChannel = ch;
+                }
+                postDispatch(buildPoolPage(page), callback);
             } catch (Exception e) {
                 mainHandler.post(() -> callback.onError("加载失败，点击重试"));
             }
@@ -132,8 +176,80 @@ public final class AdCatalog {
         });
     }
 
-    /** 按搜索 ID 过滤：先加载频道数据，再在本地过滤匹配的广告 ID。 */
-    private DataResult<PageResult<AdItem>> loadSearchFilteredSync(String channel, String tagFilter,
+    /**
+     * 拉全某个频道的数据：从首屏开始按 nextCursor 翻页，直到没有更多或达到 MAX_POOL_PAGES。
+     * 用于刷新时构建"打乱池"。拉不到任何数据时返回空列表。
+     */
+    private List<AdItem> loadWholeChannelSync(String channel) {
+        String ch = (channel == null) ? "" : channel;
+        List<AdItem> all = new ArrayList<>();
+        java.util.Set<String> seenIds = new java.util.HashSet<>();
+        String cursor = null;
+        for (int i = 0; i < MAX_POOL_PAGES; i++) {
+            PageRequest request = (i == 0)
+                    ? PageRequest.firstPage(ch, PAGE_SIZE)
+                    : PageRequest.nextPage(ch, cursor, PAGE_SIZE);
+            DataResult<PageResult<AdItem>> result = repository.loadAds(request);
+            if (result == null || !result.isSuccess() || !result.hasData()) {
+                break;
+            }
+            PageResult<AdItem> pageResult = result.getData();
+            for (AdItem item : pageResult.getItems()) {
+                // 去重：不同页若返回了相同 id 不重复收集，避免后端 cursor 异常导致死循环式堆积。
+                if (item != null && seenIds.add(item.getId())) {
+                    all.add(item);
+                }
+            }
+            cursor = pageResult.getNextCursor();
+            if (!pageResult.hasMore() || cursor == null) {
+                break;
+            }
+        }
+        return all;
+    }
+
+    /**
+     * 从打乱后的缓存池里切出第 page 页（page 从 0 开始），包装成成功结果。
+     * hasMore 表示池里是否还有后续窗口。
+     */
+    private DataResult<PageResult<AdItem>> buildPoolPage(int page) {
+        List<AdItem> pool = (shuffledPool == null) ? new ArrayList<>() : shuffledPool;
+        int start = page * PAGE_SIZE;
+        if (start >= pool.size()) {
+            return DataResult.success(
+                    new PageResult<>(new ArrayList<>(), "page_" + (page + 1), null, false,
+                            page + 1, PAGE_SIZE, pool.size(), "shuffled"),
+                    "shuffled");
+        }
+        int end = Math.min(start + PAGE_SIZE, pool.size());
+        boolean hasMore = end < pool.size();
+        String nextCursor = hasMore ? "page_" + (page + 2) : null;
+        List<AdItem> window = new ArrayList<>(pool.subList(start, end));
+        return DataResult.success(
+                new PageResult<>(window, "page_" + (page + 1), nextCursor, hasMore,
+                        page + 1, PAGE_SIZE, pool.size(), "shuffled"),
+                "shuffled");
+    }
+
+    /** 按标签 AND 过滤：加载频道首屏数据后，在本地保留同时包含所有标签的广告。 */
+    private DataResult<PageResult<AdItem>> loadTagFilteredSync(String channel, List<String> tagFilters) {
+        String ch = (channel == null) ? "" : channel;
+        PageRequest request = PageRequest.firstPage(ch, PAGE_SIZE);
+        DataResult<PageResult<AdItem>> result = repository.loadAds(request);
+
+        if (result == null || !result.isSuccess() || !result.hasData()) {
+            return result;
+        }
+
+        List<AdItem> filtered = TagFilter.byTags(result.getData().getItems(), tagFilters);
+        return DataResult.success(
+                new PageResult<>(filtered, "page_1", null, false, 1, PAGE_SIZE, filtered.size(), "tag_filtered"),
+                "tag_filtered"
+        );
+    }
+
+    /** 按搜索 ID 过滤：先加载频道数据，再在本地过滤匹配的广告 ID（可叠加标签 AND 过滤）。 */
+    private DataResult<PageResult<AdItem>> loadSearchFilteredSync(String channel, List<String> tagFilters,
                                                                    List<String> searchAdIds) {
         String ch = (channel == null) ? "" : channel;
         PageRequest request = PageRequest.firstPage(ch, PAGE_SIZE);
@@ -151,22 +267,15 @@ public final class AdCatalog {
                 filtered.add(item);
             }
         }
-        // 再按 tag 二次过滤（如果有）。
-        if (tagFilter != null && !tagFilter.isEmpty()) {
-            filtered = TagFilter.byTag(filtered, tagFilter);
+        // 再按标签 AND 二次过滤（如果有）。
+        if (tagFilters != null && !tagFilters.isEmpty()) {
+            filtered = TagFilter.byTags(filtered, tagFilters);
         }
 
         return DataResult.success(
                 new PageResult<>(filtered, "page_1", null, false, 1, PAGE_SIZE, filtered.size(), "filtered"),
                 "filtered"
         );
-    }
-
-    /** 在主线程分发搜索过滤结果。 */
-    private void postResult(DataResult<PageResult<AdItem>> result,
-                            String tagFilter, List<String> searchAdIds,
-                            Callback callback) {
-        postDispatch(result, callback);
     }
 
     /**

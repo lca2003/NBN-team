@@ -39,9 +39,15 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final int TYPE_VIDEO = 3;
     private static final int TYPE_FOOTER = 9;
 
+    /** Payload key：标签筛选变化时只刷新 tag chip，不重新绑定图片/文字。 */
+    private static final String PAYLOAD_TAGS = "tags";
+
     private final List<AdItem> items = new ArrayList<>();
     private final FeedInteractionListener listener;
     private final InteractionStore interactionStore = InteractionStore.get();
+
+    /** 当前筛选选中的标签集合，命中的标签会在卡片上高亮展示。 */
+    private java.util.Set<String> selectedTags = java.util.Collections.emptySet();
 
     /** 当前 footer 状态，决定列表末尾那一项怎么显示。 */
     private FooterState footerState = FooterState.HIDDEN;
@@ -50,6 +56,13 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.listener = listener;
         // 稳定 id 有助于刷新时的动画与复用正确性。
         setHasStableIds(false);
+    }
+
+    /** 更新当前筛选标签集合并刷新列表，使卡片上命中的标签高亮。 */
+    public void setSelectedTags(java.util.Set<String> tags) {
+        this.selectedTags = (tags == null) ? java.util.Collections.emptySet() : new java.util.HashSet<>(tags);
+        // 使用 payload 只刷新标签显示，避免全量 rebind（图片、文字不变）。
+        notifyItemRangeChanged(0, items.size(), PAYLOAD_TAGS);
     }
 
     /** 整体替换数据（下拉刷新、切换频道时用）。 */
@@ -149,6 +162,27 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ((AdViewHolder) holder).bind(ad);
     }
 
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position,
+                                 @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+            return;
+        }
+        if (holder instanceof AdViewHolder) {
+            AdItem ad = items.get(position);
+            for (Object payload : payloads) {
+                if (PAYLOAD_TAGS.equals(payload)) {
+                    // 仅刷新标签 chip，跳过图片/文字/互动栏绑定。
+                    ((AdViewHolder) holder).bindTags(ad);
+                    return;
+                }
+            }
+        }
+        // 其他 payload 或不认识 → 走完整绑定。
+        onBindViewHolder(holder, position);
+    }
+
     /**
      * 广告卡片 ViewHolder，三种样式共用。
      *
@@ -157,23 +191,25 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
      * 播放按钮与播放状态。</p>
      */
     final class AdViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView mediaImage;
-        private final TextView brandText;
-        private final TextView titleText;
-        private final TextView summaryText;
-        private final LinearLayout tagGroup;
-        private final TextView statsText;
+        final ImageView mediaImage;
+        final TextView brandText;
+        final TextView titleText;
+        final TextView summaryText;
+        final LinearLayout tagGroup;
+        final TextView statsText;
 
         // 互动栏（来自 include 的 view_interaction_bar）。
-        private final View likeContainer;
-        private final ImageView likeIcon;
-        private final View collectContainer;
-        private final ImageView collectIcon;
-        private final View shareContainer;
+        final View likeContainer;
+        final ImageView likeIcon;
+        final View collectContainer;
+        final ImageView collectIcon;
+        final View shareContainer;
 
-        // 仅视频卡有这两个；其他卡为 null。
-        private final View playButton;
-        private final TextView videoStateText;
+        // 仅视频卡有这些控件；其他卡为 null。
+        final View playButton;
+        final TextView videoStateText;
+        final View videoScrim;
+        final androidx.media3.ui.PlayerView videoPlayerView;
 
         AdViewHolder(@NonNull View itemView, boolean isVideo) {
             super(itemView);
@@ -192,6 +228,8 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             playButton = isVideo ? itemView.findViewById(R.id.playButton) : null;
             videoStateText = isVideo ? itemView.findViewById(R.id.videoStateText) : null;
+            videoScrim = isVideo ? itemView.findViewById(R.id.videoScrim) : null;
+            videoPlayerView = isVideo ? itemView.findViewById(R.id.videoPlayerView) : null;
         }
 
         void bind(AdItem ad) {
@@ -201,12 +239,13 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             titleText.setText(ad.getTitle());
             summaryText.setText(ad.getSummary());
             //标签点击时把事件转发给 FeedFragment
+            //标签点击时把事件转发给 FeedFragment，命中筛选的标签高亮
             TagChipBinder.bind(tagGroup, ad.getTags(), tag -> {
                 int pos = getBindingAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION) {
                     listener.onTagClick(ad, tag, pos);
                 }
-            });
+            }, selectedTags);
 
             // 互动状态统一从 Store 读取，保证与详情页一致。
             InteractionState state = interactionStore.stateOf(ad);
@@ -254,6 +293,16 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 });
             }
+        }
+
+        /** 仅刷新标签 chip（payload 精简绑定），跳过图片加载与文字设置。 */
+        void bindTags(AdItem ad) {
+            TagChipBinder.bind(tagGroup, ad.getTags(), tag -> {
+                int pos = getBindingAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    listener.onTagClick(ad, tag, pos);
+                }
+            }, selectedTags);
         }
 
         /** 根据点赞态切换心形图标颜色。 */

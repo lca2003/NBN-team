@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="64dp"
         android:background="@color/nbn_surface"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -27,8 +27,8 @@
 
             <ImageView
                 android:id="@+id/navHomeIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:contentDescription="@string/nav_home"
                 android:src="@drawable/ic_nav_home" />
 
@@ -36,10 +36,10 @@
                 android:id="@+id/navHomeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="3dp"
                 android:text="@string/nav_home"
                 android:textColor="@color/nbn_text_secondary"
-                android:textSize="10sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -53,8 +53,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:contentDescription="@string/nav_search"
                 android:src="@drawable/ic_nav_search" />
 
@@ -62,10 +62,10 @@
                 android:id="@+id/navSearchText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="3dp"
                 android:text="@string/nav_search"
                 android:textColor="@color/nbn_text_secondary"
-                android:textSize="10sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,8 +80,8 @@
 
             <ImageView
                 android:id="@+id/navStatsIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:contentDescription="@string/nav_stats"
                 android:src="@drawable/ic_nav_stats" />
 
@@ -89,10 +89,10 @@
                 android:id="@+id/navStatsText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="3dp"
                 android:text="@string/nav_stats"
                 android:textColor="@color/nbn_text_secondary"
-                android:textSize="10sp" />
+                android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
 </merge>

@@ -2,6 +2,7 @@
 <!-- 广告详情页：顶部返回栏 + 封面（图文/视频占位）+ 标题/品牌/摘要 + 智能标签 + 统计 + 底部互动栏。
      与信息流共享 InteractionStore，点赞/收藏状态实时同步；返回信息流时位置自动保持。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -66,6 +67,15 @@
                     android:background="@drawable/bg_media_placeholder"
                     android:contentDescription="@string/detail_title"
                     android:scaleType="centerCrop" />
+
+                <!-- 视频播放器：默认隐藏，视频类型且点击播放时显示并接入成员C的 ExoPlayer 控制器。 -->
+                <androidx.media3.ui.PlayerView
+                    android:id="@+id/detailPlayerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:resize_mode="zoom"
+                    app:use_controller="true"
+                    android:visibility="gone" />
 
                 <View
                     android:id="@+id/detailVideoScrim"
