@@ -219,7 +219,6 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             summaryText = itemView.findViewById(R.id.summaryText);
             tagGroup = itemView.findViewById(R.id.tagGroup);
             statsText = itemView.findViewById(R.id.statsText);
-            mediaImage = itemView.findViewById(R.id.mediaImage);
 
             likeContainer = itemView.findViewById(R.id.likeContainer);
             likeIcon = itemView.findViewById(R.id.likeIcon);
@@ -239,8 +238,6 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             brandText.setText(ad.getBrand());
             titleText.setText(ad.getTitle());
             summaryText.setText(ad.getSummary());
-            AdMediaLoader.loadFeedImage(mediaImage, ad);
-            //标签点击时把事件转发给 FeedFragment
             //标签点击时把事件转发给 FeedFragment，命中筛选的标签高亮
             TagChipBinder.bind(tagGroup, ad.getTags(), tag -> {
                 int pos = getBindingAdapterPosition();
