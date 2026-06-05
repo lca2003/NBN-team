@@ -15,6 +15,7 @@ import com.nbn.adfeed.R;
 import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.InteractionState;
+import com.nbn.adfeed.ui.media.AdMediaLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,6 +162,7 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private final TextView summaryText;
         private final LinearLayout tagGroup;
         private final TextView statsText;
+        private final ImageView mediaImage;
 
         // 互动栏（来自 include 的 view_interaction_bar）。
         private final View likeContainer;
@@ -180,6 +182,7 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             summaryText = itemView.findViewById(R.id.summaryText);
             tagGroup = itemView.findViewById(R.id.tagGroup);
             statsText = itemView.findViewById(R.id.statsText);
+            mediaImage = itemView.findViewById(R.id.mediaImage);
 
             likeContainer = itemView.findViewById(R.id.likeContainer);
             likeIcon = itemView.findViewById(R.id.likeIcon);
@@ -195,6 +198,7 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             brandText.setText(ad.getBrand());
             titleText.setText(ad.getTitle());
             summaryText.setText(ad.getSummary());
+            AdMediaLoader.loadFeedImage(mediaImage, ad);
             //标签点击时把事件转发给 FeedFragment
             TagChipBinder.bind(tagGroup, ad.getTags(), tag -> {
                 int pos = getBindingAdapterPosition();
