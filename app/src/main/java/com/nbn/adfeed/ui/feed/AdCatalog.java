@@ -5,6 +5,7 @@ import android.os.Looper;
 
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.DataResult;
+import com.nbn.adfeed.data.model.InteractionAction;
 import com.nbn.adfeed.data.model.PageRequest;
 import com.nbn.adfeed.data.model.PageResult;
 import com.nbn.adfeed.data.model.SearchRequest;
@@ -108,6 +109,25 @@ public final class AdCatalog {
                 postDispatch(result, callback);
             } catch (Exception e) {
                 mainHandler.post(() -> callback.onError("加载失败，点击重试"));
+            }
+        });
+    }
+
+    /**
+     * 在后台线程上报互动事件（点赞/收藏/分享/点击/曝光）。
+     *
+     * <p>repository.updateInteraction() 内部会走 HTTP 请求，必须放到后台线程，
+     * 否则在主线程调用会抛 NetworkOnMainThreadException。</p>
+     */
+    public void updateInteraction(String adId, InteractionAction action) {
+        if (adId == null || action == null) {
+            return;
+        }
+        executor.execute(() -> {
+            try {
+                repository.updateInteraction(adId, action);
+            } catch (Exception ignored) {
+                // 互动上报失败不影响 UI，UI 已用本地 InteractionStore 即时刷新。
             }
         });
     }

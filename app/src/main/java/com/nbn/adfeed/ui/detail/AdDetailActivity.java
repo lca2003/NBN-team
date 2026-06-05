@@ -55,6 +55,9 @@ public final class AdDetailActivity extends AppCompatActivity {
     private static final String EXTRA_VIDEO_URL = "extra_ad_video_url";
 
     private final InteractionStore interactionStore = InteractionStore.get();
+    // 后台线程池：互动上报和 AI 请求都走 repository/service 的 HTTP 调用，不能在主线程执行。
+    private final java.util.concurrent.ExecutorService executor =
+            java.util.concurrent.Executors.newSingleThreadExecutor();
 
     private AdRepository repository;
     private AdAiService aiService;
@@ -275,8 +278,8 @@ public final class AdDetailActivity extends AppCompatActivity {
 
         findViewById(R.id.likeContainer).setOnClickListener(v -> {
             boolean liked = interactionStore.toggleLike(ad);
-            // 通过 repository 上报后端。
-            repository.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
+            // 后台线程上报后端，避免主线程网络调用。
+            reportInteraction(InteractionAction.TOGGLE_LIKE);
             renderLike();
             if (liked) {
                 playLikeBurst();
@@ -284,13 +287,13 @@ public final class AdDetailActivity extends AppCompatActivity {
         });
         findViewById(R.id.collectContainer).setOnClickListener(v -> {
             interactionStore.toggleCollect(ad);
-            // 通过 repository 上报后端。
-            repository.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
+            // 后台线程上报后端。
+            reportInteraction(InteractionAction.TOGGLE_COLLECT);
             renderCollect();
         });
         findViewById(R.id.shareContainer).setOnClickListener(v -> {
-            // 通过 repository 上报后端。
-            repository.updateInteraction(ad.getId(), InteractionAction.SHARE);
+            // 后台线程上报后端。
+            reportInteraction(InteractionAction.SHARE);
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_TEXT, ad.getTitle() + " · " + ad.getBrand());
@@ -302,6 +305,30 @@ public final class AdDetailActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.feed_shared_toast, ad.getTitle()),
                     Toast.LENGTH_SHORT).show();
         });
+    }
+
+    /**
+     * 在后台线程上报互动事件，避免主线程网络调用导致 NetworkOnMainThreadException。
+     */
+    private void reportInteraction(InteractionAction action) {
+        if (ad == null || repository == null) {
+            return;
+        }
+        String adId = ad.getId();
+        executor.execute(() -> {
+            try {
+                repository.updateInteraction(adId, action);
+            } catch (Exception ignored) {
+                // 上报失败不影响 UI，本地 InteractionStore 已即时刷新。
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        // 关闭后台线程池，避免 Activity 销毁后线程泄漏。
+        executor.shutdown();
+        super.onDestroy();
     }
 
     private void renderStats() {

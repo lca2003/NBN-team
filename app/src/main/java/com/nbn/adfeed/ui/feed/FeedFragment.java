@@ -167,17 +167,21 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
-                //曝光检测
-                checkVisibleExposures();
-                if (dy <= 0) {
-                    return; // 只在向下滚动时考虑预取。
-                }
-                int totalCount = layoutManager.getItemCount();
-                int lastVisible = layoutManager.findLastVisibleItemPosition();
-                // 还有更多、当前空闲、滚动到接近底部 -> 加载下一页。
-                if (hasMore && !isLoading && lastVisible >= totalCount - 1 - PREFETCH_DISTANCE) {
-                    loadMore();
-                }
+                // 滚动回调期间不能直接修改 adapter 数据（曝光刷新、footer 状态），
+                // 否则 RecyclerView 会抛 IllegalStateException。推迟到下一帧执行。
+                rv.post(() -> {
+                    //曝光检测
+                    checkVisibleExposures();
+                    if (dy <= 0) {
+                        return; // 只在向下滚动时考虑预取。
+                    }
+                    int totalCount = layoutManager.getItemCount();
+                    int lastVisible = layoutManager.findLastVisibleItemPosition();
+                    // 还有更多、当前空闲、滚动到接近底部 -> 加载下一页。
+                    if (hasMore && !isLoading && lastVisible >= totalCount - 1 - PREFETCH_DISTANCE) {
+                        loadMore();
+                    }
+                });
             }
         });
     }
@@ -449,8 +453,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     private void recordExposure(AdItem ad, int position, float visibleRatio) {
         InteractionState state = interactionStore.stateOf(ad);
         state.increaseExposureCount();
-        // 通过 repository 通知后端曝光事件。
-        repository.updateInteraction(ad.getId(), InteractionAction.EXPOSE);
+        // 通过 AdCatalog 后台线程上报曝光事件，避免主线程网络调用。
+        adCatalog.updateInteraction(ad.getId(), InteractionAction.EXPOSE);
         // 本地 SQLite 持久化曝光记录。
         analyticsTracker.trackExposure(ad.getId(), visibleRatio, ExposureTracker.DEFAULT_DWELL_MILLIS);
         //更新RecyclerView上的卡片数据
@@ -503,8 +507,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         InteractionState state = interactionStore.stateOf(ad);
         state.increaseClickCount();
         analyticsTracker.trackClick(ad.getId());
-        // 通过 repository 通知后端点击事件。
-        repository.updateInteraction(ad.getId(), InteractionAction.CLICK);
+        // 通过 AdCatalog 后台线程上报点击事件，避免主线程网络调用。
+        adCatalog.updateInteraction(ad.getId(), InteractionAction.CLICK);
         adapter.notifyItemChanged(position);
 
         // 跳转详情页。把展示字段通过 Intent 传过去（AdRepository 暂无按 id 查询接口，
@@ -518,8 +522,8 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     @Override
     public void onLikeClick(AdItem ad, int position) {
         boolean liked = interactionStore.toggleLike(ad);
-        // 通过 repository 通知后端切换点赞状态。
-        repository.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
+        // 通过 AdCatalog 后台线程上报切换点赞状态。
+        adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
         // 刷新该项以更新图标颜色与文案。
         adapter.notifyItemChanged(position);
         // 点赞彩蛋：仅在”点亮”时播放一次心形放大动画。
@@ -531,15 +535,15 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     @Override
     public void onCollectClick(AdItem ad, int position) {
         interactionStore.toggleCollect(ad);
-        // 通过 repository 通知后端切换收藏状态。
-        repository.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
+        // 通过 AdCatalog 后台线程上报切换收藏状态。
+        adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
         adapter.notifyItemChanged(position);
     }
 
     @Override
     public void onShareClick(AdItem ad, int position) {
-        // 通过 repository 通知后端分享事件。
-        repository.updateInteraction(ad.getId(), InteractionAction.SHARE);
+        // 通过 AdCatalog 后台线程上报分享事件。
+        adCatalog.updateInteraction(ad.getId(), InteractionAction.SHARE);
         // 本地模拟分享：弹出系统分享面板（无真实链接，用标题占位），并提示。
         android.content.Intent share = new android.content.Intent(android.content.Intent.ACTION_SEND);
         share.setType("text/plain");
