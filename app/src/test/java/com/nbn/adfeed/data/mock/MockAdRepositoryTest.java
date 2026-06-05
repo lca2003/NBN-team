@@ -68,6 +68,15 @@ public final class MockAdRepositoryTest {
     }
 
     @Test
+    public void getAllAdsForStatsReturnsEveryMockAd() {
+        List<AdItem> statsAds = repository.getAllAdsForStats();
+
+        assertEquals(30, statsAds.size());
+        assertEquals("ad_001", statsAds.get(0).getId());
+        assertEquals("ad_030", statsAds.get(29).getId());
+    }
+
+    @Test
     public void channelCoverageHasAtLeastEightAdsEach() {
         Map<String, Integer> counts = new HashMap<>();
         for (AdItem ad : repository.snapshot()) {
