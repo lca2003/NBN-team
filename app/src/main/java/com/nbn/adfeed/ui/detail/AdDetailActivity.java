@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +14,8 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media3.ui.PlayerView;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import com.nbn.adfeed.R;
 import com.nbn.adfeed.ai.AdAiService;
@@ -299,13 +303,12 @@ public final class AdDetailActivity extends AppCompatActivity {
         }
     }
 
-    /** 通过 AdAiService 异步获取 AI 摘要和标签，并行加载，展示到页面上。 */
+    /** 通过 AdAiService 异步获取 AI 摘要，展示到页面上（标签保持与信息流一致，不做替换）。 */
     private void loadAiContent() {
         if (aiService == null || ad == null) {
             return;
         }
         final String adId = ad.getId();
-        // 摘要和标签各自异步并行请求，互不等待，总耗时 = max(摘要, 标签) 而非 sum。
         aiExecutor.execute(() -> {
             try {
                 com.nbn.adfeed.ai.AiResponse<String> summaryResponse = aiService.getAiSummary(adId);
@@ -321,20 +324,8 @@ public final class AdDetailActivity extends AppCompatActivity {
                 });
             } catch (Exception ignored) { }
         });
-        aiExecutor.execute(() -> {
-            try {
-                com.nbn.adfeed.ai.AiResponse<List<String>> tagsResponse = aiService.getAiTags(adId);
-                if (isFinishing() || isDestroyed()) return;
-                runOnUiThread(() -> {
-                    if (isFinishing() || isDestroyed()) return;
-                    if (tagsResponse != null && tagsResponse.getValue() != null
-                            && !tagsResponse.getValue().isEmpty()) {
-                        LinearLayout tagGroup = findViewById(R.id.detailTagGroup);
-                        TagChipBinder.bind(tagGroup, tagsResponse.getValue());
-                    }
-                });
-            } catch (Exception ignored) { }
-        });
+        // 不再异步加载 AI 标签 —— 标签统一使用 bindContent() 中从 Intent 传入的原始标签，
+        // 保证详情页与信息流卡片完全一致。
     }
 
     /** 绑定返回、点赞、收藏、分享。 */
@@ -356,10 +347,13 @@ public final class AdDetailActivity extends AppCompatActivity {
             }
         });
         findViewById(R.id.collectContainer).setOnClickListener(v -> {
-            interactionStore.toggleCollect(ad);
+            boolean collected = interactionStore.toggleCollect(ad);
             // 后台线程上报后端。
             reportInteraction(InteractionAction.TOGGLE_COLLECT);
             renderCollect();
+            if (collected) {
+                playCollectBurst();
+            }
         });
         findViewById(R.id.shareContainer).setOnClickListener(v -> {
             // 后台线程上报后端。
@@ -435,18 +429,40 @@ public final class AdDetailActivity extends AppCompatActivity {
         collectIcon.setColorFilter(color);
     }
 
-    /** 点赞彩蛋：心形放大回弹一次。 */
-    private void playLikeBurst() {
-        likeIcon.animate().cancel();
-        likeIcon.setScaleX(0.7f);
-        likeIcon.setScaleY(0.7f);
-        likeIcon.animate()
-                .scaleX(1.3f).scaleY(1.3f)
-                .setDuration(160)
-                .setInterpolator(new android.view.animation.OvershootInterpolator())
-                .withEndAction(() -> likeIcon.animate().scaleX(1f).scaleY(1f).setDuration(120).start())
-                .start();
+    /** 在图标上方叠加 Lottie 动画 overlay，播放一次后自动移除。 */
+    private void playLottieOverlay(View icon, int rawResId) {
+        if (icon == null) return;
+        View root = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (!(root instanceof ViewGroup)) return;
+
+        int[] loc = new int[2];
+        icon.getLocationOnScreen(loc);
+        float density = icon.getResources().getDisplayMetrics().density;
+        int size = (int) (density * 80);
+
+        LottieAnimationView lottie = new LottieAnimationView(icon.getContext());
+        lottie.setAnimation(rawResId);
+        lottie.setRepeatCount(0);
+        lottie.setSpeed(1.5f);
+        lottie.setLayoutParams(new FrameLayout.LayoutParams(size, size));
+        lottie.setX(loc[0] + icon.getWidth() / 2f - size / 2f);
+        lottie.setY(loc[1] + icon.getHeight() / 2f - size / 2f);
+
+        ((ViewGroup) root).addView(lottie);
+        lottie.playAnimation();
+        lottie.addAnimatorListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                ((ViewGroup) root).removeView(lottie);
+            }
+        });
     }
+
+    /** 点赞 Lottie 动画。 */
+    private void playLikeBurst() { playLottieOverlay(likeIcon, R.raw.lottie_like_burst); }
+
+    /** 收藏 Lottie 动画。 */
+    private void playCollectBurst() { playLottieOverlay(collectIcon, R.raw.lottie_collect_burst); }
 
     /** 关闭页面并播放"左进右出"返回动画，与进入时的滑入呼应。 */
     private void finishWithAnimation() {

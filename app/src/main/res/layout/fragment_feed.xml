@@ -137,7 +137,12 @@
                 android:overScrollMode="never"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:scrollbars="none" />
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:scrollbarSize="4dp"
+                android:scrollbarThumbVertical="@drawable/bg_scrollbar_thumb"
+                android:scrollbarTrackVertical="@android:color/transparent"
+                android:scrollbarAlwaysDrawVerticalTrack="false" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <!-- 首屏加载中 -->

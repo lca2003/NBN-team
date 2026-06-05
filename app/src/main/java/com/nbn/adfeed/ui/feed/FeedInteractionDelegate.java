@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.media3.ui.PlayerView;
+
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nbn.adfeed.R;
@@ -81,11 +85,18 @@ final class FeedInteractionDelegate {
                 @Override
                 public void onEnded(String adId) {
                     restorePlayingCardUi();
+                    // 视频自然播完后重置进度，确保下次点击从头播放。
+                    if (videoPlaybackManager != null && adId != null) {
+                        videoPlaybackManager.updatePositionMs(adId, 0L);
+                    }
                 }
 
                 @Override
                 public void onError(String adId, String message) {
                     restorePlayingCardUi();
+                    if (videoPlaybackManager != null && adId != null) {
+                        videoPlaybackManager.updatePositionMs(adId, 0L);
+                    }
                 }
             });
         }
@@ -138,9 +149,12 @@ final class FeedInteractionDelegate {
 
     /** 收藏切换。 */
     void onCollectClick(AdItem ad, int position) {
-        interactionStore.toggleCollect(ad);
+        boolean collected = interactionStore.toggleCollect(ad);
         adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
         adapter.notifyItemChanged(position);
+        if (collected) {
+            playCollectBurst(position);
+        }
     }
 
     /** 分享：上报事件 + 弹出系统分享面板。 */
@@ -216,6 +230,9 @@ final class FeedInteractionDelegate {
         if (vh.videoScrim != null) vh.videoScrim.setVisibility(View.GONE);
         if (vh.playButton != null) vh.playButton.setVisibility(View.GONE);
         if (vh.videoPlayerView != null) vh.videoPlayerView.setVisibility(View.VISIBLE);
+        if (vh.videoStateText != null) {
+            vh.videoStateText.setText(vh.itemView.getContext().getString(R.string.detail_playing_hint));
+        }
     }
 
     /** 切换卡片到"暂停/封面"模式：隐藏 PlayerView，显示封面与播放按钮。 */
@@ -224,6 +241,9 @@ final class FeedInteractionDelegate {
         if (vh.videoScrim != null) vh.videoScrim.setVisibility(View.VISIBLE);
         if (vh.playButton != null) vh.playButton.setVisibility(View.VISIBLE);
         if (vh.videoPlayerView != null) vh.videoPlayerView.setVisibility(View.GONE);
+        if (vh.videoStateText != null) {
+            vh.videoStateText.setText(vh.itemView.getContext().getString(R.string.detail_pause_hint));
+        }
     }
 
     /**
@@ -249,28 +269,57 @@ final class FeedInteractionDelegate {
     // ---- 内部方法 ----
 
     /**
-     * 点赞彩蛋动画：心形图标放大回弹。
+     * 在图标上方叠加 Lottie 动画，播放一次后自动移除。
+     *
+     * @param icon     目标图标（用于定位）
+     * @param rawResId Lottie JSON 资源 id（R.raw.lottie_like_burst / lottie_collect_burst）
      */
+    private void playLottieOverlay(View icon, int rawResId) {
+        if (icon == null) return;
+        View root = icon.getRootView();
+        if (!(root instanceof ViewGroup)) return;
+
+        int[] loc = new int[2];
+        icon.getLocationOnScreen(loc);
+        int size = (int) (icon.getResources().getDisplayMetrics().density * 80);
+
+        LottieAnimationView lottie = new LottieAnimationView(icon.getContext());
+        lottie.setAnimation(rawResId);
+        lottie.setRepeatCount(0);
+        lottie.setSpeed(1.5f);
+        lottie.setLayoutParams(new FrameLayout.LayoutParams(size, size));
+
+        // 用 rootView 的 Overlay 来叠加，不干扰原有布局
+        ViewGroup overlay = (ViewGroup) root;
+        // 计算 root 坐标系中的位置
+        int[] rootLoc = new int[2];
+        root.getLocationOnScreen(rootLoc);
+        int x = loc[0] - rootLoc[0] + icon.getWidth() / 2 - size / 2;
+        int y = loc[1] - rootLoc[1] + icon.getHeight() / 2 - size / 2;
+        lottie.setX(x);
+        lottie.setY(y);
+
+        overlay.addView(lottie);
+        lottie.playAnimation();
+        lottie.addAnimatorListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                overlay.removeView(lottie);
+            }
+        });
+    }
+
+    /** 点赞 Lottie 动画。 */
     private void playLikeBurst(int position) {
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-        if (!(holder instanceof FeedAdapter.AdViewHolder)) {
-            return;
-        }
-        View likeIcon = holder.itemView.findViewById(R.id.likeIcon);
-        if (likeIcon == null) {
-            return;
-        }
-        likeIcon.animate().cancel();
-        likeIcon.setScaleX(0.7f);
-        likeIcon.setScaleY(0.7f);
-        likeIcon.animate()
-                .scaleX(1.25f).scaleY(1.25f)
-                .setDuration(160)
-                .setInterpolator(new OvershootInterpolator())
-                .withEndAction(() -> likeIcon.animate()
-                        .scaleX(1f).scaleY(1f)
-                        .setDuration(120)
-                        .start())
-                .start();
+        if (!(holder instanceof FeedAdapter.AdViewHolder)) return;
+        playLottieOverlay(holder.itemView.findViewById(R.id.likeIcon), R.raw.lottie_like_burst);
+    }
+
+    /** 收藏 Lottie 动画。 */
+    private void playCollectBurst(int position) {
+        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+        if (!(holder instanceof FeedAdapter.AdViewHolder)) return;
+        playLottieOverlay(holder.itemView.findViewById(R.id.collectIcon), R.raw.lottie_collect_burst);
     }
 }

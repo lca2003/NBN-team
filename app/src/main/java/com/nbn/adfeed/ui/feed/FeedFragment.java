@@ -1,10 +1,14 @@
 package com.nbn.adfeed.ui.feed;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -70,6 +74,14 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     /** 滚动曝光检测节流：距上次检测不足此值则跳过，避免 fling 期间每秒 ~60 次冗余检测。 */
     private static final long EXPOSURE_THROTTLE_MS = 200L;
     private long lastExposureCheckMs = 0L;
+
+    // ---- 左右滑动手势切换频道 ----
+    private float swipeStartX;
+    private float swipeStartY;
+    private boolean swipeHorizontal;
+    private boolean swipeTracking;
+    private int swipeTouchSlop;
+    private int screenWidth;
 
     // ---- 回调宿主 ----
 
@@ -217,6 +229,23 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
                 });
             }
         });
+
+        // 鼠标滚轮支持：模拟器/外接鼠标场景下，手工接管 ACTION_SCROLL 确保可用。
+        final float density = getResources().getDisplayMetrics().density;
+        recyclerView.setOnGenericMotionListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_SCROLL) {
+                float vScroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                if (vScroll != 0f) {
+                    int dy = Math.round(-vScroll * density * 64);
+                    recyclerView.scrollBy(0, dy);
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        // 左右滑动手势切换频道（在广告展示区域生效）。
+        setupSwipeToSwitchChannel();
     }
 
     /**
@@ -294,6 +323,156 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
 
     private void wireFilterClearButton() {
         filterClearAll.setOnClickListener(v -> filterManager.clearAll());
+    }
+
+    /**
+     * 在 RecyclerView 上实现"拖拽跟手 + 过半切换"的频道滑动。
+     *
+     * <p>使用 {@link RecyclerView.OnItemTouchListener#onInterceptTouchEvent}
+     * 在子 View 之前拦截水平拖拽。一旦判定为横滑，立即锁定手势链：
+     * 禁止父 SwipeRefreshLayout 拦截，也禁止子 View 反抢。竖滑正常交给
+     * RecyclerView 处理。</p>
+     */
+    private void setupSwipeToSwitchChannel() {
+        swipeTouchSlop = ViewConfiguration.get(requireContext()).getScaledTouchSlop();
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                float dx = e.getRawX() - swipeStartX;
+                float dy = e.getRawY() - swipeStartY;
+                int action = e.getActionMasked();
+
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        swipeStartX = e.getRawX();
+                        swipeStartY = e.getRawY();
+                        swipeHorizontal = false;
+                        swipeTracking = false;
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (swipeTracking) {
+                            return true;
+                        }
+                        if (!swipeHorizontal) {
+                            float absDx = Math.abs(dx);
+                            float absDy = Math.abs(dy);
+                            if (absDx > swipeTouchSlop && absDx > absDy * 1.2f) {
+                                swipeHorizontal = true;
+                                swipeTracking = true;
+                                // 锁住手势链：顶层不拦截（SwipeRefresh），底层不反抢（子View）
+                                rv.getParent().requestDisallowInterceptTouchEvent(true);
+                                rv.requestDisallowInterceptTouchEvent(false);
+                                return true;
+                            }
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        if (!swipeTracking) {
+                            swipeHorizontal = false;
+                        }
+                        break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                float dx = e.getRawX() - swipeStartX;
+                int action = e.getActionMasked();
+
+                switch (action) {
+                    case MotionEvent.ACTION_MOVE:
+                        if (swipeTracking) {
+                            int idx = dataController.getCurrentChannelIndex();
+                            int count = FeedDataController.CHANNELS.size();
+                            float adjustedX = dx;
+                            if ((idx == 0 && dx > 0) || (idx == count - 1 && dx < 0)) {
+                                adjustedX *= 0.3f;
+                            }
+                            recyclerView.setTranslationX(adjustedX);
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        if (swipeTracking) {
+                            finishSwipeGesture();
+                            swipeTracking = false;
+                            swipeHorizontal = false;
+                            rv.getParent().requestDisallowInterceptTouchEvent(false);
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+                // 子 View（视频 PlayerView 等）试图反抢手势时：
+                // 横滑已确认（swipeTracking）→ 强制驳回，不停手势
+                // 尚在竖滑 → 放行，让 RecyclerView 正常处理
+                if (swipeTracking && disallowIntercept) {
+                    recyclerView.requestDisallowInterceptTouchEvent(false);
+                }
+            }
+        });
+    }
+
+    /** 手指抬起：过半切频道，否则弹回。 */
+    private void finishSwipeGesture() {
+        float currentX = recyclerView.getTranslationX();
+        int idx = dataController.getCurrentChannelIndex();
+        int count = FeedDataController.CHANNELS.size();
+        boolean goNext = currentX < -screenWidth / 2f && idx < count - 1;
+        boolean goPrev = currentX > screenWidth / 2f && idx > 0;
+
+        if (goNext) {
+            animateSwipeOut(-screenWidth);
+            switchToChannel(idx + 1);
+        } else if (goPrev) {
+            animateSwipeOut(screenWidth);
+            switchToChannel(idx - 1);
+        } else {
+            animateSwipeBack();
+        }
+        swipeTracking = false;
+        swipeHorizontal = false;
+    }
+
+    /** 弹回原位。 */
+    private void animateSwipeBack() {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(recyclerView, "translationX",
+                recyclerView.getTranslationX(), 0f);
+        anim.setDuration(200);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.start();
+    }
+
+    /** 飞出屏幕边缘，动画结束后重置 translationX。 */
+    private void animateSwipeOut(float targetX) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(recyclerView, "translationX",
+                recyclerView.getTranslationX(), targetX);
+        anim.setDuration(200);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                recyclerView.setTranslationX(0f);
+            }
+        });
+        anim.start();
+    }
+
+    /** 切换到指定频道索引，同步更新胶囊按钮选中态。 */
+    private void switchToChannel(int index) {
+        for (int j = 0; j < tabButtons.length; j++) {
+            tabButtons[j].setSelected(j == index);
+        }
+        dataController.selectChannel(index, null);
     }
 
     // ---- 公开方法 ----
