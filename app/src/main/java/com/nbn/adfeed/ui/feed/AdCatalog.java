@@ -4,29 +4,31 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.nbn.adfeed.data.model.AdItem;
+import com.nbn.adfeed.data.model.DataResult;
+import com.nbn.adfeed.data.model.PageRequest;
+import com.nbn.adfeed.data.model.PageResult;
+import com.nbn.adfeed.data.model.SearchRequest;
 import com.nbn.adfeed.data.repository.AdRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Feed 层的分页数据目录（UI 层垫片）。
  *
- * <p>背景：人员B当前的 {@link AdRepository} 只提供按频道/关键词读取的“种子数据”，还没有真正的
- * 分页接口。为了让人员A的“上拉加载更多 / 下拉刷新 / 加载中-空态-错误态”能完整跑通，这里在 UI 层
- * 把种子数据循环复制成多页，并模拟网络延迟和偶发失败。</p>
+ * <p>通过 {@link AdRepository#loadAds(PageRequest)} 正式分页接口获取数据，
+ * 并根据 {@link DataResult.Status} 区分成功、空态、各类错误态回调给 UI 层。</p>
  *
- * <p>边界说明：本类只依赖 {@link AdRepository} 接口读取数据，不修改人员B的任何文件。等人员B
- * 提供真实分页接口后，把 {@link #loadPage} 内部替换成真实请求即可，Feed/UI 层无需改动。</p>
+ * <p>网络请求在后台线程执行，结果回调到主线程，避免 NetworkOnMainThreadException。</p>
+ *
+ * <p>边界说明：本类只依赖 {@link AdRepository} 接口读取数据，不修改人员B的任何文件。</p>
  */
 public final class AdCatalog {
 
-    /** 每页条数。 */
-    private static final int PAGE_SIZE = 6;
-    /** 模拟分页总页数，便于演示“加载更多直到没有更多”。 */
-    private static final int MAX_PAGE = 4;
-    /** 模拟网络耗时，用于展示“加载中”态。 */
-    private static final long FAKE_LATENCY_MS = 650L;
+    /** 每页条数，与后端 PageRequest.DEFAULT_PAGE_SIZE 对齐。 */
+    private static final int PAGE_SIZE = PageRequest.DEFAULT_PAGE_SIZE;
 
     /** 回调：在主线程返回结果或错误，符合页面直接刷新 UI 的使用习惯。 */
     public interface Callback {
@@ -37,6 +39,11 @@ public final class AdCatalog {
 
     private final AdRepository repository;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    // 后台线程池，用于执行可能涉及网络的 repository 调用。
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    /** 记录上一次请求返回的 nextCursor，用于加载下一页。 */
+    private String nextCursor = null;
 
     /** 注入 Repository（来自人员B），便于后续从 Mock 切换到 Remote。 */
     public AdCatalog(AdRepository repository) {
@@ -46,12 +53,12 @@ public final class AdCatalog {
     /**
      * 加载指定频道的第 page 页（page 从 0 开始）。
      *
-     * @param channel       频道名；传 null 或空表示“精选/全部”，使用初始流。
+     * @param channel       频道名；传 null 或空表示"精选/全部"。
      * @param page          页码，从 0 开始。
-     * @param failOnPurpose 是否故意失败，用于演示“错误态 + 重试”。
+     * @param failOnPurpose 保留参数，兼容旧调用（不再使用）。
      */
     public void loadPage(String channel, int page, boolean failOnPurpose, Callback callback) {
-        loadPage(channel, null, page, failOnPurpose, callback);
+        loadPage(channel, null, null, page, failOnPurpose, callback);
     }
 
     public void loadPage(String channel,
@@ -68,48 +75,125 @@ public final class AdCatalog {
                          int page,
                          boolean failOnPurpose,
                          Callback callback) {
-        // 用主线程 Handler 延迟回调，模拟异步网络请求，让 UI 能展示 loading 态。
-        mainHandler.postDelayed(() -> {
-            if (failOnPurpose) {
-                callback.onError("网络开小差了，点击重试");
-                return;
+        // 在后台线程执行 repository 调用（可能涉及网络），避免主线程阻塞。
+        executor.execute(() -> {
+            try {
+                // 如果有搜索 ID 过滤，走 searchAds 路径。
+                if (searchAdIds != null && !searchAdIds.isEmpty()) {
+                    DataResult<PageResult<AdItem>> result = loadSearchFilteredSync(channel, tagFilter, searchAdIds);
+                    postResult(result, tagFilter, searchAdIds, callback);
+                    return;
+                }
+                // 如果有 tag 过滤，走 searchAds(tag) 路径。
+                if (tagFilter != null && !tagFilter.isEmpty()) {
+                    SearchRequest searchRequest = SearchRequest.tag(tagFilter);
+                    DataResult<PageResult<AdItem>> result = repository.searchAds(searchRequest);
+                    postDispatch(result, callback);
+                    return;
+                }
+
+                // 正式分页：第一页用 firstPage，后续用 nextPage。
+                String ch = (channel == null) ? "" : channel;
+                PageRequest request;
+                if (page == 0) {
+                    request = PageRequest.firstPage(ch, PAGE_SIZE);
+                    nextCursor = null; // 重置 cursor。
+                } else {
+                    // 如果没有 nextCursor，构造一个 page_N 格式的 cursor。
+                    String cursor = (nextCursor != null) ? nextCursor : "page_" + (page + 1);
+                    request = PageRequest.nextPage(ch, cursor, PAGE_SIZE);
+                }
+
+                DataResult<PageResult<AdItem>> result = repository.loadAds(request);
+                postDispatch(result, callback);
+            } catch (Exception e) {
+                mainHandler.post(() -> callback.onError("加载失败，点击重试"));
             }
+        });
+    }
 
-            // 通过 B 的接口拿种子数据：有频道按频道取，否则取初始流。
-            List<AdItem> seed = (channel == null || channel.isEmpty())
-                    ? repository.getInitialAds()
-                    : repository.getAdsByChannel(channel);
-            //聊天搜索过滤，用于显示搜索结果
-            seed = TagFilter.byAdIds(seed, searchAdIds);
-            //按tag过滤 TODO 考虑后端网络请求时修改前面几行代码
-            seed = TagFilter.byTag(seed, tagFilter);
+    /** 按搜索 ID 过滤：先加载频道数据，再在本地过滤匹配的广告 ID。 */
+    private DataResult<PageResult<AdItem>> loadSearchFilteredSync(String channel, String tagFilter,
+                                                                   List<String> searchAdIds) {
+        String ch = (channel == null) ? "" : channel;
+        PageRequest request = PageRequest.firstPage(ch, PAGE_SIZE);
+        DataResult<PageResult<AdItem>> result = repository.loadAds(request);
 
-            // 频道下可能没有任何广告 -> 直接返回空页，触发“空态”。
-            if (seed.isEmpty()) {
-                callback.onSuccess(new FeedPage(new ArrayList<>(), false));
-                return;
+        if (result == null || !result.isSuccess() || !result.hasData()) {
+            return result;
+        }
+
+        // 从结果中过滤出匹配的广告 ID。
+        List<AdItem> allItems = result.getData().getItems();
+        List<AdItem> filtered = new ArrayList<>();
+        for (AdItem item : allItems) {
+            if (searchAdIds.contains(item.getId())) {
+                filtered.add(item);
             }
+        }
+        // 再按 tag 二次过滤（如果有）。
+        if (tagFilter != null && !tagFilter.isEmpty()) {
+            filtered = TagFilter.byTag(filtered, tagFilter);
+        }
 
-            // 把种子数据循环铺成一页，模拟分页的“源源不断”。
-            List<AdItem> pageItems = buildPageItems(seed, page);
-            boolean hasMore = page + 1 < MAX_PAGE;
-            callback.onSuccess(new FeedPage(pageItems, hasMore));
-        }, FAKE_LATENCY_MS);
+        return DataResult.success(
+                new PageResult<>(filtered, "page_1", null, false, 1, PAGE_SIZE, filtered.size(), "filtered"),
+                "filtered"
+        );
+    }
+
+    /** 在主线程分发搜索过滤结果。 */
+    private void postResult(DataResult<PageResult<AdItem>> result,
+                            String tagFilter, List<String> searchAdIds,
+                            Callback callback) {
+        postDispatch(result, callback);
     }
 
     /**
-     * 用种子数据循环填充出第 page 页。
-     *
-     * <p>注意：复制 {@link AdItem} 的字段构造新对象会更“干净”，但 AdItem 的互动状态需要全局共享，
-     * 因此这里直接复用种子对象引用；互动状态统一交由 {@link InteractionStore} 按 adId 管理，
-     * 同一条广告在不同页/详情页之间共享同一份点赞收藏状态。</p>
+     * 在主线程根据 {@link DataResult.Status} 分发回调：
+     * SUCCESS / FALLBACK → onSuccess
+     * EMPTY → onSuccess(空列表)
+     * TIMEOUT / PARSE_ERROR / REMOTE_ERROR → onError(对应提示)
      */
-    private List<AdItem> buildPageItems(List<AdItem> seed, int page) {
-        List<AdItem> result = new ArrayList<>(PAGE_SIZE);
-        for (int i = 0; i < PAGE_SIZE; i++) {
-            int index = (page * PAGE_SIZE + i) % seed.size();
-            result.add(seed.get(index));
+    private void postDispatch(DataResult<PageResult<AdItem>> result, Callback callback) {
+        mainHandler.post(() -> dispatchResult(result, callback));
+    }
+
+    private void dispatchResult(DataResult<PageResult<AdItem>> result, Callback callback) {
+        if (result == null) {
+            callback.onError("数据加载异常");
+            return;
         }
-        return result;
+
+        switch (result.getStatus()) {
+            case SUCCESS:
+            case FALLBACK:
+                PageResult<AdItem> pageResult = result.getData();
+                if (pageResult == null || pageResult.isEmpty()) {
+                    callback.onSuccess(new FeedPage(new ArrayList<>(), false));
+                } else {
+                    // 记录 nextCursor 供下一页使用。
+                    nextCursor = pageResult.getNextCursor();
+                    callback.onSuccess(new FeedPage(
+                            new ArrayList<>(pageResult.getItems()),
+                            pageResult.hasMore()));
+                }
+                break;
+            case EMPTY:
+                callback.onSuccess(new FeedPage(new ArrayList<>(), false));
+                break;
+            case TIMEOUT:
+                callback.onError("网络超时，请检查网络后重试");
+                break;
+            case PARSE_ERROR:
+                callback.onError("数据解析失败，请稍后重试");
+                break;
+            case REMOTE_ERROR:
+                callback.onError("服务异常，请稍后重试");
+                break;
+            default:
+                callback.onError("加载失败，点击重试");
+                break;
+        }
     }
 }

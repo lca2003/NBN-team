@@ -15,6 +15,7 @@ import com.nbn.adfeed.R;
 import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.InteractionState;
+import com.nbn.adfeed.ui.media.AdMediaLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,6 +157,7 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
      * 播放按钮与播放状态。</p>
      */
     final class AdViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView mediaImage;
         private final TextView brandText;
         private final TextView titleText;
         private final TextView summaryText;
@@ -175,6 +177,7 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         AdViewHolder(@NonNull View itemView, boolean isVideo) {
             super(itemView);
+            mediaImage = itemView.findViewById(R.id.mediaImage);
             brandText = itemView.findViewById(R.id.brandText);
             titleText = itemView.findViewById(R.id.titleText);
             summaryText = itemView.findViewById(R.id.summaryText);
@@ -192,6 +195,8 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         void bind(AdItem ad) {
+            // 使用 AdMediaLoader 加载广告图片（https 优先，失败走 fallback）。
+            AdMediaLoader.loadFeedImage(mediaImage, ad);
             brandText.setText(ad.getBrand());
             titleText.setText(ad.getTitle());
             summaryText.setText(ad.getSummary());

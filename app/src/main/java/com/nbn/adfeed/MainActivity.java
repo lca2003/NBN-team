@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.nbn.adfeed.analytics.AnalyticsTracker;
-import com.nbn.adfeed.data.repository.AppRepositoryProvider;
+import com.nbn.adfeed.data.repository.RepositoryProvider;
 import com.nbn.adfeed.data.repository.AdRepository;
 import com.nbn.adfeed.ui.feed.FeedFragment;
 import com.nbn.adfeed.ui.navigation.BottomNavSelection;
@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_SEARCH_BOTTOM_SHEET = "SearchBottomSheet";
 
     // 全 App 共享的数据源与统计器：注入给 FeedFragment，保证状态/口径一致。
-    private final AdRepository adRepository = AppRepositoryProvider.getAdRepository();
+    // 需要 Context 初始化，放到 onCreate 中赋值。
+    private AdRepository adRepository;
     // 统计器需要 Activity Context 创建 SQLiteOpenHelper，因此放到 onCreate 中初始化。
     private AnalyticsTracker analyticsTracker;
 
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 使用 RepositoryProvider 获取带 Remote→Mock fallback 链路的 Repository。
+        adRepository = RepositoryProvider.getRepository(this);
         // 用带 Context 的构造函数启用曝光/点击事件的 SQLite 持久化。
         analyticsTracker = new AnalyticsTracker(this);
         analyticsTracker.trackAppOpen();

@@ -21,6 +21,8 @@ import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.analytics.exposure.ExposureTracker;
 import com.nbn.adfeed.analytics.event.AdAnalyticsEventCounts;
 import com.nbn.adfeed.data.model.AdItem;
+import com.nbn.adfeed.data.model.DataResult;
+import com.nbn.adfeed.data.model.InteractionAction;
 import com.nbn.adfeed.data.model.InteractionState;
 import com.nbn.adfeed.data.repository.AdRepository;
 
@@ -57,6 +59,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     private static final int PREFETCH_DISTANCE = 2;
 
     // 依赖（注入或默认实现）。
+    private AdRepository repository;
     private AdCatalog adCatalog;
     private AnalyticsTracker analyticsTracker;
     private final InteractionStore interactionStore = InteractionStore.get();
@@ -98,6 +101,7 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
      */
     public void configure(AdRepository repository, AnalyticsTracker tracker) {
         if (repository != null) {
+            this.repository = repository;
             this.adCatalog = new AdCatalog(repository);
         }
         this.analyticsTracker = tracker;
@@ -116,8 +120,11 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         super.onViewCreated(view, savedInstanceState);
 
         // 兜底：若宿主未注入依赖，使用默认实例，保证 Fragment 可独立运行。
+        if (repository == null) {
+            repository = new com.nbn.adfeed.data.mock.MockAdRepository();
+        }
         if (adCatalog == null) {
-            adCatalog = new AdCatalog(new com.nbn.adfeed.data.mock.MockAdRepository());
+            adCatalog = new AdCatalog(repository);
         }
         if (analyticsTracker == null) {
             analyticsTracker = new AnalyticsTracker(requireContext());
@@ -442,7 +449,9 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     private void recordExposure(AdItem ad, int position, float visibleRatio) {
         InteractionState state = interactionStore.stateOf(ad);
         state.increaseExposureCount();
-        // TODO 目前是内存数据修改，后续异步上传要考虑防止网络IO阻塞，内存状态用于立即刷新 UI，AnalyticsTracker 负责把同一事件追加写入 SQLite。
+        // 通过 repository 通知后端曝光事件。
+        repository.updateInteraction(ad.getId(), InteractionAction.EXPOSE);
+        // 本地 SQLite 持久化曝光记录。
         analyticsTracker.trackExposure(ad.getId(), visibleRatio, ExposureTracker.DEFAULT_DWELL_MILLIS);
         //更新RecyclerView上的卡片数据
         adapter.notifyItemChanged(position);
@@ -490,10 +499,12 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
 
     @Override
     public void onCardClick(AdItem ad, int position) {
-        // 点击卡片计一次点击，并上报统计（人员C 的口径：进入详情计点击）。
+        // 点击卡片计一次点击，并通过 repository 上报后端。
         InteractionState state = interactionStore.stateOf(ad);
         state.increaseClickCount();
         analyticsTracker.trackClick(ad.getId());
+        // 通过 repository 通知后端点击事件。
+        repository.updateInteraction(ad.getId(), InteractionAction.CLICK);
         adapter.notifyItemChanged(position);
 
         // 跳转详情页。把展示字段通过 Intent 传过去（AdRepository 暂无按 id 查询接口，
@@ -507,9 +518,11 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     @Override
     public void onLikeClick(AdItem ad, int position) {
         boolean liked = interactionStore.toggleLike(ad);
+        // 通过 repository 通知后端切换点赞状态。
+        repository.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
         // 刷新该项以更新图标颜色与文案。
         adapter.notifyItemChanged(position);
-        // 点赞彩蛋：仅在“点亮”时播放一次心形放大动画。
+        // 点赞彩蛋：仅在”点亮”时播放一次心形放大动画。
         if (liked) {
             playLikeBurst(position);
         }
@@ -518,11 +531,15 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     @Override
     public void onCollectClick(AdItem ad, int position) {
         interactionStore.toggleCollect(ad);
+        // 通过 repository 通知后端切换收藏状态。
+        repository.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
         adapter.notifyItemChanged(position);
     }
 
     @Override
     public void onShareClick(AdItem ad, int position) {
+        // 通过 repository 通知后端分享事件。
+        repository.updateInteraction(ad.getId(), InteractionAction.SHARE);
         // 本地模拟分享：弹出系统分享面板（无真实链接，用标题占位），并提示。
         android.content.Intent share = new android.content.Intent(android.content.Intent.ACTION_SEND);
         share.setType("text/plain");
