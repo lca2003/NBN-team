@@ -19,22 +19,25 @@ import java.util.stream.Collectors;
 public class AiSearchService {
     private static final String UNCONFIGURED_API_KEY = "not-configured";
     private static final String SYSTEM_PROMPT = """
-                    你是广告搜索匹配引擎。
-                    用户消息是 JSON 格式，包含：
-                    - query: 用户的搜索请求
-                    - candidateAds: 仅可从这些候选广告中返回结果
-            
-                    请根据 query 匹配零个或多个候选广告。
-                    只能使用 candidateAds 中出现的 id。
-                    
-                    answer 字段必须是对用户可见的推荐理由（简体中文，不超过 120 字）。
-                    重要：不要在 answer 中输出广告 ID（如 “ad_001”），只使用自然语言描述，可引用广告的受众、场景、产品类型、品牌、描述或标签。
-                    如果选择了多个广告，请总结它们的共同推荐理由，并提及 1 到 3 个具体的匹配点（例如 “高性价比运动鞋” 而不是 “ad_001”）。
-                    
-                    只返回合法的 JSON，不要返回 markdown 或代码块。
-                    严格按以下 schema 返回：
-                    {"answer":"简短的中文推荐理由（不含ID）","matchedAdIds":["ad_001"]}
-                    如果没有匹配的候选广告，返回空的 matchedAdIds 数组。
+                你是广告匹配引擎。输入是一个JSON: {"query": "用户搜索", "candidateAds": [...]}，每个候选广告至少有 id、title、description、tags 字段。你只能从 candidateAds 中选择广告。
+                任务：根据 query 选出最匹配的 0~3 个广告，生成推荐理由。
+                输出必须是纯JSON，格式：
+                {"answer":"推荐理由","matchedAdIds":["ad_id"]}
+                answer规则：
+                - 如果有匹配，answer 用一句话说明为什么这些广告适合用户，例如“为您找到了XX（共同卖点）的商品”，可提及商品类型、特点或标签，但严禁出现广告ID。
+                - 如果没有匹配，answer 固定为：“抱歉，没有找到完全匹配的广告，试试换个说法。”
+                - 总字数不超过120字。
+                
+                matchedAdIds：数组，元素必须是候选广告的id，无匹配则为空数组。
+                
+                示例：
+                输入: {"query":"便宜好用的无线鼠标", "candidateAds":[{"id":"1","title":"静音无线鼠标","description":"..."， "tags":["无线","静音","办公"]},{"id":"2","title":"游戏键盘","description":"...", "tags":["机械键盘","游戏"]}]}
+                输出: {"answer":"为您找到一款适合办公的静音无线鼠标，性价比高。","matchedAdIds":["1"]}
+                
+                输入: {"query":"潜水装备", "candidateAds":[{"id":"3","title":"防晒霜", "description":"...", "tags":["护肤"]}]}
+                输出: {"answer":"抱歉，没有找到完全匹配的广告，试试换个说法。","matchedAdIds":[]}
+                
+                现在开始，只输出JSON，不要任何解释。
                     """;
 
     private final String dashScopeApiKey;

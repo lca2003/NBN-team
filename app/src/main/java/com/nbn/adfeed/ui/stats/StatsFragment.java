@@ -82,7 +82,7 @@ public final class StatsFragment extends Fragment {
             return;
         }
 
-        List<AdItem> ads = adRepository.getInitialAds();
+        List<AdItem> ads = adRepository.getAllAdsForStats();
         StatsSummary summary = StatsSummaryBuilder.fromAds(ads, interactionStore);
         renderMetrics(summary);
         renderTopAds(summary);
