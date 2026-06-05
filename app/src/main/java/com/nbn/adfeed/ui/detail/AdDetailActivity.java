@@ -9,17 +9,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.media3.ui.PlayerView;
 
 import com.nbn.adfeed.R;
+import com.nbn.adfeed.ai.AdAiService;
 import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
+import com.nbn.adfeed.data.model.AdStats;
+import com.nbn.adfeed.data.model.InteractionAction;
 import com.nbn.adfeed.data.model.InteractionState;
+import com.nbn.adfeed.data.repository.AdRepository;
+import com.nbn.adfeed.data.repository.RepositoryProvider;
 import com.nbn.adfeed.ui.feed.InteractionStore;
+import com.nbn.adfeed.ui.feed.TagChipBinder;
+import com.nbn.adfeed.ui.media.AdMediaLoader;
+import com.nbn.adfeed.video.VideoPlaybackManager;
+import com.nbn.adfeed.video.player.Media3VideoPlayerController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,12 +38,10 @@ import java.util.List;
  * <ul>
  *   <li>展示图文/视频详情；视频默认暂停，点击播放（演示占位）。</li>
  *   <li>与信息流共享 {@link InteractionStore}：在详情页点赞/收藏后，返回列表自动同步。</li>
- *   <li>返回时列表位置由 RecyclerView 在 Activity 栈切换中保持，配合返回动画。</li>
+ *   <li>通过 {@link AdAiService} 获取 AI 摘要和标签展示。</li>
+ *   <li>通过 {@link AdMediaLoader} 加载广告图片。</li>
+ *   <li>互动通过 {@link AdRepository#updateInteraction} 上报后端。</li>
  * </ul>
- *
- * <p>说明：当前 {@link com.nbn.adfeed.data.repository.AdRepository} 没有“按 id 查询单条广告”的接口
- * （属人员B数据层），因此展示字段通过 Intent 传入；互动状态通过 {@link InteractionStore} 按 adId
- * 取到与信息流同一份实例，实现跨页同步。等数据层补充按 id 查询后可改为只传 id。</p>
  */
 public final class AdDetailActivity extends AppCompatActivity {
 
@@ -46,13 +53,29 @@ public final class AdDetailActivity extends AppCompatActivity {
     private static final String EXTRA_SUMMARY = "extra_ad_summary";
     private static final String EXTRA_TYPE = "extra_ad_type";
     private static final String EXTRA_TAGS = "extra_ad_tags";
+    private static final String EXTRA_IMAGE_URL = "extra_ad_image_url";
+    private static final String EXTRA_THUMBNAIL_URL = "extra_ad_thumbnail_url";
+    private static final String EXTRA_VIDEO_URL = "extra_ad_video_url";
+    // 素材主题：决定本地兜底图，必须与信息流卡片一致，否则详情页会显示成另一张图。
+    private static final String EXTRA_ASSET_THEME = "extra_ad_asset_theme";
 
     private final InteractionStore interactionStore = InteractionStore.get();
+    // 互动上报专用线程池：快，不跟慢速 AI 请求共用，避免点赞/收藏上报被 AI 超时堵住。
+    private final java.util.concurrent.ExecutorService interactionExecutor =
+            java.util.concurrent.Executors.newSingleThreadExecutor();
+    // AI 请求专用线程池：摘要与标签可并行跑，互不阻塞。
+    private final java.util.concurrent.ExecutorService aiExecutor =
+            java.util.concurrent.Executors.newFixedThreadPool(2);
 
+    private AdRepository repository;
+    private AdAiService aiService;
     private AdItem ad;
     private InteractionState state;
-    /** 视频是否处于播放态（演示占位状态，无真实播放器）。 */
+    /** 视频是否处于播放态（由真实播放器驱动 UI 切换）。 */
     private boolean videoPlaying = false;
+    /** 成员C的真实视频播放器控制器（内部 ExoPlayer）；仅视频类型时创建。 */
+    private Media3VideoPlayerController videoController;
+    private PlayerView playerView;
 
     // 互动栏视图。
     private ImageView likeIcon;
@@ -74,6 +97,12 @@ public final class AdDetailActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_SUMMARY, ad.getSummary());
         intent.putExtra(EXTRA_TYPE, ad.getContentType().name());
         intent.putStringArrayListExtra(EXTRA_TAGS, new ArrayList<>(ad.getTags()));
+        // 传递图片和视频 URL，详情页用于加载素材。
+        intent.putExtra(EXTRA_IMAGE_URL, ad.getImageUrl());
+        intent.putExtra(EXTRA_THUMBNAIL_URL, ad.getThumbnailUrl());
+        intent.putExtra(EXTRA_VIDEO_URL, ad.getVideoUrl());
+        // 传素材主题，保证详情页兜底图与卡片一致。
+        intent.putExtra(EXTRA_ASSET_THEME, ad.getAssetTheme());
         return intent;
     }
 
@@ -81,6 +110,10 @@ public final class AdDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ad_detail);
+
+        // 获取 Repository 和 AI 服务入口。
+        repository = RepositoryProvider.getRepository(this);
+        aiService = RepositoryProvider.getAdAiService(this);
 
         ad = parseIntent();
         if (ad == null) {
@@ -93,6 +126,18 @@ public final class AdDetailActivity extends AppCompatActivity {
 
         bindContent();
         bindInteractions();
+        setupBackNavigation();
+        loadAiContent();
+    }
+
+    /** 使用 OnBackPressedCallback 替代 deprecated onBackPressed。 */
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finishWithAnimation();
+            }
+        });
     }
 
     /** 从 Intent 还原出一个用于展示的 AdItem。 */
@@ -107,15 +152,46 @@ public final class AdDetailActivity extends AppCompatActivity {
             tags = new ArrayList<>();
         }
         AdContentType type = parseType(intent.getStringExtra(EXTRA_TYPE));
+        String imageUrl = intent.getStringExtra(EXTRA_IMAGE_URL);
+        String thumbnailUrl = intent.getStringExtra(EXTRA_THUMBNAIL_URL);
+        String videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL);
+        String title = orEmpty(intent.getStringExtra(EXTRA_TITLE));
+        String brand = orEmpty(intent.getStringExtra(EXTRA_BRAND));
+        String channel = orEmpty(intent.getStringExtra(EXTRA_CHANNEL));
+        String summary = orEmpty(intent.getStringExtra(EXTRA_SUMMARY));
+        String assetTheme = orEmpty(intent.getStringExtra(EXTRA_ASSET_THEME));
+        // 使用带 assetTheme 的构造函数，保证详情页兜底图与信息流卡片一致。
         return new AdItem(
                 id,
-                orEmpty(intent.getStringExtra(EXTRA_TITLE)),
-                orEmpty(intent.getStringExtra(EXTRA_BRAND)),
-                orEmpty(intent.getStringExtra(EXTRA_CHANNEL)),
-                orEmpty(intent.getStringExtra(EXTRA_SUMMARY)),
+                title,
+                brand,
+                channel,
+                channel,       // channelId 与 channel 相同
+                summary,       // description 用 summary 代替
+                summary,
+                imageUrl,
+                thumbnailUrl,
+                videoUrl,
+                "",            // offerText
+                "",            // ctaText
+                "",            // skuText
+                "",            // ratingText
+                "",            // deliveryText
+                "",            // stockText
+                new ArrayList<>(), // similarItems
+                "",            // distanceText
+                "",            // districtText
+                "",            // addressText
+                "",            // businessHoursText
+                "",            // navigationText
+                assetTheme,    // assetTheme：决定兜底图
+                "",            // visualLabel
+                "",            // ctaIntent
                 type,
                 tags,
-                new InteractionState()
+                new InteractionState(),
+                AdStats.empty(),
+                null
         );
     }
 
@@ -141,37 +217,78 @@ public final class AdDetailActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.detailSummary)).setText(ad.getSummary());
 
         LinearLayout tagGroup = findViewById(R.id.detailTagGroup);
-        com.nbn.adfeed.ui.feed.TagChipBinder.bind(tagGroup, ad.getTags());
+        TagChipBinder.bind(tagGroup, ad.getTags());
 
         statsText = findViewById(R.id.detailStats);
         renderStats();
 
-        // 视频类型才显示遮罩、播放按钮与状态文案。
+        // 使用 AdMediaLoader 加载详情页图片。
+        ImageView detailMedia = findViewById(R.id.detailMedia);
+        if (detailMedia != null) {
+            AdMediaLoader.loadDetailImage(detailMedia, ad);
+        }
+
+        // 视频类型才显示遮罩、播放按钮与状态文案，并接入真实播放器。
         boolean isVideo = ad.getContentType() == AdContentType.VIDEO;
         View scrim = findViewById(R.id.detailVideoScrim);
         ImageView playButton = findViewById(R.id.detailPlayButton);
         TextView videoState = findViewById(R.id.detailVideoState);
-        if (isVideo) {
+        playerView = findViewById(R.id.detailPlayerView);
+        String videoUrl = ad.getVideoUrl();
+        boolean playable = isVideo && videoUrl != null && !videoUrl.trim().isEmpty();
+        if (playable) {
             scrim.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
             videoState.setVisibility(View.VISIBLE);
             updateVideoState(videoState, scrim, playButton);
-            playButton.setOnClickListener(v -> {
-                // 切换播放/暂停（演示占位，无真实播放器）。
-                videoPlaying = !videoPlaying;
-                updateVideoState(videoState, scrim, playButton);
-            });
+            // 不在这里创建 ExoPlayer，改为点击播放时懒初始化，
+            // 避免 onCreate 阶段主线程阻塞（ExoPlayer 构造约 100-300ms）。
+            playButton.setOnClickListener(v -> startVideoPlayback(videoUrl, videoState, scrim, playButton));
         } else {
+            // 非视频，或视频缺少有效 URL：隐藏播放相关控件，只展示封面图。
             scrim.setVisibility(View.GONE);
             playButton.setVisibility(View.GONE);
             videoState.setVisibility(View.GONE);
+            if (playerView != null) {
+                playerView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /** 点击播放：显示 PlayerView，隐藏封面与遮罩，调用成员C的控制器真正播放视频。 */
+    private void startVideoPlayback(String videoUrl, TextView videoState, View scrim, ImageView playButton) {
+        if (playerView == null) {
+            return;
+        }
+        // 懒初始化 ExoPlayer：只在用户真正点播放时才创建，避免 onCreate 主线程阻塞。
+        if (videoController == null) {
+            videoController = new Media3VideoPlayerController(this, new VideoPlaybackManager());
+        }
+        playerView.setVisibility(View.VISIBLE);
+        ImageView detailMedia = findViewById(R.id.detailMedia);
+        if (detailMedia != null) {
+            detailMedia.setVisibility(View.GONE);
+        }
+        boolean started = videoController.play(ad.getId(), videoUrl, playerView);
+        if (started) {
+            videoPlaying = true;
+            // 进入播放：隐藏遮罩和大播放按钮，交给 PlayerView 自带控制条。
+            scrim.setVisibility(View.GONE);
+            playButton.setVisibility(View.GONE);
+            videoState.setVisibility(View.GONE);
+        } else {
+            // 播放启动失败：回退到封面态。
+            playerView.setVisibility(View.GONE);
+            if (detailMedia != null) {
+                detailMedia.setVisibility(View.VISIBLE);
+            }
+            Toast.makeText(this, R.string.detail_video_unavailable, Toast.LENGTH_SHORT).show();
         }
     }
 
     /** 根据播放态更新遮罩、播放按钮与文案。 */
     private void updateVideoState(TextView videoState, View scrim, ImageView playButton) {
         if (videoPlaying) {
-            // 播放中：隐藏遮罩与播放按钮，仅显示“播放中”。
             scrim.setVisibility(View.GONE);
             playButton.setVisibility(View.GONE);
             videoState.setText(R.string.detail_playing_hint);
@@ -180,6 +297,44 @@ public final class AdDetailActivity extends AppCompatActivity {
             playButton.setVisibility(View.VISIBLE);
             videoState.setText(R.string.detail_pause_hint);
         }
+    }
+
+    /** 通过 AdAiService 异步获取 AI 摘要和标签，并行加载，展示到页面上。 */
+    private void loadAiContent() {
+        if (aiService == null || ad == null) {
+            return;
+        }
+        final String adId = ad.getId();
+        // 摘要和标签各自异步并行请求，互不等待，总耗时 = max(摘要, 标签) 而非 sum。
+        aiExecutor.execute(() -> {
+            try {
+                com.nbn.adfeed.ai.AiResponse<String> summaryResponse = aiService.getAiSummary(adId);
+                if (isFinishing() || isDestroyed()) return;
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    TextView summaryView = findViewById(R.id.detailSummary);
+                    if (summaryResponse != null && summaryResponse.getValue() != null
+                            && !summaryResponse.getValue().isEmpty()
+                            && !summaryResponse.getValue().equals(summaryView.getText().toString())) {
+                        summaryView.setText(summaryResponse.getValue());
+                    }
+                });
+            } catch (Exception ignored) { }
+        });
+        aiExecutor.execute(() -> {
+            try {
+                com.nbn.adfeed.ai.AiResponse<List<String>> tagsResponse = aiService.getAiTags(adId);
+                if (isFinishing() || isDestroyed()) return;
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    if (tagsResponse != null && tagsResponse.getValue() != null
+                            && !tagsResponse.getValue().isEmpty()) {
+                        LinearLayout tagGroup = findViewById(R.id.detailTagGroup);
+                        TagChipBinder.bind(tagGroup, tagsResponse.getValue());
+                    }
+                });
+            } catch (Exception ignored) { }
+        });
     }
 
     /** 绑定返回、点赞、收藏、分享。 */
@@ -193,6 +348,8 @@ public final class AdDetailActivity extends AppCompatActivity {
 
         findViewById(R.id.likeContainer).setOnClickListener(v -> {
             boolean liked = interactionStore.toggleLike(ad);
+            // 后台线程上报后端，避免主线程网络调用。
+            reportInteraction(InteractionAction.TOGGLE_LIKE);
             renderLike();
             if (liked) {
                 playLikeBurst();
@@ -200,9 +357,13 @@ public final class AdDetailActivity extends AppCompatActivity {
         });
         findViewById(R.id.collectContainer).setOnClickListener(v -> {
             interactionStore.toggleCollect(ad);
+            // 后台线程上报后端。
+            reportInteraction(InteractionAction.TOGGLE_COLLECT);
             renderCollect();
         });
         findViewById(R.id.shareContainer).setOnClickListener(v -> {
+            // 后台线程上报后端。
+            reportInteraction(InteractionAction.SHARE);
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_TEXT, ad.getTitle() + " · " + ad.getBrand());
@@ -214,6 +375,45 @@ public final class AdDetailActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.feed_shared_toast, ad.getTitle()),
                     Toast.LENGTH_SHORT).show();
         });
+    }
+
+    /**
+     * 在后台线程上报互动事件，避免主线程网络调用导致 NetworkOnMainThreadException。
+     */
+    private void reportInteraction(InteractionAction action) {
+        if (ad == null || repository == null) {
+            return;
+        }
+        String adId = ad.getId();
+        interactionExecutor.execute(() -> {
+            try {
+                repository.updateInteraction(adId, action);
+            } catch (Exception ignored) {
+                // 上报失败不影响 UI，本地 InteractionStore 已即时刷新。
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 离开页面（返回/切后台）时暂停视频，避免在不可见时继续播放。
+        if (videoController != null && videoPlaying) {
+            videoController.pauseActive();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // 释放播放器，回收 ExoPlayer 资源，避免内存泄漏与后台播放。
+        if (videoController != null) {
+            videoController.release();
+            videoController = null;
+        }
+        // 关闭后台线程池，避免 Activity 销毁后线程泄漏。
+        interactionExecutor.shutdown();
+        aiExecutor.shutdown();
+        super.onDestroy();
     }
 
     private void renderStats() {
@@ -248,13 +448,7 @@ public final class AdDetailActivity extends AppCompatActivity {
                 .start();
     }
 
-    /** 系统返回键也走带动画的返回，保证返回信息流时的过渡一致。 */
-    @Override
-    public void onBackPressed() {
-        finishWithAnimation();
-    }
-
-    /** 关闭页面并播放“左进右出”返回动画，与进入时的滑入呼应。 */
+    /** 关闭页面并播放"左进右出"返回动画，与进入时的滑入呼应。 */
     private void finishWithAnimation() {
         finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.slide_out_right);

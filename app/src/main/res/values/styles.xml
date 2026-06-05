@@ -6,5 +6,13 @@
             <item name="android:navigationBarColor">@color/nbn_surface</item>
             <item name="android:statusBarColor">@color/nbn_surface</item>
             <item name="android:windowLightStatusBar">true</item>
+            <!-- 全局加粗效果（试验性，后续可删除这一行回退） -->
+            <item name="android:textViewStyle">@style/BoldTextView</item>
+        </style>
+
+        <!-- 全局文字加粗：让所有 TextView 默认 bold，解决文字发虚的问题。
+             如需取消加粗，删除上面 AppTheme 里的 textViewStyle 这一行，以及下面这个 style 即可。 -->
+        <style name="BoldTextView" parent="Widget.AppCompat.TextView">
+            <item name="android:textStyle">bold</item>
         </style>
     </resources>

@@ -68,6 +68,56 @@
             android:textSize="14sp" />
     </LinearLayout>
 
+    <!-- 已选筛选标签栏：仅在有筛选标签时显示，横向可滚动，每个标签后带 × 可取消 -->
+    <LinearLayout
+        android:id="@+id/filterBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/nbn_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone">
+
+        <!-- 左侧"筛选"提示文字 -->
+        <TextView
+            android:id="@+id/filterBarLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/feed_filter_label"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="13sp" />
+
+        <!-- 已选标签横向滚动区 -->
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/filterBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <!-- 右侧"清除全部"按钮 -->
+        <TextView
+            android:id="@+id/filterClearAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="4dp"
+            android:text="@string/feed_filter_clear_all"
+            android:textColor="@color/nbn_tab_indicator"
+            android:textSize="13sp" />
+    </LinearLayout>
+
     <!-- 列表 + 状态覆盖层 -->
     <FrameLayout
         android:layout_width="match_parent"
