@@ -157,12 +157,12 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
      * 播放按钮与播放状态。</p>
      */
     final class AdViewHolder extends RecyclerView.ViewHolder {
-        private final TextView brandText;
-        private final TextView titleText;
-        private final TextView summaryText;
-        private final LinearLayout tagGroup;
-        private final TextView statsText;
-        private final ImageView mediaImage;
+        final ImageView mediaImage;
+        final TextView brandText;
+        final TextView titleText;
+        final TextView summaryText;
+        final LinearLayout tagGroup;
+        final TextView statsText;
 
         // 互动栏（来自 include 的 view_interaction_bar）。
         private final View likeContainer;
