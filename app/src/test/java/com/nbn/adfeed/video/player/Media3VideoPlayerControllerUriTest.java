@@ -10,6 +10,7 @@ import androidx.media3.ui.PlayerView;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.nbn.adfeed.R;
 import com.nbn.adfeed.video.VideoPlaybackManager;
 
 import org.junit.Test;
@@ -33,7 +34,40 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34)
-public final class Media3VideoPlayerControllerTest {
+public final class Media3VideoPlayerControllerUriTest {
+    @Test
+    public void relativeRawPathResolvesToPackagedVideoResource() {
+        FakePlayer fakePlayer = new FakePlayer();
+        Media3VideoPlayerController controller = controller(new VideoPlaybackManager(), fakePlayer);
+
+        assertTrue(controller.play("ad-1", "raw/ad_video_headphones.mp4", playerView()));
+        idleMainLooper();
+
+        assertEquals(
+                "rawresource:///" + R.raw.ad_video_headphones,
+                fakePlayer.playlist.get(0).localConfiguration.uri.toString()
+        );
+    }
+
+    @Test
+    public void knownAdUsesPackagedVideoWithoutWaitingForRemoteFailure() {
+        FakePlayer fakePlayer = new FakePlayer();
+        Media3VideoPlayerController controller = controller(new VideoPlaybackManager(), fakePlayer);
+
+        assertTrue(controller.play(
+                "ad_027",
+                "https://res.cloudinary.com/demo/video/upload/du_12/sea_turtle.mp4",
+                playerView()
+        ));
+        idleMainLooper();
+
+        assertEquals(
+                "rawresource:///" + R.raw.ad_video_study_ai,
+                fakePlayer.playlist.get(0).localConfiguration.uri.toString()
+        );
+        assertTrue(fakePlayer.playWhenReady);
+    }
+
     @Test
     public void switchingPlayerViewDetachesPreviousViewAndSavesProgress() {
         VideoPlaybackManager manager = new VideoPlaybackManager();
@@ -143,6 +177,33 @@ public final class Media3VideoPlayerControllerTest {
 
         assertTrue(events.toString(), events.contains("buffering:ad-1"));
         assertFalse(events.toString(), events.contains("paused:ad-1"));
+    }
+
+    @Test
+    public void playbackEndResetsSavedPositionWithoutRequiringCallback() {
+        VideoPlaybackManager manager = new VideoPlaybackManager();
+        FakePlayer fakePlayer = new FakePlayer();
+        Media3VideoPlayerController controller = controller(manager, fakePlayer);
+
+        assertTrue(controller.play("ad_018", "raw/ad_video_local_sports.mp4", playerView()));
+        idleMainLooper();
+
+        fakePlayer.endPlaybackAt(2_000L);
+        idleMainLooper();
+
+        assertNull(manager.getActiveAdId());
+        assertEquals(0L, manager.getPositionMs("ad_018"));
+    }
+
+    @Test
+    public void activeVideoRepeatsUntilVisibilityRuleStopsIt() {
+        FakePlayer fakePlayer = new FakePlayer();
+        Media3VideoPlayerController controller = controller(new VideoPlaybackManager(), fakePlayer);
+
+        assertTrue(controller.play("ad_018", "raw/ad_video_local_sports.mp4", playerView()));
+        idleMainLooper();
+
+        assertEquals(Player.REPEAT_MODE_ONE, fakePlayer.repeatMode);
     }
 
     private static Media3VideoPlayerController controller(VideoPlaybackManager manager, FakePlayer fakePlayer) {
@@ -259,7 +320,11 @@ public final class Media3VideoPlayerControllerTest {
         }
 
         @Override
-        protected ListenableFuture<?> handleSetMediaItems(List<MediaItem> mediaItems, int startIndex, long startPositionMs) {
+        protected ListenableFuture<?> handleSetMediaItems(
+                List<MediaItem> mediaItems,
+                int startIndex,
+                long startPositionMs
+        ) {
             playlist.clear();
             if (mediaItems != null) {
                 playlist.addAll(mediaItems);
@@ -299,17 +364,24 @@ public final class Media3VideoPlayerControllerTest {
             this.bufferingOnPrepare = bufferingOnPrepare;
         }
 
+        private void endPlaybackAt(long nextPositionMs) {
+            positionMs = Math.max(0L, nextPositionMs);
+            playWhenReady = false;
+            playbackState = Player.STATE_ENDED;
+            invalidateState();
+        }
+
         private List<MediaItemData> buildPlaylist() {
-            List<MediaItemData> mediaItemData = new ArrayList<>();
+            List<MediaItemData> mediaItems = new ArrayList<>();
             for (int index = 0; index < playlist.size(); index++) {
-                mediaItemData.add(new MediaItemData.Builder("item-" + index)
+                mediaItems.add(new MediaItemData.Builder("item-" + index)
                         .setMediaItem(playlist.get(index))
                         .setIsSeekable(true)
                         .setDefaultPositionUs(0L)
                         .setDurationUs(1_000_000L)
                         .build());
             }
-            return mediaItemData;
+            return mediaItems;
         }
     }
 }

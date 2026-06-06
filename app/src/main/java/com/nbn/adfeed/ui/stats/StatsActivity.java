@@ -8,8 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.nbn.adfeed.R;
-import com.nbn.adfeed.data.repository.AppRepositoryProvider;
+import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.data.repository.AdRepository;
+import com.nbn.adfeed.data.repository.RepositoryProvider;
 import com.nbn.adfeed.ui.navigation.BottomNavSelection;
 import com.nbn.adfeed.ui.search.SearchBottomSheetDialogFragment;
 
@@ -23,8 +24,8 @@ public final class StatsActivity extends AppCompatActivity
     private static final String TAG_STATS = "stats";
     private static final String TAG_SEARCH_BOTTOM_SHEET = "SearchBottomSheet";
 
-    private final AdRepository adRepository = AppRepositoryProvider.getAdRepository();
-
+    private AdRepository adRepository;
+    private AnalyticsTracker analyticsTracker;
     private StatsFragment statsFragment;
     private ImageView navHomeIcon;
     private ImageView navStatsIcon;
@@ -36,6 +37,8 @@ public final class StatsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
+        adRepository = RepositoryProvider.getRepository(this);
+        analyticsTracker = new AnalyticsTracker(this);
         bindBottomNav();
         restoreOrCreateStatsFragment();
         showStats();
@@ -60,7 +63,7 @@ public final class StatsActivity extends AppCompatActivity
         } else {
             statsFragment = new StatsFragment();
         }
-        statsFragment.configure(adRepository);
+        statsFragment.configure(adRepository, analyticsTracker);
     }
 
     private void showStats() {

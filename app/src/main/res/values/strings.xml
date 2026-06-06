@@ -57,6 +57,10 @@
     <string name="stats_total_exposure">总曝光</string>
     <string name="stats_total_click">总点击</string>
     <string name="stats_click_rate">点击率</string>
+    <string name="stats_total_like">点赞</string>
+    <string name="stats_total_collect">收藏</string>
+    <string name="stats_total_share">分享</string>
+    <string name="stats_interaction_rate">互动率</string>
     <string name="stats_top_ads">热门广告 Top 5</string>
     <string name="stats_content_type">内容类型占比</string>
     <string name="stats_tag_heat">标签热度</string>
@@ -66,7 +70,7 @@
     <string name="stats_type_video">视频</string>
     <string name="stats_type_line_format">%1$s %2$d 条</string>
     <string name="stats_percent_format">%1$d%%</string>
-    <string name="stats_top_ad_line_format">曝光 %1$d · 点击 %2$d</string>
+    <string name="stats_top_ad_line_format">曝光 %1$d · 点击 %2$d · 赞 %3$d · 藏 %4$d · 分享 %5$d</string>
     <string name="stats_empty_top_ads">暂无曝光数据，浏览广告后再查看</string>
 
 </resources>
