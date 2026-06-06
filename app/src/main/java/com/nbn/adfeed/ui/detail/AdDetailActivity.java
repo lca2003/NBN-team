@@ -15,6 +15,7 @@ import androidx.media3.ui.PlayerView;
 
 import com.nbn.adfeed.R;
 import com.nbn.adfeed.ai.AdAiService;
+import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.AdStats;
@@ -69,6 +70,7 @@ public final class AdDetailActivity extends AppCompatActivity {
 
     private AdRepository repository;
     private AdAiService aiService;
+    private AnalyticsTracker analyticsTracker;
     private AdItem ad;
     private InteractionState state;
     /** 视频是否处于播放态（由真实播放器驱动 UI 切换）。 */
@@ -114,6 +116,7 @@ public final class AdDetailActivity extends AppCompatActivity {
         // 获取 Repository 和 AI 服务入口。
         repository = RepositoryProvider.getRepository(this);
         aiService = RepositoryProvider.getAdAiService(this);
+        analyticsTracker = new AnalyticsTracker(this);
 
         ad = parseIntent();
         if (ad == null) {
@@ -350,20 +353,31 @@ public final class AdDetailActivity extends AppCompatActivity {
             boolean liked = interactionStore.toggleLike(ad);
             // 后台线程上报后端，避免主线程网络调用。
             reportInteraction(InteractionAction.TOGGLE_LIKE);
+            if (liked) {
+                analyticsTracker.trackLike(ad.getId());
+            } else {
+                analyticsTracker.trackUnlike(ad.getId());
+            }
             renderLike();
             if (liked) {
                 playLikeBurst();
             }
         });
         findViewById(R.id.collectContainer).setOnClickListener(v -> {
-            interactionStore.toggleCollect(ad);
+            boolean collected = interactionStore.toggleCollect(ad);
             // 后台线程上报后端。
             reportInteraction(InteractionAction.TOGGLE_COLLECT);
+            if (collected) {
+                analyticsTracker.trackCollect(ad.getId());
+            } else {
+                analyticsTracker.trackUncollect(ad.getId());
+            }
             renderCollect();
         });
         findViewById(R.id.shareContainer).setOnClickListener(v -> {
             // 后台线程上报后端。
             reportInteraction(InteractionAction.SHARE);
+            analyticsTracker.trackShare(ad.getId());
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_TEXT, ad.getTitle() + " · " + ad.getBrand());

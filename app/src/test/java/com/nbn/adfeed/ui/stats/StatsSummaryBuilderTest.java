@@ -2,8 +2,10 @@ package com.nbn.adfeed.ui.stats;
 
 import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
+import com.nbn.adfeed.data.model.AdStats;
 import com.nbn.adfeed.data.model.InteractionState;
 import com.nbn.adfeed.ui.feed.InteractionStore;
+import com.nbn.adfeed.analytics.event.AdAnalyticsEventCounts;
 
 import org.junit.Test;
 
@@ -39,10 +41,41 @@ public final class StatsSummaryBuilderTest {
     }
 
     @Test
+    public void buildsInteractionTotalsFromPersistentEventDeltasWithoutDoubleCountingBaseStats() {
+        List<AdItem> ads = Arrays.asList(
+                adWithStats("ad_001", "第一条", AdContentType.LARGE_IMAGE,
+                        new AdStats(4, 2, 10, 6, 3), "数码"),
+                adWithStats("ad_002", "第二条", AdContentType.SMALL_IMAGE,
+                        new AdStats(2, 1, 5, 4, 1), "生活")
+        );
+        InteractionStore interactionStore = store();
+        interactionStore.stateOf(ads.get(0)).setExposureCount(4);
+        interactionStore.stateOf(ads.get(0)).setClickCount(2);
+        interactionStore.stateOf(ads.get(1)).setExposureCount(2);
+        interactionStore.stateOf(ads.get(1)).setClickCount(1);
+        Map<String, AdAnalyticsEventCounts> eventCounts = new java.util.HashMap<>();
+        eventCounts.put("ad_001", eventCounts(2, -1, 4));
+        eventCounts.put("ad_002", eventCounts(-1, 3, 2));
+
+        StatsSummary summary = StatsSummaryBuilder.fromAds(ads, interactionStore, eventCounts);
+
+        assertEquals(2, summary.getTotalLikeCount());
+        assertEquals(3, summary.getTotalCollectCount());
+        assertEquals(6, summary.getTotalShareCount());
+        assertEquals(183, summary.getInteractionRatePercent());
+        assertEquals(2, summary.getTopAds().get(0).getLikeCount());
+        assertEquals(0, summary.getTopAds().get(0).getCollectCount());
+        assertEquals(4, summary.getTopAds().get(0).getShareCount());
+    }
+
+    @Test
     public void contentTypeCountReturnsZeroWhenTypeIsMissing() {
         Map<AdContentType, Integer> contentTypeCounts = new EnumMap<>(AdContentType.class);
         contentTypeCounts.put(AdContentType.LARGE_IMAGE, 1);
         StatsSummary summary = new StatsSummary(
+                0,
+                0,
+                0,
                 0,
                 0,
                 1,
@@ -123,6 +156,36 @@ public final class StatsSummaryBuilderTest {
                 Arrays.asList(tags),
                 state
         );
+    }
+
+    private static AdItem adWithStats(
+            String id,
+            String title,
+            AdContentType contentType,
+            AdStats stats,
+            String... tags
+    ) {
+        return new AdItem(
+                id,
+                title,
+                "NBN",
+                "精选",
+                "精选",
+                "description",
+                "summary",
+                null,
+                null,
+                null,
+                contentType,
+                Arrays.asList(tags),
+                new InteractionState(),
+                stats,
+                null
+        );
+    }
+
+    private static AdAnalyticsEventCounts eventCounts(int likeDelta, int collectDelta, int shareCount) {
+        return new AdAnalyticsEventCounts(0, 0, likeDelta, collectDelta, shareCount);
     }
 
     private static InteractionStore store() {

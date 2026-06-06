@@ -11,6 +11,9 @@ import java.util.Map;
 public final class StatsSummary {
     private final int totalExposureCount;
     private final int totalClickCount;
+    private final int totalLikeCount;
+    private final int totalCollectCount;
+    private final int totalShareCount;
     private final int totalAdCount;
     private final Map<AdContentType, Integer> contentTypeCounts;
     private final List<TopAd> topAds;
@@ -19,6 +22,9 @@ public final class StatsSummary {
     StatsSummary(
             int totalExposureCount,
             int totalClickCount,
+            int totalLikeCount,
+            int totalCollectCount,
+            int totalShareCount,
             int totalAdCount,
             Map<AdContentType, Integer> contentTypeCounts,
             List<TopAd> topAds,
@@ -26,6 +32,9 @@ public final class StatsSummary {
     ) {
         this.totalExposureCount = totalExposureCount;
         this.totalClickCount = totalClickCount;
+        this.totalLikeCount = totalLikeCount;
+        this.totalCollectCount = totalCollectCount;
+        this.totalShareCount = totalShareCount;
         this.totalAdCount = totalAdCount;
         this.contentTypeCounts = Collections.unmodifiableMap(new EnumMap<>(contentTypeCounts));
         this.topAds = Collections.unmodifiableList(new ArrayList<>(topAds));
@@ -38,6 +47,18 @@ public final class StatsSummary {
 
     public int getTotalClickCount() {
         return totalClickCount;
+    }
+
+    public int getTotalLikeCount() {
+        return totalLikeCount;
+    }
+
+    public int getTotalCollectCount() {
+        return totalCollectCount;
+    }
+
+    public int getTotalShareCount() {
+        return totalShareCount;
     }
 
     public int getTotalAdCount() {
@@ -68,6 +89,13 @@ public final class StatsSummary {
         return Math.round(totalClickCount * 100f / totalExposureCount);
     }
 
+    public int getInteractionRatePercent() {
+        if (totalExposureCount == 0) {
+            return 0;
+        }
+        return Math.round((totalLikeCount + totalCollectCount + totalShareCount) * 100f / totalExposureCount);
+    }
+
     public int getContentTypePercent(AdContentType type) {
         if (totalAdCount == 0) {
             return 0;
@@ -80,12 +108,26 @@ public final class StatsSummary {
         private final String title;
         private final int exposureCount;
         private final int clickCount;
+        private final int likeCount;
+        private final int collectCount;
+        private final int shareCount;
 
-        TopAd(String adId, String title, int exposureCount, int clickCount) {
+        TopAd(
+                String adId,
+                String title,
+                int exposureCount,
+                int clickCount,
+                int likeCount,
+                int collectCount,
+                int shareCount
+        ) {
             this.adId = adId;
             this.title = title;
             this.exposureCount = exposureCount;
             this.clickCount = clickCount;
+            this.likeCount = likeCount;
+            this.collectCount = collectCount;
+            this.shareCount = shareCount;
         }
 
         public String getAdId() {
@@ -102,6 +144,18 @@ public final class StatsSummary {
 
         public int getClickCount() {
             return clickCount;
+        }
+
+        public int getLikeCount() {
+            return likeCount;
+        }
+
+        public int getCollectCount() {
+            return collectCount;
+        }
+
+        public int getShareCount() {
+            return shareCount;
         }
     }
 

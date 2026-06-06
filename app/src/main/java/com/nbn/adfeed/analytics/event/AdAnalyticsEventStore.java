@@ -35,7 +35,14 @@ public final class AdAnalyticsEventStore extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // 首版表结构没有迁移历史，后续升级时在这里补 ALTER 逻辑。
+        if (oldVersion < 2) {
+            db.execSQL(AdAnalyticsEventContract.SQL_RENAME_TABLE_FOR_V2);
+            db.execSQL(AdAnalyticsEventContract.SQL_CREATE_TABLE);
+            db.execSQL(AdAnalyticsEventContract.SQL_COPY_V1_EVENTS_TO_V2);
+            db.execSQL(AdAnalyticsEventContract.SQL_DROP_OLD_TABLE);
+            db.execSQL(AdAnalyticsEventContract.SQL_CREATE_INDEX_TYPE_TIME);
+            db.execSQL(AdAnalyticsEventContract.SQL_CREATE_INDEX_AD_TYPE);
+        }
     }
 
     public long insertExposure(
@@ -79,6 +86,26 @@ public final class AdAnalyticsEventStore extends SQLiteOpenHelper {
         );
     }
 
+    public long insertLike(String adId, long occurredAtMillis) {
+        return insertFeedInteraction(AdAnalyticsEventContract.EVENT_LIKE, adId, occurredAtMillis);
+    }
+
+    public long insertUnlike(String adId, long occurredAtMillis) {
+        return insertFeedInteraction(AdAnalyticsEventContract.EVENT_UNLIKE, adId, occurredAtMillis);
+    }
+
+    public long insertCollect(String adId, long occurredAtMillis) {
+        return insertFeedInteraction(AdAnalyticsEventContract.EVENT_COLLECT, adId, occurredAtMillis);
+    }
+
+    public long insertUncollect(String adId, long occurredAtMillis) {
+        return insertFeedInteraction(AdAnalyticsEventContract.EVENT_UNCOLLECT, adId, occurredAtMillis);
+    }
+
+    public long insertShare(String adId, long occurredAtMillis) {
+        return insertFeedInteraction(AdAnalyticsEventContract.EVENT_SHARE, adId, occurredAtMillis);
+    }
+
     public Map<String, AdAnalyticsEventCounts> loadCountsByAdId() {
         Map<String, AdAnalyticsEventCounts> countsByAdId = new HashMap<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -100,10 +127,37 @@ public final class AdAnalyticsEventStore extends SQLiteOpenHelper {
                     counts.setExposureCount(count);
                 } else if (AdAnalyticsEventContract.EVENT_CLICK.equals(eventType)) {
                     counts.setClickCount(count);
+                } else if (AdAnalyticsEventContract.EVENT_LIKE.equals(eventType)) {
+                    applyDelta(count, counts::increaseLikeDelta);
+                } else if (AdAnalyticsEventContract.EVENT_UNLIKE.equals(eventType)) {
+                    applyDelta(count, counts::decreaseLikeDelta);
+                } else if (AdAnalyticsEventContract.EVENT_COLLECT.equals(eventType)) {
+                    applyDelta(count, counts::increaseCollectDelta);
+                } else if (AdAnalyticsEventContract.EVENT_UNCOLLECT.equals(eventType)) {
+                    applyDelta(count, counts::decreaseCollectDelta);
+                } else if (AdAnalyticsEventContract.EVENT_SHARE.equals(eventType)) {
+                    counts.setShareCount(count);
                 }
             }
         }
         return countsByAdId;
+    }
+
+    private long insertFeedInteraction(String eventType, String adId, long occurredAtMillis) {
+        return insertEvent(
+                eventType,
+                adId,
+                occurredAtMillis,
+                null,
+                null,
+                AdAnalyticsEventContract.SOURCE_FEED
+        );
+    }
+
+    private static void applyDelta(int count, Runnable operation) {
+        for (int i = 0; i < count; i++) {
+            operation.run();
+        }
     }
 
     private long insertEvent(

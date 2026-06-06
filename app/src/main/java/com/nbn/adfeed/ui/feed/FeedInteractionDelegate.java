@@ -137,6 +137,11 @@ final class FeedInteractionDelegate {
     boolean onLikeClick(AdItem ad, int position) {
         boolean liked = interactionStore.toggleLike(ad);
         adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
+        if (liked) {
+            analyticsTracker.trackLike(ad.getId());
+        } else {
+            analyticsTracker.trackUnlike(ad.getId());
+        }
         adapter.notifyItemChanged(position);
         if (liked) {
             playLikeBurst(position);
@@ -146,14 +151,20 @@ final class FeedInteractionDelegate {
 
     /** 收藏切换。 */
     void onCollectClick(AdItem ad, int position) {
-        interactionStore.toggleCollect(ad);
+        boolean collected = interactionStore.toggleCollect(ad);
         adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
+        if (collected) {
+            analyticsTracker.trackCollect(ad.getId());
+        } else {
+            analyticsTracker.trackUncollect(ad.getId());
+        }
         adapter.notifyItemChanged(position);
     }
 
     /** 分享：上报事件 + 弹出系统分享面板。 */
     void onShareClick(AdItem ad, int position) {
         adCatalog.updateInteraction(ad.getId(), InteractionAction.SHARE);
+        analyticsTracker.trackShare(ad.getId());
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.putExtra(Intent.EXTRA_TEXT, ad.getTitle() + " · " + ad.getBrand());
