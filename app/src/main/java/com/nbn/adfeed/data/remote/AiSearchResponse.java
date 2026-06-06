@@ -10,14 +10,29 @@ public final class AiSearchResponse {
     @SerializedName("data")
     private Data data;
 
+    @SerializedName("answer")
+    private String answer;
+
+    @SerializedName("matchedAdIds")
+    private List<String> matchedAdIds;
+
+    @SerializedName("fallback")
+    private Boolean fallback;
+
     public AiSearchResponse(String answer, List<String> matchedAdIds, boolean fallback) {
         this.data = Data.from(answer, matchedAdIds, fallback);
+        this.answer = answer;
+        this.matchedAdIds = copyOrEmpty(matchedAdIds);
+        this.fallback = fallback;
     }
 
     private AiSearchResponse() {
     }
 
     public String getAnswer() {
+        if (answer != null && !answer.trim().isEmpty()) {
+            return answer.trim();
+        }
         if (data == null) {
             return "";
         }
@@ -29,6 +44,9 @@ public final class AiSearchResponse {
     }
 
     public List<String> getMatchedAdIds() {
+        if (matchedAdIds != null) {
+            return Collections.unmodifiableList(copyOrEmpty(matchedAdIds));
+        }
         if (data == null || data.results == null) {
             return Collections.emptyList();
         }
@@ -42,6 +60,9 @@ public final class AiSearchResponse {
     }
 
     public boolean isFallback() {
+        if (fallback != null) {
+            return fallback;
+        }
         if (data == null || data.provider == null) {
             return true;
         }

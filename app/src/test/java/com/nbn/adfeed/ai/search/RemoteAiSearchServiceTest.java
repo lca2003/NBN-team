@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import okhttp3.Request;
 import okio.Timeout;
@@ -62,7 +63,8 @@ public final class RemoteAiSearchServiceTest {
         ));
         RemoteAiSearchService service = new RemoteAiSearchService(
                 api,
-                repository
+                repository,
+                Runnable::run
         );
         List<AiSearchResult> results = new ArrayList<>();
 
@@ -103,6 +105,32 @@ public final class RemoteAiSearchServiceTest {
         assertFalse(results.get(0).isFallback());
     }
 
+    @Test
+    public void remoteFailureRunsFallbackRepositoryOnInjectedExecutor() {
+        CapturingAiSearchApi api = new CapturingAiSearchApi(
+                ImmediateCall.failure(new IOException("remote unavailable"))
+        );
+        FixedAdRepository repository = new FixedAdRepository(Collections.singletonList(ad("ad_001")));
+        ManualExecutor executor = new ManualExecutor();
+        RemoteAiSearchService service = new RemoteAiSearchService(
+                Collections.singletonList(api),
+                repository,
+                executor
+        );
+        List<AiSearchResult> results = new ArrayList<>();
+
+        service.search("sports", results::add);
+
+        assertEquals(0, repository.searchAdsCallCount);
+        assertTrue(results.isEmpty());
+
+        executor.runNext();
+
+        assertEquals(1, repository.searchAdsCallCount);
+        assertEquals(1, results.size());
+        assertEquals(Collections.singletonList("ad_001"), results.get(0).getMatchedAdIds());
+    }
+
     private static AdItem ad(String id) {
         return new AdItem(
                 id,
@@ -134,6 +162,7 @@ public final class RemoteAiSearchServiceTest {
     private static final class FixedAdRepository implements AdRepository {
         private final List<AdItem> searchResult;
         private SearchRequest lastSearchRequest;
+        private int searchAdsCallCount;
 
         private FixedAdRepository(List<AdItem> searchResult) {
             this.searchResult = searchResult;
@@ -156,6 +185,7 @@ public final class RemoteAiSearchServiceTest {
 
         @Override
         public DataResult<PageResult<AdItem>> searchAds(SearchRequest request) {
+            searchAdsCallCount++;
             lastSearchRequest = request;
             return DataResult.success(
                     new PageResult<>(
@@ -170,6 +200,19 @@ public final class RemoteAiSearchServiceTest {
                     ),
                     "test"
             );
+        }
+    }
+
+    private static final class ManualExecutor implements Executor {
+        private final List<Runnable> tasks = new ArrayList<>();
+
+        @Override
+        public void execute(Runnable command) {
+            tasks.add(command);
+        }
+
+        private void runNext() {
+            tasks.remove(0).run();
         }
     }
 

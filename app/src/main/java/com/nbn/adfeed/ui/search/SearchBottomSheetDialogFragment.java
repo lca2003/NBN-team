@@ -113,7 +113,7 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
         messageStore = new ChatMessageStore(requireContext());
         persistenceExecutor = Executors.newSingleThreadExecutor();
         aiSearchService = new RemoteAiSearchService(
-                RemoteClientProvider.createAiSearchApi(),
+                RemoteClientProvider.createAiSearchApis(),
                 RepositoryProvider.getRepository(requireContext())
         );
 

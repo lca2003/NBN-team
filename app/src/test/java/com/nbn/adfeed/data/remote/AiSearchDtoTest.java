@@ -49,4 +49,18 @@ public final class AiSearchDtoTest {
         assertEquals(Arrays.asList("ad_001", "ad_002"), response.getMatchedAdIds());
         assertFalse(response.isFallback());
     }
+
+    @Test
+    public void responseDeserializesSpringAiSearchFields() {
+        AiSearchResponse response = gson.fromJson(
+                "{\"answer\":\"found ads\","
+                        + "\"matchedAdIds\":[\"ad_001\",\"ad_002\"],"
+                        + "\"fallback\":false}",
+                AiSearchResponse.class
+        );
+
+        assertEquals("found ads", response.getAnswer());
+        assertEquals(Arrays.asList("ad_001", "ad_002"), response.getMatchedAdIds());
+        assertFalse(response.isFallback());
+    }
 }

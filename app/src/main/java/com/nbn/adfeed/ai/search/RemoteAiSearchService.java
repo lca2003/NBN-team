@@ -15,6 +15,8 @@ import com.nbn.adfeed.data.repository.AdRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -24,12 +26,18 @@ public final class RemoteAiSearchService implements AiSearchService {
     //当远程 AI 服务不可用时，将返回此提示。
     private static final String FALLBACK_ANSWER = "AI搜索不可用，已使用本地/后端降级数据";
     private static final int FALLBACK_SEARCH_LIMIT = 100;
+    private static final Executor DEFAULT_FALLBACK_EXECUTOR = Executors.newSingleThreadExecutor(runnable -> {
+        Thread thread = new Thread(runnable, "nbn-ai-search-fallback");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     //远程 API 接口实例，用于按候选地址发起 AI 搜索请求。
     private final List<AiSearchApi> aiSearchApis;
     
     //本地降级数据源，在远程调用失败时用于基于关键词的广告匹配
     private final AdRepository fallbackRepository;
+    private final Executor fallbackExecutor;
 
     //使用默认配置构造服务实例
     public RemoteAiSearchService() {
@@ -41,9 +49,26 @@ public final class RemoteAiSearchService implements AiSearchService {
         this(singletonApi(aiSearchApi), fallbackRepository);
     }
 
-    public RemoteAiSearchService(List<AiSearchApi> aiSearchApis, AdRepository fallbackRepository) {
+    RemoteAiSearchService(
+            AiSearchApi aiSearchApi,
+            AdRepository fallbackRepository,
+            Executor fallbackExecutor
+    ) {
+        this(singletonApi(aiSearchApi), fallbackRepository, fallbackExecutor);
+    }
+
+    public RemoteAiSearchService(List<? extends AiSearchApi> aiSearchApis, AdRepository fallbackRepository) {
+        this(aiSearchApis, fallbackRepository, DEFAULT_FALLBACK_EXECUTOR);
+    }
+
+    RemoteAiSearchService(
+            List<? extends AiSearchApi> aiSearchApis,
+            AdRepository fallbackRepository,
+            Executor fallbackExecutor
+    ) {
         this.aiSearchApis = sanitizeApis(aiSearchApis);
-        this.fallbackRepository = fallbackRepository;
+        this.fallbackRepository = fallbackRepository == null ? new MockAdRepository() : fallbackRepository;
+        this.fallbackExecutor = fallbackExecutor == null ? DEFAULT_FALLBACK_EXECUTOR : fallbackExecutor;
     }
 
     //异步执行 AI 搜索
@@ -66,7 +91,7 @@ public final class RemoteAiSearchService implements AiSearchService {
             Callback callback
     ) {
         if (apiIndex >= aiSearchApis.size()) {
-            callback.onResult(createFallbackResult(query));
+            dispatchFallbackResult(query, callback);
             return;
         }
 
@@ -101,6 +126,10 @@ public final class RemoteAiSearchService implements AiSearchService {
     }
 
     //创建降级搜索结果
+    private void dispatchFallbackResult(String query, Callback callback) {
+        fallbackExecutor.execute(() -> callback.onResult(createFallbackResult(query)));
+    }
+
     private AiSearchResult createFallbackResult(String query) {
         List<AdItem> matchedAds = searchFallbackRepository(query);
         return new AiSearchResult(FALLBACK_ANSWER, toAdIds(matchedAds), true);
@@ -143,7 +172,7 @@ public final class RemoteAiSearchService implements AiSearchService {
         return Collections.singletonList(api);
     }
 
-    private static List<AiSearchApi> sanitizeApis(List<AiSearchApi> apis) {
+    private static List<AiSearchApi> sanitizeApis(List<? extends AiSearchApi> apis) {
         if (apis == null || apis.isEmpty()) {
             return Collections.emptyList();
         }
