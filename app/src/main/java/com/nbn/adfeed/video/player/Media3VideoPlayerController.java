@@ -9,6 +9,7 @@ import androidx.media3.common.PlaybackException;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.PlayerView;
 
+import com.nbn.adfeed.R;
 import com.nbn.adfeed.video.VideoPlaybackManager;
 
 public final class Media3VideoPlayerController {
@@ -34,19 +35,24 @@ public final class Media3VideoPlayerController {
     private Player player;
     private PlayerView activePlayerView;
     private String activeVideoUri;
+    private String fallbackVideoUri;
     private PlaybackCallback callback;
     private final Player.Listener playerListener = new Player.Listener() {
         @Override
         public void onPlaybackStateChanged(int playbackState) {
             String activeAdId = playbackManager.getActiveAdId();
-            if (activeAdId == null || callback == null) {
+            if (activeAdId == null) {
                 return;
             }
             if (playbackState == Player.STATE_BUFFERING) {
-                callback.onBuffering(activeAdId);
+                if (callback != null) {
+                    callback.onBuffering(activeAdId);
+                }
             } else if (playbackState == Player.STATE_ENDED) {
-                playbackManager.stop(activeAdId, currentPositionMs(player));
-                callback.onEnded(activeAdId);
+                playbackManager.stop(activeAdId, 0L);
+                if (callback != null) {
+                    callback.onEnded(activeAdId);
+                }
             }
         }
 
@@ -58,7 +64,7 @@ public final class Media3VideoPlayerController {
             }
             if (isPlaying) {
                 callback.onPlaying(activeAdId);
-            } else {
+            } else if (player != null && !player.getPlayWhenReady()) {
                 callback.onPaused(activeAdId);
             }
         }
@@ -66,11 +72,16 @@ public final class Media3VideoPlayerController {
         @Override
         public void onPlayerError(PlaybackException error) {
             String activeAdId = playbackManager.getActiveAdId();
-            if (activeAdId == null || callback == null) {
+            if (activeAdId == null) {
+                return;
+            }
+            if (tryFallbackPlayback()) {
                 return;
             }
             playbackManager.stop(activeAdId, currentPositionMs(player));
-            callback.onError(activeAdId, error == null ? "播放失败" : error.getMessage());
+            if (callback != null) {
+                callback.onError(activeAdId, error == null ? "播放失败" : error.getMessage());
+            }
         }
     };
 
@@ -95,8 +106,8 @@ public final class Media3VideoPlayerController {
 
     public boolean play(String adId, String videoUri, PlayerView playerView) {
         String normalizedAdId = normalize(adId);
-        String normalizedVideoUri = normalize(videoUri);
-        if (normalizedAdId == null || normalizedVideoUri == null || playerView == null) {
+        String requestedVideoUri = resolveVideoUri(videoUri);
+        if (normalizedAdId == null || requestedVideoUri == null || playerView == null) {
             return false;
         }
 
@@ -104,6 +115,8 @@ public final class Media3VideoPlayerController {
         saveCurrentPositionIfSwitching(normalizedAdId, mediaPlayer);
         attachPlayerView(playerView, mediaPlayer);
         applyMutedState(mediaPlayer);
+        fallbackVideoUri = packagedFallbackVideoUri(normalizedAdId);
+        String normalizedVideoUri = fallbackVideoUri == null ? requestedVideoUri : fallbackVideoUri;
 
         if (isCurrentMedia(normalizedAdId, normalizedVideoUri, mediaPlayer)) {
             playbackManager.resume(normalizedAdId);
@@ -168,6 +181,7 @@ public final class Media3VideoPlayerController {
             mediaPlayer.clearMediaItems();
             detachActiveView();
             activeVideoUri = null;
+            fallbackVideoUri = null;
             playbackManager.releaseOffscreen(normalizedAdId, positionMs);
             return;
         }
@@ -204,6 +218,7 @@ public final class Media3VideoPlayerController {
         }
         detachActiveView();
         activeVideoUri = null;
+        fallbackVideoUri = null;
         playbackManager.releaseAll();
     }
 
@@ -211,7 +226,7 @@ public final class Media3VideoPlayerController {
         if (player == null) {
             player = playerFactory.create(appContext);
             player.addListener(playerListener);
-            player.setRepeatMode(Player.REPEAT_MODE_OFF);
+            player.setRepeatMode(Player.REPEAT_MODE_ONE);
             applyMutedState(player);
         }
         return player;
@@ -245,6 +260,44 @@ public final class Media3VideoPlayerController {
                 && mediaPlayer.getMediaItemCount() > 0;
     }
 
+    private boolean tryFallbackPlayback() {
+        Player mediaPlayer = player;
+        if (mediaPlayer == null || fallbackVideoUri == null || fallbackVideoUri.equals(activeVideoUri)) {
+            return false;
+        }
+
+        long resumePositionMs = currentPositionMs(mediaPlayer);
+        activeVideoUri = fallbackVideoUri;
+        mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(fallbackVideoUri)));
+        mediaPlayer.prepare();
+        if (resumePositionMs > 0L) {
+            mediaPlayer.seekTo(resumePositionMs);
+        }
+        mediaPlayer.play();
+        return true;
+    }
+
+    private String packagedFallbackVideoUri(String adId) {
+        int resourceId;
+        switch (adId) {
+            case "ad_003":
+            case "ad_015":
+                resourceId = R.raw.ad_video_headphones;
+                break;
+            case "ad_007":
+            case "ad_027":
+                resourceId = R.raw.ad_video_study_ai;
+                break;
+            case "ad_018":
+            case "ad_022":
+                resourceId = R.raw.ad_video_local_sports;
+                break;
+            default:
+                return null;
+        }
+        return "rawresource:///" + resourceId;
+    }
+
     private void applyMutedState(Player mediaPlayer) {
         mediaPlayer.setVolume(playbackManager.isMuted() ? 0f : 1f);
     }
@@ -259,5 +312,24 @@ public final class Media3VideoPlayerController {
         }
         String trimmedValue = value.trim();
         return trimmedValue.isEmpty() ? null : trimmedValue;
+    }
+
+    private String resolveVideoUri(String videoUri) {
+        String normalizedVideoUri = normalize(videoUri);
+        if (normalizedVideoUri == null || !normalizedVideoUri.startsWith("raw/")) {
+            return normalizedVideoUri;
+        }
+
+        String resourceName = normalizedVideoUri.substring("raw/".length());
+        int extensionIndex = resourceName.lastIndexOf('.');
+        if (extensionIndex > 0) {
+            resourceName = resourceName.substring(0, extensionIndex);
+        }
+        int resourceId = appContext.getResources().getIdentifier(
+                resourceName,
+                "raw",
+                appContext.getPackageName()
+        );
+        return resourceId == 0 ? normalizedVideoUri : "rawresource:///" + resourceId;
     }
 }

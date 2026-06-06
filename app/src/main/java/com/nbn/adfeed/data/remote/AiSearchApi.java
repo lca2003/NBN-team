@@ -5,6 +5,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface AiSearchApi {
-    @POST("/api/ai/search")
+    @POST("/v1/ai/search")
     Call<AiSearchResponse> search(@Body AiSearchRequest request);
 }

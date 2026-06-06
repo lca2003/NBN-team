@@ -19,6 +19,7 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public final class MediaHttpsContractTest {
@@ -98,6 +99,40 @@ public final class MediaHttpsContractTest {
         assertFalse(AdMediaLoader.isHttpsMedia("http://example.com/image.jpg"));
         assertFalse(AdMediaLoader.isHttpsMedia("android.resource://com.nbn.adfeed/drawable/ad_media_large_market"));
         assertFalse(AdMediaLoader.isHttpsMedia(null));
+    }
+
+    @Test
+    public void localRawVideoUrisAreConvertedForMedia3() {
+        String fromRawPath = AdMediaResources.playableVideoUri("raw/ad_video_headphones.mp4");
+        String fromAndroidResPath = AdMediaResources.playableVideoUri(
+                "file:///android_res/raw/ad_video_headphones.mp4");
+        String fromAndroidResourceUri = AdMediaResources.playableVideoUri(
+                "android.resource://com.nbn.adfeed/raw/ad_video_headphones.mp4");
+
+        assertNotNull(fromRawPath);
+        assertTrue(fromRawPath, fromRawPath.startsWith("rawresource:///"));
+        assertEquals(fromRawPath, fromAndroidResPath);
+        assertEquals(fromRawPath, fromAndroidResourceUri);
+        assertEquals("https://example.com/video.mp4",
+                AdMediaResources.playableVideoUri(" https://example.com/video.mp4 "));
+        assertNull(AdMediaResources.playableVideoUri("  "));
+    }
+
+    @Test
+    public void knownMockVideoAdsPreferPackagedRawPlayback() throws Exception {
+        AdItem videoAd = null;
+        for (AdItem ad : readAds()) {
+            if ("ad_003".equals(ad.getId())) {
+                videoAd = ad;
+                break;
+            }
+        }
+
+        assertNotNull(videoAd);
+        assertTrue(videoAd.getVideoUrl(), videoAd.getVideoUrl().startsWith("https://"));
+        String playableUri = AdMediaResources.playableVideoUri(videoAd);
+        assertNotNull(playableUri);
+        assertTrue(playableUri, playableUri.startsWith("rawresource:///"));
     }
 
     private static List<AdItem> readAds() throws Exception {

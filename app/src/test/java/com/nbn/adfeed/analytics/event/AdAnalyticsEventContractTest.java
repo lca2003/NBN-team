@@ -14,10 +14,16 @@ public final class AdAnalyticsEventContractTest {
         String createSql = AdAnalyticsEventContract.SQL_CREATE_TABLE;
 
         assertTrue(createSql.contains("ad_analytics_events"));
-        assertTrue(createSql.contains("event_type IN ('exposure', 'click', 'detail_view')"));
+        assertTrue(createSql.contains("event_type IN ('exposure', 'click', 'detail_view', "
+                + "'like', 'unlike', 'collect', 'uncollect', 'share')"));
         assertTrue(createSql.contains("visible_ratio REAL"));
         assertTrue(createSql.contains("duration_ms INTEGER"));
         assertTrue(createSql.contains("source TEXT NOT NULL DEFAULT 'feed'"));
+    }
+
+    @Test
+    public void databaseVersionIsIncrementedForInteractionEventTypes() {
+        assertTrue(AdAnalyticsEventContract.DATABASE_VERSION >= 2);
     }
 
     @Test
@@ -29,13 +35,19 @@ public final class AdAnalyticsEventContractTest {
     }
 
     @Test
-    public void selectCountsSqlGroupsExposureAndClickByAdIdAndType() {
+    public void selectCountsSqlGroupsExposureClickAndInteractionsByAdIdAndType() {
         String querySql = AdAnalyticsEventContract.SQL_SELECT_COUNTS_BY_AD;
 
         assertTrue(querySql.contains("ad_id"));
         assertTrue(querySql.contains("event_type"));
         assertTrue(querySql.contains("COUNT(*)"));
-        assertTrue(querySql.contains("event_type IN ('exposure', 'click')"));
+        assertTrue(querySql.contains("'exposure'"));
+        assertTrue(querySql.contains("'click'"));
+        assertTrue(querySql.contains("'like'"));
+        assertTrue(querySql.contains("'unlike'"));
+        assertTrue(querySql.contains("'collect'"));
+        assertTrue(querySql.contains("'uncollect'"));
+        assertTrue(querySql.contains("'share'"));
         assertTrue(querySql.contains("GROUP BY ad_id, event_type"));
     }
 }

@@ -1,7 +1,7 @@
 package com.nbn.adfeed.backend.ai;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nbn.adfeed.backend.ad.AdMemoryService;
+import com.nbn.adfeed.backend.ad.SeedAdCatalogService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.ai.chat.client.ChatClient;
@@ -29,7 +29,7 @@ class AiSearchServiceTest {
         AiSearchService service = new AiSearchService(
                 chatClient,
                 "real-api-key",
-                new AdMemoryService(),
+                seedAdCatalogService(),
                 new ObjectMapper()
         );
 
@@ -48,7 +48,9 @@ class AiSearchServiceTest {
                 .contains("student sports ads")
                 .contains("candidateAds")
                 .contains("ad_001")
-                .contains("NBN Sports");
+                .contains("NBN Sports")
+                .contains("主打轻量缓震和夜跑反光设计")
+                .contains("性价比");
         assertThat(response.answer()).isEqualTo("matched ads");
         assertThat(response.matchedAdIds()).containsExactly("ad_001");
         assertThat(response.fallback()).isFalse();
@@ -67,7 +69,7 @@ class AiSearchServiceTest {
         AiSearchService service = new AiSearchService(
                 chatClient,
                 "real-api-key",
-                new AdMemoryService(),
+                seedAdCatalogService(),
                 new ObjectMapper()
         );
 
@@ -84,7 +86,7 @@ class AiSearchServiceTest {
         AiSearchService service = new AiSearchService(
                 chatClient,
                 "not-configured",
-                new AdMemoryService(),
+                seedAdCatalogService(),
                 new ObjectMapper()
         );
 
@@ -93,5 +95,9 @@ class AiSearchServiceTest {
         verifyNoInteractions(chatClient);
         assertThat(response.answer()).contains("student sports ads");
         assertThat(response.fallback()).isTrue();
+    }
+
+    private static SeedAdCatalogService seedAdCatalogService() {
+        return new SeedAdCatalogService(new ObjectMapper());
     }
 }

@@ -9,8 +9,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 // 网络基础设施客户端
 //用于创建 {@link AiSearchApi} 的 Retrofit 客户端实例，封装了 OkHttpClient 的超时配置
 public final class RemoteClientProvider {
-    //用于连接本地开发服务器（Android 模拟器访问宿主机时使用 10.0.2.2）
-    public static final String DEFAULT_BASE_URL = "http://10.0.2.2:8080/";
+    //用于连接本地 AI 后端；配合 adb reverse tcp:8081 tcp:8081 使用
+    public static final String DEFAULT_BASE_URL = "http://127.0.0.1:8081/";
 
     private static final long CONNECT_TIMEOUT_SECONDS = 5L;
     private static final long READ_TIMEOUT_SECONDS = 10L;

@@ -3,8 +3,8 @@ package com.nbn.adfeed.backend.ai;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nbn.adfeed.backend.ad.AdCatalogService;
 import com.nbn.adfeed.backend.ad.AdItem;
-import com.nbn.adfeed.backend.ad.AdMemoryService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,28 +42,28 @@ public class AiSearchService {
 
     private final String dashScopeApiKey;
     private final ChatClient chatClient;
-    private final AdMemoryService adMemoryService;
+    private final AdCatalogService adCatalogService;
     private final ObjectMapper objectMapper;
 
     @Autowired
     public AiSearchService(
             ChatClient.Builder chatClientBuilder,
-            AdMemoryService adMemoryService,
+            AdCatalogService adCatalogService,
             ObjectMapper objectMapper,
             @Value("${spring.ai.dashscope.api-key:not-configured}") String dashScopeApiKey
     ) {
-        this(chatClientBuilder.build(), dashScopeApiKey, adMemoryService, objectMapper);
+        this(chatClientBuilder.build(), dashScopeApiKey, adCatalogService, objectMapper);
     }
 
     AiSearchService(
             ChatClient chatClient,
             String dashScopeApiKey,
-            AdMemoryService adMemoryService,
+            AdCatalogService adCatalogService,
             ObjectMapper objectMapper
     ) {
         this.dashScopeApiKey = dashScopeApiKey;
         this.chatClient = chatClient;
-        this.adMemoryService = adMemoryService;
+        this.adCatalogService = adCatalogService;
         this.objectMapper = objectMapper;
     }
 
@@ -88,10 +88,14 @@ public class AiSearchService {
     }
 
     private String buildUserPrompt(String query) throws JsonProcessingException {
-        List<CandidateAd> candidateAds = adMemoryService.findAll()
+        List<CandidateAd> candidateAds = adCatalogService.findAll()
                 .stream()
                 .map(CandidateAd::from)
                 .toList();
+    System.out.println("AI query = " + query);
+    System.out.println("AI candidateAds size = " + candidateAds.size());
+    System.out.println("AI candidateAds = " + objectMapper.writeValueAsString(candidateAds));
+
         return objectMapper.writeValueAsString(new ModelSearchRequest(query, candidateAds));
     }
 
@@ -101,7 +105,7 @@ public class AiSearchService {
             return fallback(query);
         }
 
-        Set<String> validIds = adMemoryService.findAll()
+        Set<String> validIds = adCatalogService.findAll()
                 .stream()
                 .map(AdItem::getId)
                 .collect(Collectors.toCollection(LinkedHashSet::new));

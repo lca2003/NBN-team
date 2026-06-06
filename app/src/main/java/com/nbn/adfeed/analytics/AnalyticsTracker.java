@@ -57,6 +57,51 @@ public final class AnalyticsTracker {
         });
     }
 
+    public void trackLike(String adId) {
+        increase("like_" + adId);
+        persist(() -> {
+            if (eventStore != null) {
+                eventStore.insertLike(adId, System.currentTimeMillis());
+            }
+        });
+    }
+
+    public void trackUnlike(String adId) {
+        increase("unlike_" + adId);
+        persist(() -> {
+            if (eventStore != null) {
+                eventStore.insertUnlike(adId, System.currentTimeMillis());
+            }
+        });
+    }
+
+    public void trackCollect(String adId) {
+        increase("collect_" + adId);
+        persist(() -> {
+            if (eventStore != null) {
+                eventStore.insertCollect(adId, System.currentTimeMillis());
+            }
+        });
+    }
+
+    public void trackUncollect(String adId) {
+        increase("uncollect_" + adId);
+        persist(() -> {
+            if (eventStore != null) {
+                eventStore.insertUncollect(adId, System.currentTimeMillis());
+            }
+        });
+    }
+
+    public void trackShare(String adId) {
+        increase("share_" + adId);
+        persist(() -> {
+            if (eventStore != null) {
+                eventStore.insertShare(adId, System.currentTimeMillis());
+            }
+        });
+    }
+
     public void trackDetailView(String adId, long startedAtMillis, long durationMillis) {
         increase("detail_view_" + adId);
         persist(() -> {

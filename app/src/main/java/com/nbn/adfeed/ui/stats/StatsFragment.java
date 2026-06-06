@@ -13,12 +13,15 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.nbn.adfeed.R;
+import com.nbn.adfeed.analytics.AnalyticsTracker;
+import com.nbn.adfeed.analytics.event.AdAnalyticsEventCounts;
 import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.repository.AdRepository;
 import com.nbn.adfeed.ui.feed.InteractionStore;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 统计数据展示页。
@@ -28,10 +31,16 @@ import java.util.List;
  */
 public final class StatsFragment extends Fragment {
     private final InteractionStore interactionStore = InteractionStore.get();
+    private final StatsDataLoader dataLoader = new StatsDataLoader();
     private AdRepository adRepository;
+    private AnalyticsTracker analyticsTracker;
     private TextView totalExposureValue;
     private TextView totalClickValue;
     private TextView clickRateValue;
+    private TextView totalLikeValue;
+    private TextView totalCollectValue;
+    private TextView totalShareValue;
+    private TextView interactionRateValue;
     private LinearLayout topAdsContainer;
     private PieChartView contentTypePieChart;
     private TextView contentTypeTotal;
@@ -45,6 +54,11 @@ public final class StatsFragment extends Fragment {
         adRepository = repository;
     }
 
+    public void configure(AdRepository repository, AnalyticsTracker tracker) {
+        adRepository = repository;
+        analyticsTracker = tracker;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_stats, container, false);
@@ -56,6 +70,10 @@ public final class StatsFragment extends Fragment {
         totalExposureValue = view.findViewById(R.id.totalExposureValue);
         totalClickValue = view.findViewById(R.id.totalClickValue);
         clickRateValue = view.findViewById(R.id.clickRateValue);
+        totalLikeValue = view.findViewById(R.id.totalLikeValue);
+        totalCollectValue = view.findViewById(R.id.totalCollectValue);
+        totalShareValue = view.findViewById(R.id.totalShareValue);
+        interactionRateValue = view.findViewById(R.id.interactionRateValue);
         topAdsContainer = view.findViewById(R.id.topAdsContainer);
         contentTypePieChart = view.findViewById(R.id.contentTypePieChart);
         contentTypeTotal = view.findViewById(R.id.contentTypeTotal);
@@ -82,12 +100,30 @@ public final class StatsFragment extends Fragment {
             return;
         }
 
-        List<AdItem> ads = adRepository.getAllAdsForStats();
-        StatsSummary summary = StatsSummaryBuilder.fromAds(ads, interactionStore);
+        dataLoader.load(adRepository, analyticsTracker, this::renderLoadedData);
+    }
+
+    private void renderLoadedData(List<AdItem> ads, Map<String, AdAnalyticsEventCounts> eventCounts) {
+        if (!isAdded() || getView() == null) {
+            return;
+        }
+        for (AdItem ad : ads) {
+            AdAnalyticsEventCounts counts = eventCounts.get(ad.getId());
+            if (counts != null) {
+                interactionStore.applyCounts(ad, counts.getExposureCount(), counts.getClickCount());
+            }
+        }
+        StatsSummary summary = StatsSummaryBuilder.fromAds(ads, interactionStore, eventCounts);
         renderMetrics(summary);
         renderTopAds(summary);
         renderContentTypes(summary);
         renderTags(summary);
+    }
+
+    @Override
+    public void onDestroy() {
+        dataLoader.close();
+        super.onDestroy();
     }
 
     /** 顶部三张指标卡：总曝光、总点击和点击率。 */
@@ -95,6 +131,10 @@ public final class StatsFragment extends Fragment {
         totalExposureValue.setText(String.valueOf(summary.getTotalExposureCount()));
         totalClickValue.setText(String.valueOf(summary.getTotalClickCount()));
         clickRateValue.setText(getString(R.string.stats_percent_format, summary.getClickRatePercent()));
+        totalLikeValue.setText(String.valueOf(summary.getTotalLikeCount()));
+        totalCollectValue.setText(String.valueOf(summary.getTotalCollectCount()));
+        totalShareValue.setText(String.valueOf(summary.getTotalShareCount()));
+        interactionRateValue.setText(getString(R.string.stats_percent_format, summary.getInteractionRatePercent()));
     }
 
     /** 热门广告模块：只有产生过曝光时才展示排行，否则展示空态提示。 */
@@ -137,7 +177,10 @@ public final class StatsFragment extends Fragment {
         metricView.setText(getString(
                 R.string.stats_top_ad_line_format,
                 topAd.getExposureCount(),
-                topAd.getClickCount()
+                topAd.getClickCount(),
+                topAd.getLikeCount(),
+                topAd.getCollectCount(),
+                topAd.getShareCount()
         ));
         LinearLayout.LayoutParams metricParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

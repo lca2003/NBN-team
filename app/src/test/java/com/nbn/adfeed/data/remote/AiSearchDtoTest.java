@@ -28,7 +28,20 @@ public final class AiSearchDtoTest {
     @Test
     public void responseDeserializesBackendContractFields() {
         AiSearchResponse response = gson.fromJson(
-                "{\"answer\":\"found ads\",\"matchedAdIds\":[\"ad_001\",\"ad_002\"],\"fallback\":false}",
+                "{"
+                        + "\"requestId\":\"req-ai-search\","
+                        + "\"code\":\"OK\","
+                        + "\"message\":\"ok\","
+                        + "\"data\":{"
+                        + "\"messages\":["
+                        + "{\"senderType\":\"user\",\"content\":\"student sports\"},"
+                        + "{\"senderType\":\"ai\",\"content\":\"found ads\"}"
+                        + "],"
+                        + "\"results\":[{\"adId\":\"ad_001\"},{\"adId\":\"ad_002\"}],"
+                        + "\"fallback\":{\"message\":\"fallback message\"},"
+                        + "\"provider\":{\"source\":\"remote_ai\"}"
+                        + "}"
+                        + "}",
                 AiSearchResponse.class
         );
 

@@ -191,6 +191,16 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
+            public void onScrollStateChanged(@NonNull RecyclerView rv, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    rv.post(exposureDelegate.getExposureCheckRunnable());
+                    rv.post(() -> interactionDelegate.autoPlayMostVisibleVideo(layoutManager));
+                } else {
+                    interactionDelegate.pauseActiveVideo();
+                }
+            }
+
+            @Override
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
                 rv.post(() -> {
                     long now = SystemClock.elapsedRealtime();
@@ -325,5 +335,10 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     @Override
     public void onVideoPlayClick(AdItem ad, int position) {
         interactionDelegate.onVideoPlayClick(ad, position);
+    }
+
+    @Override
+    public void onVideoCardDetached(AdItem ad) {
+        interactionDelegate.onVideoCardDetached(ad);
     }
 }

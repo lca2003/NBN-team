@@ -613,6 +613,7 @@ public final class BackendServerTest {
         ));
         assertEquals("search_session_test_001", search.getJSONObject("session").getString("sessionId"));
         assertTrue(search.getJSONArray("results").length() >= 1);
+        assertEquals("ad_001", search.getJSONArray("results").getJSONObject(0).getString("adId"));
         assertEquals("rule_fallback", search.getJSONObject("provider").getString("source"));
         assertEquals("AI_PROVIDER_NOT_CONFIGURED", search.getJSONObject("fallback").getString("fallbackReason"));
 
