@@ -25,6 +25,7 @@ import static com.nbn.adfeed.video.VideoPlaybackManager.PlaybackState.IDLE;
 import static com.nbn.adfeed.video.VideoPlaybackManager.PlaybackState.PAUSED;
 import static com.nbn.adfeed.video.VideoPlaybackManager.PlaybackState.PLAYING;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -103,6 +104,47 @@ public final class Media3VideoPlayerControllerTest {
         assertEquals(3_300L, manager.getPositionMs("ad-1"));
     }
 
+    @Test
+    public void bufferingAfterPlayRequestDoesNotEmitPaused() {
+        VideoPlaybackManager manager = new VideoPlaybackManager();
+        FakePlayer fakePlayer = new FakePlayer();
+        fakePlayer.setBufferingOnPrepareForTest(true);
+        Media3VideoPlayerController controller = controller(manager, fakePlayer);
+        List<String> events = new ArrayList<>();
+        controller.setPlaybackCallback(new Media3VideoPlayerController.PlaybackCallback() {
+            @Override
+            public void onBuffering(String adId) {
+                events.add("buffering:" + adId);
+            }
+
+            @Override
+            public void onPlaying(String adId) {
+                events.add("playing:" + adId);
+            }
+
+            @Override
+            public void onPaused(String adId) {
+                events.add("paused:" + adId);
+            }
+
+            @Override
+            public void onEnded(String adId) {
+                events.add("ended:" + adId);
+            }
+
+            @Override
+            public void onError(String adId, String message) {
+                events.add("error:" + adId);
+            }
+        });
+
+        assertTrue(controller.play("ad-1", "rawresource:///1", playerView()));
+        idleMainLooper();
+
+        assertTrue(events.toString(), events.contains("buffering:ad-1"));
+        assertFalse(events.toString(), events.contains("paused:ad-1"));
+    }
+
     private static Media3VideoPlayerController controller(VideoPlaybackManager manager, FakePlayer fakePlayer) {
         return new Media3VideoPlayerController(
                 RuntimeEnvironment.getApplication(),
@@ -133,6 +175,7 @@ public final class Media3VideoPlayerControllerTest {
         private int repeatMode = Player.REPEAT_MODE_OFF;
         private float volume;
         private boolean released;
+        private boolean bufferingOnPrepare;
         private long lastSeekPositionMs = -1L;
 
         private FakePlayer() {
@@ -167,7 +210,9 @@ public final class Media3VideoPlayerControllerTest {
 
         @Override
         protected ListenableFuture<?> handlePrepare() {
-            playbackState = playlist.isEmpty() ? Player.STATE_IDLE : Player.STATE_READY;
+            playbackState = playlist.isEmpty()
+                    ? Player.STATE_IDLE
+                    : bufferingOnPrepare ? Player.STATE_BUFFERING : Player.STATE_READY;
             invalidateState();
             return Futures.immediateFuture(null);
         }
@@ -248,6 +293,10 @@ public final class Media3VideoPlayerControllerTest {
         private void setCurrentPositionForTest(long nextPositionMs) {
             positionMs = Math.max(0L, nextPositionMs);
             invalidateState();
+        }
+
+        private void setBufferingOnPrepareForTest(boolean bufferingOnPrepare) {
+            this.bufferingOnPrepare = bufferingOnPrepare;
         }
 
         private List<MediaItemData> buildPlaylist() {

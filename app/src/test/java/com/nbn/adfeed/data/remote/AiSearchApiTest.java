@@ -21,7 +21,7 @@ public final class AiSearchApiTest {
         POST post = search.getAnnotation(POST.class);
 
         assertNotNull(post);
-        assertEquals("/api/ai/search", post.value());
+        assertEquals("/v1/ai/search", post.value());
         assertEquals(Call.class, search.getReturnType());
         assertTrue(hasBodyAnnotation(search.getParameterAnnotations()[0]));
     }

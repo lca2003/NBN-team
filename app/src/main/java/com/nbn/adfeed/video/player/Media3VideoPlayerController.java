@@ -45,7 +45,7 @@ public final class Media3VideoPlayerController {
             if (playbackState == Player.STATE_BUFFERING) {
                 callback.onBuffering(activeAdId);
             } else if (playbackState == Player.STATE_ENDED) {
-                playbackManager.stop(activeAdId, currentPositionMs(player));
+                playbackManager.stop(activeAdId, 0L);
                 callback.onEnded(activeAdId);
             }
         }
@@ -58,7 +58,7 @@ public final class Media3VideoPlayerController {
             }
             if (isPlaying) {
                 callback.onPlaying(activeAdId);
-            } else {
+            } else if (player != null && !player.getPlayWhenReady()) {
                 callback.onPaused(activeAdId);
             }
         }

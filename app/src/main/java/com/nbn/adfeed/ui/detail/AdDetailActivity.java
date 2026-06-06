@@ -25,6 +25,7 @@ import com.nbn.adfeed.data.repository.RepositoryProvider;
 import com.nbn.adfeed.ui.feed.InteractionStore;
 import com.nbn.adfeed.ui.feed.TagChipBinder;
 import com.nbn.adfeed.ui.media.AdMediaLoader;
+import com.nbn.adfeed.ui.media.AdMediaResources;
 import com.nbn.adfeed.video.VideoPlaybackManager;
 import com.nbn.adfeed.video.player.Media3VideoPlayerController;
 
@@ -36,7 +37,7 @@ import java.util.List;
  *
  * <p>要点：</p>
  * <ul>
- *   <li>展示图文/视频详情；视频默认暂停，点击播放（演示占位）。</li>
+ *   <li>展示图文/视频详情；视频默认暂停，点击后用 Media3 播放。</li>
  *   <li>与信息流共享 {@link InteractionStore}：在详情页点赞/收藏后，返回列表自动同步。</li>
  *   <li>通过 {@link AdAiService} 获取 AI 摘要和标签展示。</li>
  *   <li>通过 {@link AdMediaLoader} 加载广告图片。</li>
@@ -234,8 +235,8 @@ public final class AdDetailActivity extends AppCompatActivity {
         ImageView playButton = findViewById(R.id.detailPlayButton);
         TextView videoState = findViewById(R.id.detailVideoState);
         playerView = findViewById(R.id.detailPlayerView);
-        String videoUrl = ad.getVideoUrl();
-        boolean playable = isVideo && videoUrl != null && !videoUrl.trim().isEmpty();
+        String playableUri = AdMediaResources.playableVideoUri(ad);
+        boolean playable = isVideo && playableUri != null;
         if (playable) {
             scrim.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
@@ -243,7 +244,7 @@ public final class AdDetailActivity extends AppCompatActivity {
             updateVideoState(videoState, scrim, playButton);
             // 不在这里创建 ExoPlayer，改为点击播放时懒初始化，
             // 避免 onCreate 阶段主线程阻塞（ExoPlayer 构造约 100-300ms）。
-            playButton.setOnClickListener(v -> startVideoPlayback(videoUrl, videoState, scrim, playButton));
+            playButton.setOnClickListener(v -> startVideoPlayback(playableUri, videoState, scrim, playButton));
         } else {
             // 非视频，或视频缺少有效 URL：隐藏播放相关控件，只展示封面图。
             scrim.setVisibility(View.GONE);
@@ -256,7 +257,7 @@ public final class AdDetailActivity extends AppCompatActivity {
     }
 
     /** 点击播放：显示 PlayerView，隐藏封面与遮罩，调用成员C的控制器真正播放视频。 */
-    private void startVideoPlayback(String videoUrl, TextView videoState, View scrim, ImageView playButton) {
+    private void startVideoPlayback(String playableUri, TextView videoState, View scrim, ImageView playButton) {
         if (playerView == null) {
             return;
         }
@@ -269,7 +270,7 @@ public final class AdDetailActivity extends AppCompatActivity {
         if (detailMedia != null) {
             detailMedia.setVisibility(View.GONE);
         }
-        boolean started = videoController.play(ad.getId(), videoUrl, playerView);
+        boolean started = videoController.play(ad.getId(), playableUri, playerView);
         if (started) {
             videoPlaying = true;
             // 进入播放：隐藏遮罩和大播放按钮，交给 PlayerView 自带控制条。

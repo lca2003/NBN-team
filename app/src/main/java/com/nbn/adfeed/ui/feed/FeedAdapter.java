@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nbn.adfeed.R;
@@ -183,6 +184,14 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         onBindViewHolder(holder, position);
     }
 
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        if (holder instanceof AdViewHolder) {
+            ((AdViewHolder) holder).releaseVideoIfNeeded();
+        }
+        super.onViewRecycled(holder);
+    }
+
     /**
      * 广告卡片 ViewHolder，三种样式共用。
      *
@@ -209,7 +218,8 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final View playButton;
         final TextView videoStateText;
         final View videoScrim;
-        final androidx.media3.ui.PlayerView videoPlayerView;
+        final PlayerView videoPlayerView;
+        private AdItem currentAd;
 
         AdViewHolder(@NonNull View itemView, boolean isVideo) {
             super(itemView);
@@ -230,9 +240,14 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             videoStateText = isVideo ? itemView.findViewById(R.id.videoStateText) : null;
             videoScrim = isVideo ? itemView.findViewById(R.id.videoScrim) : null;
             videoPlayerView = isVideo ? itemView.findViewById(R.id.videoPlayerView) : null;
+            if (videoPlayerView != null) {
+                videoPlayerView.setUseController(true);
+                videoPlayerView.setControllerAutoShow(false);
+            }
         }
 
         void bind(AdItem ad) {
+            currentAd = ad;
             // 使用 AdMediaLoader 加载广告图片（https 优先，失败走 fallback）。
             AdMediaLoader.loadFeedImage(mediaImage, ad);
             brandText.setText(ad.getBrand());
@@ -255,7 +270,7 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             // 视频卡默认暂停态文案。
             if (videoStateText != null) {
-                videoStateText.setText(itemView.getContext().getString(R.string.detail_pause_hint));
+                showVideoIdle();
             }
 
             // 整张卡片点击进详情。getBindingAdapterPosition 避免复用后位置错乱。
@@ -302,6 +317,28 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     listener.onTagClick(ad, tag, pos);
                 }
             }, selectedTags);
+        }
+
+        void showVideoIdle() {
+            if (videoPlayerView == null) {
+                return;
+            }
+            videoPlayerView.setPlayer(null);
+            videoPlayerView.setVisibility(View.GONE);
+            mediaImage.setVisibility(View.VISIBLE);
+            videoScrim.setVisibility(View.VISIBLE);
+            playButton.setVisibility(View.VISIBLE);
+            videoStateText.setText(itemView.getContext().getString(R.string.detail_play_hint));
+        }
+
+        void releaseVideoIfNeeded() {
+            if (videoPlayerView != null) {
+                videoPlayerView.setPlayer(null);
+            }
+            if (currentAd != null && currentAd.getContentType() == AdContentType.VIDEO) {
+                listener.onVideoCardDetached(currentAd);
+            }
+            currentAd = null;
         }
 
         /** 根据点赞态切换心形图标颜色。 */

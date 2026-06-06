@@ -98,6 +98,10 @@ public final class FeedAdapterMediaBindingTest {
             @Override
             public void onVideoPlayClick(AdItem ad, int position) {
             }
+
+            @Override
+            public void onVideoCardDetached(AdItem ad) {
+            }
         };
     }
 }

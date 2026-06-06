@@ -339,4 +339,9 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
     public void onVideoPlayClick(AdItem ad, int position) {
         interactionDelegate.onVideoPlayClick(ad, position);
     }
+
+    @Override
+    public void onVideoCardDetached(AdItem ad) {
+        interactionDelegate.onVideoCardDetached(ad);
+    }
 }

@@ -8,7 +8,6 @@ import com.nbn.adfeed.data.model.DataResult;
 import com.nbn.adfeed.data.model.InteractionAction;
 import com.nbn.adfeed.data.model.PageRequest;
 import com.nbn.adfeed.data.model.PageResult;
-import com.nbn.adfeed.data.model.SearchRequest;
 import com.nbn.adfeed.data.repository.AdRepository;
 
 import java.util.ArrayList;
@@ -30,6 +29,8 @@ public final class AdCatalog {
 
     /** 每页条数，与后端 PageRequest.DEFAULT_PAGE_SIZE 对齐。 */
     private static final int PAGE_SIZE = PageRequest.DEFAULT_PAGE_SIZE;
+    /** 搜索结果过滤需要覆盖完整候选集，避免只取默认首屏条数。 */
+    private static final int SEARCH_RESULT_POOL_SIZE = 100;
 
     /** 回调：在主线程返回结果或错误，符合页面直接刷新 UI 的使用习惯。 */
     public interface Callback {
@@ -252,7 +253,7 @@ public final class AdCatalog {
     private DataResult<PageResult<AdItem>> loadSearchFilteredSync(String channel, List<String> tagFilters,
                                                                    List<String> searchAdIds) {
         String ch = (channel == null) ? "" : channel;
-        PageRequest request = PageRequest.firstPage(ch, PAGE_SIZE);
+        PageRequest request = PageRequest.firstPage(ch, SEARCH_RESULT_POOL_SIZE);
         DataResult<PageResult<AdItem>> result = repository.loadAds(request);
 
         if (result == null || !result.isSuccess() || !result.hasData()) {

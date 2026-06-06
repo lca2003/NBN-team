@@ -5,7 +5,10 @@ import com.nbn.backend.store.JsonSeedStore;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,6 +16,7 @@ public final class AiApiService {
     private static final String SOURCE_RULE_FALLBACK = "rule_fallback";
     private static final String FALLBACK_NOT_CONFIGURED = "AI_PROVIDER_NOT_CONFIGURED";
     private static final String FALLBACK_PROVIDER_ERROR = "AI_PROVIDER_ERROR";
+    private static final int DEFAULT_FALLBACK_RESULT_LIMIT = 5;
 
     private final JsonSeedStore seedStore;
     private final CloudAiProvider cloudProvider;
@@ -75,7 +79,7 @@ public final class AiApiService {
         long now = System.currentTimeMillis();
         CloudText cloudText = cloudText(
                 "你是广告推荐助手。用一句中文解释推荐逻辑，不超过 60 字。",
-                "用户查询：" + query + "\n候选广告：" + searchSeed.getJSONArray("results")
+                "用户查询：" + query + "\n候选广告：" + candidateResultsJson()
         );
         JSONObject session = new JSONObject();
         session.put("sessionId", sessionId);
@@ -192,34 +196,137 @@ public final class AiApiService {
     }
 
     private JSONArray rankedResults(String query, JSONArray requestedAdIds) {
-        JSONArray seedResults = searchSeed.getJSONArray("results");
-        JSONArray ranked = new JSONArray();
-        for (int index = 0; index < seedResults.length(); index++) {
-            JSONObject result = copy(seedResults.getJSONObject(index));
-            if (requestedAdIds.length() > 0 && !contains(requestedAdIds, result.optString("adId"))) {
+        String normalizedQuery = normalize(query);
+        List<JSONObject> rankedItems = new ArrayList<>();
+        for (JSONObject feedItem : feedItemsByAdId.values()) {
+            String adId = feedItem.optString("adId");
+            if (requestedAdIds.length() > 0 && !contains(requestedAdIds, adId)) {
                 continue;
             }
-            double score = result.getJSONObject("recommendationReason").optDouble("score", 0.5);
-            if (!query.isBlank() && matchesQuery(result, query)) {
-                score = Math.min(1.0, score + 0.03);
+            double score = scoreFeedItem(feedItem, normalizedQuery);
+            if (requestedAdIds.length() == 0 && !normalizedQuery.isBlank() && score <= 0.0) {
+                continue;
             }
-            result.put("rankScore", score);
-            ranked.put(result);
+            rankedItems.add(resultFromFeedItem(feedItem, score, normalizedQuery));
         }
-        if (ranked.length() == 0 && requestedAdIds.length() > 0) {
-            for (int index = 0; index < requestedAdIds.length(); index++) {
-                String adId = requestedAdIds.optString(index);
-                JSONObject feedItem = feedItemsByAdId.get(adId);
-                if (feedItem != null) {
-                    ranked.put(new JSONObject()
-                            .put("adId", adId)
-                            .put("title", feedItem.optString("title"))
-                            .put("reason", "命中后端 fallback 候选集")
-                            .put("rankScore", 0.5));
+
+        if (rankedItems.isEmpty() && requestedAdIds.length() == 0) {
+            int count = 0;
+            for (JSONObject feedItem : feedItemsByAdId.values()) {
+                rankedItems.add(resultFromFeedItem(feedItem, 0.45, normalizedQuery));
+                count++;
+                if (count >= DEFAULT_FALLBACK_RESULT_LIMIT) {
+                    break;
                 }
             }
         }
+
+        rankedItems.sort(Comparator.comparingDouble(item -> -item.optDouble("rankScore", 0.0)));
+        JSONArray ranked = new JSONArray();
+        for (JSONObject item : rankedItems) {
+            ranked.put(item);
+        }
         return ranked;
+    }
+
+    private JSONArray candidateResultsJson() {
+        JSONArray candidates = new JSONArray();
+        for (JSONObject feedItem : feedItemsByAdId.values()) {
+            candidates.put(resultFromFeedItem(feedItem, 0.5, ""));
+        }
+        return candidates;
+    }
+
+    private JSONObject resultFromFeedItem(JSONObject feedItem, double score, String normalizedQuery) {
+        String adId = feedItem.optString("adId");
+        JSONArray matchedTags = matchedTags(feedItem, normalizedQuery);
+        JSONObject recommendationReason = new JSONObject()
+                .put("summary", reasonSummary(feedItem, matchedTags))
+                .put("matchedTags", matchedTags)
+                .put("valueExplanation", feedItem.optString("subtitle", feedItem.optString("description", "")))
+                .put("score", score);
+        String imageUrl = "";
+        JSONObject cover = feedItem.optJSONObject("cover");
+        if (cover != null) {
+            imageUrl = cover.optString("url", cover.optString("localAssetName", ""));
+        }
+        return new JSONObject()
+                .put("adId", adId)
+                .put("title", feedItem.optString("title"))
+                .put("reason", reasonSummary(feedItem, matchedTags))
+                .put("priceText", feedItem.optString("priceText", ""))
+                .put("localAssetName", cover == null ? "" : cover.optString("localAssetName", imageUrl))
+                .put("imageUrl", imageUrl)
+                .put("ctaText", feedItem.optString("ctaText", "查看详情"))
+                .put("recommendationReason", recommendationReason)
+                .put("rankScore", score);
+    }
+
+    private static double scoreFeedItem(JSONObject feedItem, String normalizedQuery) {
+        if (normalizedQuery.isBlank()) {
+            return 0.5;
+        }
+        double score = 0.0;
+        if (normalize(feedItem.optString("title")).contains(normalizedQuery)) {
+            score += 0.45;
+        }
+        if (normalize(feedItem.optString("brand")).contains(normalizedQuery)
+                || normalize(feedItem.optString("category")).contains(normalizedQuery)) {
+            score += 0.25;
+        }
+        if (normalize(feedItem.optString("subtitle")).contains(normalizedQuery)
+                || normalize(feedItem.optString("description")).contains(normalizedQuery)) {
+            score += 0.2;
+        }
+        JSONArray tags = feedItem.optJSONArray("tags");
+        for (int index = 0; tags != null && index < tags.length(); index++) {
+            String tag = tagName(tags.opt(index));
+            String normalizedTag = normalize(tag);
+            if (normalizedTag.isBlank()) {
+                continue;
+            }
+            if (normalizedTag.contains(normalizedQuery) || normalizedQuery.contains(normalizedTag)) {
+                score += 0.25;
+            }
+        }
+        return Math.min(1.0, score);
+    }
+
+    private static JSONArray matchedTags(JSONObject feedItem, String normalizedQuery) {
+        JSONArray matched = new JSONArray();
+        JSONArray tags = feedItem.optJSONArray("tags");
+        for (int index = 0; tags != null && index < tags.length(); index++) {
+            String tag = tagName(tags.opt(index));
+            if (tag.isBlank()) {
+                continue;
+            }
+            String normalizedTag = normalize(tag);
+            if (normalizedQuery.isBlank()
+                    || normalizedTag.contains(normalizedQuery)
+                    || normalizedQuery.contains(normalizedTag)) {
+                matched.put(tag);
+            }
+        }
+        return matched;
+    }
+
+    private static String reasonSummary(JSONObject feedItem, JSONArray matchedTags) {
+        if (matchedTags.length() > 0) {
+            List<String> tags = new ArrayList<>();
+            for (int index = 0; index < Math.min(3, matchedTags.length()); index++) {
+                tags.add(matchedTags.optString(index));
+            }
+            return "命中" + String.join("、", tags) + "，来自后端广告数据。";
+        }
+        String description = feedItem.optString("description", "");
+        return description.isBlank() ? "来自后端广告数据的默认候选。" : description;
+    }
+
+    private static String tagName(Object tag) {
+        if (tag instanceof JSONObject) {
+            return ((JSONObject) tag).optString("name", "");
+        }
+        return tag == null ? "" : String.valueOf(tag);
     }
 
     private JSONObject fallbackJson(String fallbackReason) {
@@ -300,13 +407,6 @@ public final class AiApiService {
                 .put("createdAtMillis", createdAtMillis);
     }
 
-    private static boolean matchesQuery(JSONObject result, String query) {
-        String normalizedQuery = query.toLowerCase();
-        String haystack = (result.optString("title") + " " + result.optString("reason") + " "
-                + result.optJSONObject("recommendationReason")).toLowerCase();
-        return haystack.contains(normalizedQuery);
-    }
-
     private static JSONArray optionalAdIds(JSONObject body) {
         JSONArray adIds = body.optJSONArray("adIds");
         return adIds == null ? new JSONArray() : adIds;
@@ -332,6 +432,10 @@ public final class AiApiService {
 
     private static JSONObject copy(JSONObject source) {
         return new JSONObject(source.toString());
+    }
+
+    private static String normalize(String value) {
+        return value == null ? "" : value.trim().toLowerCase();
     }
 
     private record CloudText(String text, String fallbackReason) {

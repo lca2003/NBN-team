@@ -16,6 +16,7 @@ import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.InteractionAction;
 import com.nbn.adfeed.data.model.InteractionState;
+import com.nbn.adfeed.ui.media.AdMediaResources;
 import com.nbn.adfeed.video.VideoPlaybackManager;
 import com.nbn.adfeed.video.player.Media3VideoPlayerController;
 
@@ -164,8 +165,8 @@ final class FeedInteractionDelegate {
             return;
         }
         String adId = ad.getId();
-        String videoUrl = ad.getVideoUrl();
-        if (videoUrl == null || videoUrl.trim().isEmpty()) {
+        String playableUri = AdMediaResources.playableVideoUri(ad);
+        if (playableUri == null) {
             Toast.makeText(context,
                     context.getString(R.string.detail_video_unavailable),
                     Toast.LENGTH_SHORT).show();
@@ -196,7 +197,7 @@ final class FeedInteractionDelegate {
         if (playerView == null) {
             return;
         }
-        boolean started = videoController.play(adId, videoUrl, playerView);
+        boolean started = videoController.play(adId, playableUri, playerView);
         if (started) {
             playingAdId = adId;
             playingPosition = position;
@@ -206,6 +207,20 @@ final class FeedInteractionDelegate {
                     context.getString(R.string.detail_video_unavailable),
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /** 视频卡离屏或被 RecyclerView 复用时释放播放器绑定，避免后台播放和串卡。 */
+    void onVideoCardDetached(AdItem ad) {
+        if (ad == null || videoController == null) {
+            return;
+        }
+        String adId = ad.getId();
+        if (adId == null || !adId.equals(playingAdId)) {
+            return;
+        }
+        videoController.releaseOffscreen(adId);
+        playingAdId = null;
+        playingPosition = RecyclerView.NO_POSITION;
     }
 
     // ---- 视频 UI 切换 ----

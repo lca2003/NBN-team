@@ -22,12 +22,41 @@ public final class AdMediaResources {
         if (rawUri == null || !rawUri.startsWith(RAW_PREFIX)) {
             return 0;
         }
-        return rawByName(rawUri.substring(RAW_PREFIX.length()));
+        return rawByName(rawResourceName(rawUri.substring(RAW_PREFIX.length())));
     }
 
     public static String rawResourceUri(String rawUri) {
         int resourceId = rawFromUri(rawUri);
         return resourceId == 0 ? rawUri : "rawresource:///" + resourceId;
+    }
+
+    public static String playableVideoUri(String videoUri) {
+        if (videoUri == null) {
+            return null;
+        }
+        String normalized = videoUri.trim();
+        if (normalized.isEmpty()) {
+            return null;
+        }
+        if (normalized.startsWith("rawresource:///")) {
+            return normalized;
+        }
+        if (normalized.startsWith(RAW_PREFIX)) {
+            return rawResourceUri(normalized);
+        }
+        if (normalized.startsWith("raw/")) {
+            return rawResourceUri(RAW_PREFIX + rawResourceName(normalized.substring("raw/".length())));
+        }
+        String androidRawPrefix = "file:///android_res/raw/";
+        if (normalized.startsWith(androidRawPrefix)) {
+            return rawResourceUri(RAW_PREFIX + rawResourceName(normalized.substring(androidRawPrefix.length())));
+        }
+        return normalized;
+    }
+
+    public static String playableVideoUri(AdItem item) {
+        String localUri = localRawVideoUri(item);
+        return localUri == null ? playableVideoUri(item == null ? null : item.getVideoUrl()) : localUri;
     }
 
     public static int fallbackDrawable(AdItem item) {
@@ -137,7 +166,7 @@ public final class AdMediaResources {
     }
 
     private static int rawByName(String name) {
-        switch (name == null ? "" : name.trim()) {
+        switch (rawResourceName(name)) {
             case "ad_video_headphones":
                 return R.raw.ad_video_headphones;
             case "ad_video_local_sports":
@@ -147,6 +176,41 @@ public final class AdMediaResources {
             default:
                 return 0;
         }
+    }
+
+    private static String localRawVideoUri(AdItem item) {
+        if (item == null || item.getContentType() != AdContentType.VIDEO) {
+            return null;
+        }
+        String rawName;
+        switch (item.getId()) {
+            case "ad_007":
+            case "ad_027":
+                rawName = "ad_video_study_ai";
+                break;
+            case "ad_018":
+            case "ad_022":
+                rawName = "ad_video_local_sports";
+                break;
+            case "ad_003":
+            case "ad_015":
+            default:
+                rawName = "ad_video_headphones";
+                break;
+        }
+        return rawResourceUri(RAW_PREFIX + rawName);
+    }
+
+    private static String rawResourceName(String name) {
+        String normalized = name == null ? "" : name.trim();
+        int slashIndex = normalized.lastIndexOf('/');
+        if (slashIndex >= 0) {
+            normalized = normalized.substring(slashIndex + 1);
+        }
+        if (normalized.endsWith(".mp4")) {
+            normalized = normalized.substring(0, normalized.length() - ".mp4".length());
+        }
+        return normalized;
     }
 
     private static boolean containsAny(AdItem item, String... needles) {
