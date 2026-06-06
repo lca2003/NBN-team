@@ -61,6 +61,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="220dp">
 
+                <!-- 播放器放在封面下方，准备阶段可预热 Surface，首帧就绪后再隐藏封面。 -->
+                <androidx.media3.ui.PlayerView
+                    android:id="@+id/detailPlayerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:resize_mode="zoom"
+                    app:surface_type="texture_view"
+                    app:use_controller="true"
+                    android:visibility="gone" />
+
                 <ImageView
                     android:id="@+id/detailMedia"
                     android:layout_width="match_parent"
@@ -69,15 +79,6 @@
                     android:clipToOutline="true"
                     android:contentDescription="@string/detail_title"
                     android:scaleType="centerCrop" />
-
-                <!-- 视频播放器：默认隐藏，视频类型且点击播放时显示并接入成员C的 ExoPlayer 控制器。 -->
-                <androidx.media3.ui.PlayerView
-                    android:id="@+id/detailPlayerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:resize_mode="zoom"
-                    app:use_controller="true"
-                    android:visibility="gone" />
 
                 <View
                     android:id="@+id/detailVideoScrim"

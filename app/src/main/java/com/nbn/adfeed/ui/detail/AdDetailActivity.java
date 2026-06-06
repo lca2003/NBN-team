@@ -370,6 +370,7 @@ public final class AdDetailActivity extends AppCompatActivity {
             if (!state.isLiked()) {
                 state.setLiked(true);
                 reportInteraction(InteractionAction.TOGGLE_LIKE);
+                analyticsTracker.trackLike(ad.getId());
                 renderLike();
                 lastLikeTimeMs = now;
                 playLikeBurst();
@@ -384,6 +385,7 @@ public final class AdDetailActivity extends AppCompatActivity {
             // 超过 1 秒 → 取消点赞
             state.setLiked(false);
             reportInteraction(InteractionAction.TOGGLE_LIKE);
+            analyticsTracker.trackUnlike(ad.getId());
             renderLike();
         });
         findViewById(R.id.collectContainer).setOnClickListener(v -> {
