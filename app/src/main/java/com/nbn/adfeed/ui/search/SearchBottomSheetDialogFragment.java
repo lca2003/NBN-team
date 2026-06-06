@@ -1,6 +1,7 @@
 package com.nbn.adfeed.ui.search;
 
 import android.app.Dialog;
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import com.nbn.adfeed.R;
 import com.nbn.adfeed.ai.search.AiSearchResult;
 import com.nbn.adfeed.ai.search.AiSearchService;
 import com.nbn.adfeed.ai.search.RemoteAiSearchService;
+import com.nbn.adfeed.data.remote.RemoteClientProvider;
+import com.nbn.adfeed.data.repository.RepositoryProvider;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +44,7 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
         void onSearchResult(List<String> matchedAdIds);
     }
 
-    private final AiSearchService aiSearchService = new RemoteAiSearchService();
+    private AiSearchService aiSearchService;
 
     private MessageAdapter messageAdapter;
     private EditText searchInput;
@@ -109,6 +112,10 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
         conversationList = view.findViewById(R.id.searchConversationList);
         messageStore = new ChatMessageStore(requireContext());
         persistenceExecutor = Executors.newSingleThreadExecutor();
+        aiSearchService = new RemoteAiSearchService(
+                RemoteClientProvider.createAiSearchApi(),
+                RepositoryProvider.getRepository(requireContext())
+        );
 
         messageAdapter = new MessageAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -152,7 +159,7 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
        });
     }
 
-    // 发送HTTP请求给后端大模型 POST /api/ai/search
+    // 发送HTTP请求给独立后端大模型 POST /v1/ai/search
     private void sendCurrentMessage() {
         //历史未载入则初始化
         if (!historyLoaded) {
@@ -174,10 +181,11 @@ public final class SearchBottomSheetDialogFragment extends BottomSheetDialogFrag
 
         // 异步执行 AI 搜索
         aiSearchService.search(query, result -> {
-            if (!isAdded()) {
+            Activity activity = getActivity();
+            if (activity == null) {
                 return;
             }
-            requireActivity().runOnUiThread(() -> {
+            activity.runOnUiThread(() -> {
                 if (isAdded() && getView() != null && messageAdapter != null) {
                     handleSearchResult(result);
                 }

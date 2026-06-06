@@ -11,6 +11,7 @@
 
     <!-- 顶部返回栏 -->
     <LinearLayout
+        android:id="@+id/detailTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -74,7 +75,8 @@
                     android:id="@+id/detailMedia"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_media_placeholder"
+                    android:background="@drawable/bg_media_clip"
+                    android:clipToOutline="true"
                     android:contentDescription="@string/detail_title"
                     android:scaleType="centerCrop" />
 
@@ -162,17 +164,99 @@
                 android:textColor="@color/nbn_text_secondary"
                 android:textSize="13sp"
                 tools:text="曝光 1 · 点击 1" />
+
+            <!-- 互动栏（详情页放大版，内联在滚动区内） -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- 点赞 -->
+                <LinearLayout
+                    android:id="@+id/likeContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_pill_normal"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/likeIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/feed_action_like"
+                        android:src="@drawable/ic_like" />
+
+                    <TextView
+                        android:id="@+id/likeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/feed_action_like"
+                        android:textColor="@color/nbn_text_secondary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- 收藏 -->
+                <LinearLayout
+                    android:id="@+id/collectContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="4dp"
+                    android:background="@drawable/bg_pill_normal"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/collectIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/feed_action_collect"
+                        android:src="@drawable/ic_collect" />
+
+                    <TextView
+                        android:id="@+id/collectText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/feed_action_collect"
+                        android:textColor="@color/nbn_text_secondary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- 分享 -->
+                <LinearLayout
+                    android:id="@+id/shareContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_pill_normal"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/feed_action_share"
+                        android:src="@drawable/ic_share" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/feed_action_share"
+                        android:textColor="@color/nbn_text_secondary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/nbn_divider" />
-
-    <!-- 底部互动栏（复用同一个互动栏布局，保证视觉与信息流一致） -->
-    <include
-        layout="@layout/view_interaction_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 </LinearLayout>

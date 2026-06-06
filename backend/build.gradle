@@ -32,3 +32,7 @@ tasks.withType(JavaCompile).configureEach {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+springBoot {
+    mainClass = 'com.nbn.backend.BackendServer'
+}

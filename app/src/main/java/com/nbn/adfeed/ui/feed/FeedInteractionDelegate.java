@@ -1,16 +1,25 @@
 package com.nbn.adfeed.ui.feed;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.os.SystemClock;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nbn.adfeed.R;
@@ -19,6 +28,7 @@ import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.model.InteractionAction;
 import com.nbn.adfeed.data.model.InteractionState;
+import com.nbn.adfeed.ui.media.AdMediaResources;
 import com.nbn.adfeed.video.VideoPlaybackManager;
 import com.nbn.adfeed.video.player.Media3VideoPlayerController;
 
@@ -47,6 +57,9 @@ final class FeedInteractionDelegate {
     private String playingAdId;
     /** 当前播放中卡片在 RecyclerView 中的位置。 */
     private int playingPosition = RecyclerView.NO_POSITION;
+
+    /** 上次点赞时间（ms），用于连赞窗口判定（1 秒内连点只播动画不取消）。 */
+    private long lastLikeTimeMs = 0L;
 
     /**
      * 绑定外部依赖。在 Fragment.onViewCreated 之后调用。
@@ -91,11 +104,18 @@ final class FeedInteractionDelegate {
                 @Override
                 public void onEnded(String adId) {
                     restorePlayingCardUi();
+                    // 视频自然播完后重置进度，确保下次点击从头播放。
+                    if (videoPlaybackManager != null && adId != null) {
+                        videoPlaybackManager.updatePositionMs(adId, 0L);
+                    }
                 }
 
                 @Override
                 public void onError(String adId, String message) {
                     restorePlayingCardUi();
+                    if (videoPlaybackManager != null && adId != null) {
+                        videoPlaybackManager.updatePositionMs(adId, 0L);
+                    }
                 }
             });
         }
@@ -112,6 +132,58 @@ final class FeedInteractionDelegate {
             videoController.release();
             videoController = null;
         }
+        playingAdId = null;
+        playingPosition = RecyclerView.NO_POSITION;
+    }
+
+    /** 滚动停止后自动播放最可见的视频卡片。 */
+    void autoPlayMostVisibleVideo(LinearLayoutManager layoutManager) {
+        if (videoController == null || recyclerView == null || adapter == null || layoutManager == null) {
+            return;
+        }
+
+        Map<Integer, Float> visibleVideoRatios = new LinkedHashMap<>();
+        int firstVisible = layoutManager.findFirstVisibleItemPosition();
+        int lastVisible = layoutManager.findLastVisibleItemPosition();
+        if (firstVisible != RecyclerView.NO_POSITION && lastVisible != RecyclerView.NO_POSITION) {
+            for (int position = firstVisible; position <= lastVisible; position++) {
+                AdItem ad = adapter.getAdAt(position);
+                if (!isPlayableVideo(ad)) {
+                    continue;
+                }
+                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+                if (holder instanceof FeedAdViewHolder) {
+                    FeedAdViewHolder videoHolder = (FeedAdViewHolder) holder;
+                    visibleVideoRatios.put(position, visibleRatioOf(videoHolder.mediaImage));
+                }
+            }
+        }
+
+        int selectedPosition = FeedVideoAutoPlaySelector.selectPosition(visibleVideoRatios);
+        if (selectedPosition == RecyclerView.NO_POSITION) {
+            restorePlayingCardUi();
+            return;
+        }
+
+        AdItem selectedAd = adapter.getAdAt(selectedPosition);
+        if (selectedAd != null
+                && selectedAd.getId().equals(playingAdId)
+                && selectedPosition == playingPosition) {
+            return;
+        }
+        onVideoPlayClick(selectedAd, selectedPosition);
+    }
+
+    /** 视频卡片从屏幕分离时清理，避免后台播放和串卡。 */
+    void onVideoCardDetached(AdItem ad) {
+        if (ad == null || videoController == null) {
+            return;
+        }
+        String adId = ad.getId();
+        if (adId == null || !adId.equals(playingAdId)) {
+            return;
+        }
+        videoController.releaseOffscreen(adId);
         playingAdId = null;
         playingPosition = RecyclerView.NO_POSITION;
     }
@@ -133,30 +205,52 @@ final class FeedInteractionDelegate {
         }
     }
 
-    /** 点赞切换，返回是否为"点亮"状态（用于外层决定是否播放彩蛋）。 */
+    /**
+     * 点赞逻辑：
+     * - 未点赞 → 点亮 + 弹出爱心 + 记录时间
+     * - 已点赞且距上次 < 1s → 连赞，只弹出爱心不取消
+     * - 已点赞且距上次 ≥ 1s → 取消点赞，不弹爱心
+     */
     boolean onLikeClick(AdItem ad, int position) {
-        boolean liked = interactionStore.toggleLike(ad);
+        InteractionState state = interactionStore.stateOf(ad);
+        long now = SystemClock.elapsedRealtime();
+        if (!state.isLiked()) {
+            state.setLiked(true);
+            adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
+            if (analyticsTracker != null) {
+                analyticsTracker.trackLike(ad.getId());
+            }
+            adapter.notifyItemChanged(position);
+            lastLikeTimeMs = now;
+            playLikeBurst(position);
+            return true;
+        }
+        if (now - lastLikeTimeMs < 1000L) {
+            // 1 秒内连赞：不改变状态，只弹出爱心
+            adapter.notifyItemChanged(position);
+            playLikeBurst(position);
+            return true;
+        }
+        // 超过 1 秒：取消点赞
+        state.setLiked(false);
         adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
-        if (liked) {
-            analyticsTracker.trackLike(ad.getId());
-        } else {
+        if (analyticsTracker != null) {
             analyticsTracker.trackUnlike(ad.getId());
         }
         adapter.notifyItemChanged(position);
-        if (liked) {
-            playLikeBurst(position);
-        }
-        return liked;
+        return false;
     }
 
     /** 收藏切换。 */
     void onCollectClick(AdItem ad, int position) {
         boolean collected = interactionStore.toggleCollect(ad);
         adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
-        if (collected) {
-            analyticsTracker.trackCollect(ad.getId());
-        } else {
-            analyticsTracker.trackUncollect(ad.getId());
+        if (analyticsTracker != null) {
+            if (collected) {
+                analyticsTracker.trackCollect(ad.getId());
+            } else {
+                analyticsTracker.trackUncollect(ad.getId());
+            }
         }
         adapter.notifyItemChanged(position);
     }
@@ -164,7 +258,9 @@ final class FeedInteractionDelegate {
     /** 分享：上报事件 + 弹出系统分享面板。 */
     void onShareClick(AdItem ad, int position) {
         adCatalog.updateInteraction(ad.getId(), InteractionAction.SHARE);
-        analyticsTracker.trackShare(ad.getId());
+        if (analyticsTracker != null) {
+            analyticsTracker.trackShare(ad.getId());
+        }
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.putExtra(Intent.EXTRA_TEXT, ad.getTitle() + " · " + ad.getBrand());
@@ -183,8 +279,8 @@ final class FeedInteractionDelegate {
             return;
         }
         String adId = ad.getId();
-        String videoUrl = ad.getVideoUrl();
-        if (videoUrl == null || videoUrl.trim().isEmpty()) {
+        String playableUri = AdMediaResources.playableVideoUri(ad);
+        if (playableUri == null) {
             Toast.makeText(context,
                     context.getString(R.string.detail_video_unavailable),
                     Toast.LENGTH_SHORT).show();
@@ -193,15 +289,15 @@ final class FeedInteractionDelegate {
 
         // 找到当前卡片的 ViewHolder，获取播放器相关控件。
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-        if (!(holder instanceof FeedAdapter.AdViewHolder)) {
+        if (!(holder instanceof FeedAdViewHolder)) {
             return;
         }
-        FeedAdapter.AdViewHolder vh = (FeedAdapter.AdViewHolder) holder;
+        FeedAdViewHolder vh = (FeedAdViewHolder) holder;
 
         // 如果点击的是同一张正在播放的卡 → 暂停。
         if (adId.equals(playingAdId)) {
             videoController.pause(adId);
-            showVideoCoverUi(vh);
+            showVideoCoverUi(vh, true);
             playingAdId = null;
             playingPosition = RecyclerView.NO_POSITION;
             return;
@@ -218,9 +314,11 @@ final class FeedInteractionDelegate {
         playingAdId = adId;
         playingPosition = position;
         showVideoPreparingUi(vh);
-        boolean started = videoController.play(adId, videoUrl, playerView);
-        if (!started) {
-            showVideoCoverUi(vh);
+        boolean started = videoController.play(adId, playableUri, playerView);
+        if (started) {
+            showVideoPlayingUi(vh, false);
+        } else {
+            showVideoCoverUi(vh, true);
             playingAdId = null;
             playingPosition = RecyclerView.NO_POSITION;
             Toast.makeText(context,
@@ -229,48 +327,32 @@ final class FeedInteractionDelegate {
         }
     }
 
-    /** 自动播放当前最可见的视频；切换或离屏时复用同一播放器并释放旧卡片。 */
-    void autoPlayMostVisibleVideo(LinearLayoutManager layoutManager) {
-        if (videoController == null || recyclerView == null || adapter == null || layoutManager == null) {
-            return;
-        }
-
-        Map<Integer, Float> visibleVideoRatios = new LinkedHashMap<>();
-        int firstVisible = layoutManager.findFirstVisibleItemPosition();
-        int lastVisible = layoutManager.findLastVisibleItemPosition();
-        if (firstVisible != RecyclerView.NO_POSITION && lastVisible != RecyclerView.NO_POSITION) {
-            for (int position = firstVisible; position <= lastVisible; position++) {
-                AdItem ad = adapter.getAdAt(position);
-                if (!isPlayableVideo(ad)) {
-                    continue;
-                }
-                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-                if (holder instanceof FeedAdapter.AdViewHolder) {
-                    FeedAdapter.AdViewHolder videoHolder = (FeedAdapter.AdViewHolder) holder;
-                    visibleVideoRatios.put(position, visibleRatioOf(videoHolder.mediaImage));
-                }
-            }
-        }
-
-        int selectedPosition = FeedVideoAutoPlaySelector.selectPosition(visibleVideoRatios);
-        if (selectedPosition == RecyclerView.NO_POSITION) {
-            restorePlayingCardUi();
-            return;
-        }
-
-        AdItem selectedAd = adapter.getAdAt(selectedPosition);
-        if (selectedAd != null
-                && selectedAd.getId().equals(playingAdId)
-                && selectedPosition == playingPosition) {
-            return;
-        }
-        onVideoPlayClick(selectedAd, selectedPosition);
-    }
-
     // ---- 视频 UI 切换 ----
 
+    /** 切换卡片到"播放中"模式：隐藏封面与遮罩，显示 PlayerView。 */
+    private void showVideoPlayingUi(FeedAdViewHolder vh, boolean showCover) {
+        if (vh.mediaImage != null) vh.mediaImage.setVisibility(showCover ? View.VISIBLE : View.GONE);
+        if (vh.videoScrim != null) vh.videoScrim.setVisibility(View.GONE);
+        if (vh.playButton != null) vh.playButton.setVisibility(View.GONE);
+        if (vh.videoPlayerView != null) vh.videoPlayerView.setVisibility(View.VISIBLE);
+        if (vh.videoStateText != null) {
+            vh.videoStateText.setText(vh.itemView.getContext().getString(R.string.detail_playing_hint));
+        }
+    }
+
+    /** 切换卡片到"暂停/封面"模式：隐藏 PlayerView，显示封面与播放按钮。 */
+    private void showVideoCoverUi(FeedAdViewHolder vh, boolean showCover) {
+        if (vh.mediaImage != null) vh.mediaImage.setVisibility(showCover ? View.VISIBLE : View.GONE);
+        if (vh.videoScrim != null) vh.videoScrim.setVisibility(View.VISIBLE);
+        if (vh.playButton != null) vh.playButton.setVisibility(View.VISIBLE);
+        if (vh.videoPlayerView != null) vh.videoPlayerView.setVisibility(View.GONE);
+        if (vh.videoStateText != null) {
+            vh.videoStateText.setText(vh.itemView.getContext().getString(R.string.detail_pause_hint));
+        }
+    }
+
     /** 播放请求已发出但首帧尚未就绪：保留封面，避免显示黑屏。 */
-    private void showVideoPreparingUi(FeedAdapter.AdViewHolder vh) {
+    private void showVideoPreparingUi(FeedAdViewHolder vh) {
         FeedVideoCardUi.showPreparing(
                 vh.mediaImage,
                 vh.videoScrim,
@@ -280,43 +362,21 @@ final class FeedInteractionDelegate {
         );
     }
 
-    /** 播放器已进入真实播放态：隐藏封面并显示 PlayerView。 */
-    private void showVideoPlayingUi(FeedAdapter.AdViewHolder vh) {
-        FeedVideoCardUi.showPlaying(
-                vh.mediaImage,
-                vh.videoScrim,
-                vh.playButton,
-                vh.videoStateText,
-                vh.videoPlayerView
-        );
-    }
-
-    /** 切换卡片到"暂停/封面"模式：隐藏 PlayerView，显示封面与播放按钮。 */
-    private void showVideoCoverUi(FeedAdapter.AdViewHolder vh) {
-        FeedVideoCardUi.showCover(
-                vh.mediaImage,
-                vh.videoScrim,
-                vh.playButton,
-                vh.videoStateText,
-                vh.videoPlayerView
-        );
-    }
-
     private void showActiveVideoPreparingUi(String adId) {
-        FeedAdapter.AdViewHolder holder = activeVideoHolder(adId);
+        FeedAdViewHolder holder = activeVideoHolder(adId);
         if (holder != null) {
             showVideoPreparingUi(holder);
         }
     }
 
     private void showActiveVideoPlayingUi(String adId) {
-        FeedAdapter.AdViewHolder holder = activeVideoHolder(adId);
+        FeedAdViewHolder holder = activeVideoHolder(adId);
         if (holder != null) {
-            showVideoPlayingUi(holder);
+            showVideoPlayingUi(holder, false);
         }
     }
 
-    private FeedAdapter.AdViewHolder activeVideoHolder(String adId) {
+    private FeedAdViewHolder activeVideoHolder(String adId) {
         if (adId == null
                 || !adId.equals(playingAdId)
                 || playingPosition == RecyclerView.NO_POSITION
@@ -324,9 +384,7 @@ final class FeedInteractionDelegate {
             return null;
         }
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(playingPosition);
-        return holder instanceof FeedAdapter.AdViewHolder
-                ? (FeedAdapter.AdViewHolder) holder
-                : null;
+        return holder instanceof FeedAdViewHolder ? (FeedAdViewHolder) holder : null;
     }
 
     /**
@@ -342,20 +400,17 @@ final class FeedInteractionDelegate {
             videoController.releaseOffscreen(playingAdId);
         }
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(playingPosition);
-        if (holder instanceof FeedAdapter.AdViewHolder) {
-            showVideoCoverUi((FeedAdapter.AdViewHolder) holder);
+        if (holder instanceof FeedAdViewHolder) {
+            showVideoCoverUi((FeedAdViewHolder) holder, true);
         }
         playingAdId = null;
         playingPosition = RecyclerView.NO_POSITION;
     }
 
-    // ---- 内部方法 ----
-
     private boolean isPlayableVideo(AdItem ad) {
         return ad != null
                 && ad.getContentType() == AdContentType.VIDEO
-                && ad.getVideoUrl() != null
-                && !ad.getVideoUrl().trim().isEmpty();
+                && AdMediaResources.playableVideoUri(ad) != null;
     }
 
     private float visibleRatioOf(View videoFrame) {
@@ -375,28 +430,76 @@ final class FeedInteractionDelegate {
     }
 
     /**
-     * 点赞彩蛋动画：心形图标放大回弹。
+     * 抖音式连赞特效：爱心从点赞按钮位置弹出，缩放放大后向上飘动、
+     * 随机旋转、逐渐放大并淡出。每次点击独立创建爱心，互不干扰。
      */
     private void playLikeBurst(int position) {
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-        if (!(holder instanceof FeedAdapter.AdViewHolder)) {
-            return;
-        }
+        if (!(holder instanceof FeedAdViewHolder)) return;
         View likeIcon = holder.itemView.findViewById(R.id.likeIcon);
-        if (likeIcon == null) {
-            return;
-        }
-        likeIcon.animate().cancel();
-        likeIcon.setScaleX(0.7f);
-        likeIcon.setScaleY(0.7f);
-        likeIcon.animate()
-                .scaleX(1.25f).scaleY(1.25f)
-                .setDuration(160)
-                .setInterpolator(new OvershootInterpolator())
-                .withEndAction(() -> likeIcon.animate()
-                        .scaleX(1f).scaleY(1f)
-                        .setDuration(120)
-                        .start())
-                .start();
+        if (likeIcon == null) return;
+
+        View root = recyclerView.getRootView();
+        if (!(root instanceof ViewGroup)) return;
+        ViewGroup parent = (ViewGroup) root;
+
+        float density = root.getResources().getDisplayMetrics().density;
+        int size = (int) (density * 80);
+
+        // 计算爱心起始位置（like 图标正上方）
+        int[] loc = new int[2];
+        likeIcon.getLocationOnScreen(loc);
+        int[] rootLoc = new int[2];
+        root.getLocationOnScreen(rootLoc);
+        float startX = loc[0] - rootLoc[0] + likeIcon.getWidth() / 2f - size / 2f;
+        float startY = loc[1] - rootLoc[1] - size / 2f;
+
+        ImageView heart = new ImageView(root.getContext());
+        heart.setImageResource(R.drawable.ic_like);
+        heart.setColorFilter(root.getContext().getColor(R.color.nbn_like_active));
+        heart.setAlpha(0f);
+        heart.setScaleX(0.4f);
+        heart.setScaleY(0.4f);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
+        params.leftMargin = (int) startX;
+        params.topMargin = (int) startY;
+        heart.setLayoutParams(params);
+        parent.addView(heart);
+
+        // 向上飘动距离（屏幕高度的 30%~50%，随机让轨迹不同）
+        float riseDistance = -(density * (180 + (float) Math.random() * 120));
+        // 水平漂移（±40dp 随机，形成扇形扩散）
+        float driftX = density * ((float) (Math.random() - 0.5) * 80);
+        // 随机旋转角度
+        float rotation = (float) ((Math.random() - 0.5) * 60);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                // 缩放：0.4 → 1.3 → 1.6
+                ObjectAnimator.ofFloat(heart, "scaleX", 0.4f, 1.2f, 1.5f),
+                ObjectAnimator.ofFloat(heart, "scaleY", 0.4f, 1.2f, 1.5f),
+                // 透明度：渐显 → 保持 → 渐隐
+                ObjectAnimator.ofFloat(heart, "alpha", 0f, 1f, 1f, 0.4f, 0f),
+                // 向上飘动
+                ObjectAnimator.ofFloat(heart, "translationY", 0f, riseDistance * 0.6f, riseDistance),
+                // 水平漂移
+                ObjectAnimator.ofFloat(heart, "translationX", 0f, driftX * 0.3f, driftX),
+                // 旋转
+                ObjectAnimator.ofFloat(heart, "rotation", 0f, rotation * 0.4f, rotation)
+        );
+        set.setDuration(1000);
+        // alpha 关键帧时间分布：前 30% 渐变显，中间 40% 保持，后 30% 渐隐
+        ((ObjectAnimator) set.getChildAnimations().get(2))
+                .setInterpolator(new LinearInterpolator());
+        set.setInterpolator(new AccelerateInterpolator(0.8f));
+
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                parent.removeView(heart);
+            }
+        });
+        set.start();
     }
 }

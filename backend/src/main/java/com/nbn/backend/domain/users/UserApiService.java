@@ -38,6 +38,7 @@ public final class UserApiService {
                 profilesById.put(user.getString("userId"), user);
             }
         }
+        ensureSessionUser(profile.getString("userId"));
         this.posts = profileSeed.getJSONArray("posts");
         normalizePosts();
         this.followers = profileSeed.getJSONArray("followers");
@@ -542,9 +543,7 @@ public final class UserApiService {
 
     private void persistProfile() {
         refreshAllStats();
-        String storedProfileId = session.persistentCurrentUserId().isBlank()
-                ? CURRENT_USER_ID
-                : session.persistentCurrentUserId();
+        String storedProfileId = storedProfileId();
         JSONArray users = new JSONArray();
         for (JSONObject profile : profilesById.values()) {
             if (!storedProfileId.equals(profile.optString("userId"))) {
@@ -558,6 +557,27 @@ public final class UserApiService {
                 .put("posts", new JSONArray(posts.toString()))
                 .put("followers", new JSONArray(followers.toString()))
                 .put("following", new JSONArray(following.toString())));
+    }
+
+    private void ensureSessionUser(String fallbackUserId) {
+        String currentUserId = session.persistentCurrentUserId();
+        if (!currentUserId.isBlank() && profilesById.containsKey(currentUserId)) {
+            return;
+        }
+        if (fallbackUserId != null && profilesById.containsKey(fallbackUserId)) {
+            session.login(fallbackUserId);
+        }
+    }
+
+    private String storedProfileId() {
+        String currentUserId = session.persistentCurrentUserId();
+        if (!currentUserId.isBlank() && profilesById.containsKey(currentUserId)) {
+            return currentUserId;
+        }
+        if (profilesById.containsKey(CURRENT_USER_ID)) {
+            return CURRENT_USER_ID;
+        }
+        return profilesById.keySet().iterator().next();
     }
 
     private void normalizePosts() {

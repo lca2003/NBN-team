@@ -2,7 +2,10 @@ package com.nbn.adfeed.ai.search;
 
 import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
+import com.nbn.adfeed.data.model.DataResult;
 import com.nbn.adfeed.data.model.InteractionState;
+import com.nbn.adfeed.data.model.PageResult;
+import com.nbn.adfeed.data.model.SearchRequest;
 import com.nbn.adfeed.data.remote.AiSearchApi;
 import com.nbn.adfeed.data.remote.AiSearchRequest;
 import com.nbn.adfeed.data.remote.AiSearchResponse;
@@ -53,18 +56,20 @@ public final class RemoteAiSearchServiceTest {
         CapturingAiSearchApi api = new CapturingAiSearchApi(
                 ImmediateCall.failure(new IOException("network unavailable"))
         );
+        FixedAdRepository repository = new FixedAdRepository(Arrays.asList(
+                ad("ad_001"),
+                ad("ad_002")
+        ));
         RemoteAiSearchService service = new RemoteAiSearchService(
                 api,
-                new FixedAdRepository(Arrays.asList(
-                        ad("ad_001"),
-                        ad("ad_002")
-                ))
+                repository
         );
         List<AiSearchResult> results = new ArrayList<>();
 
         service.search("sports", results::add);
 
         assertEquals("sports", api.lastRequest.getQuery());
+        assertEquals(100, repository.lastSearchRequest.getPageSize());
         assertEquals(1, results.size());
         assertEquals(Arrays.asList("ad_001", "ad_002"), results.get(0).getMatchedAdIds());
         assertTrue(results.get(0).isFallback());
@@ -128,6 +133,7 @@ public final class RemoteAiSearchServiceTest {
 
     private static final class FixedAdRepository implements AdRepository {
         private final List<AdItem> searchResult;
+        private SearchRequest lastSearchRequest;
 
         private FixedAdRepository(List<AdItem> searchResult) {
             this.searchResult = searchResult;
@@ -146,6 +152,24 @@ public final class RemoteAiSearchServiceTest {
         @Override
         public List<AdItem> searchByKeyword(String keyword) {
             return searchResult;
+        }
+
+        @Override
+        public DataResult<PageResult<AdItem>> searchAds(SearchRequest request) {
+            lastSearchRequest = request;
+            return DataResult.success(
+                    new PageResult<>(
+                            searchResult,
+                            request.getCursor(),
+                            null,
+                            false,
+                            request.toPageRequest().getPageNumber(),
+                            request.getPageSize(),
+                            searchResult.size(),
+                            "test"
+                    ),
+                    "test"
+            );
         }
     }
 
@@ -207,7 +231,7 @@ public final class RemoteAiSearchServiceTest {
 
         @Override
         public Request request() {
-            return new Request.Builder().url("http://localhost/api/ai/search").build();
+            return new Request.Builder().url("http://localhost/v1/ai/search").build();
         }
 
         @Override

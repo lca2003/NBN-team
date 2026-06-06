@@ -20,7 +20,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@drawable/bg_media_placeholder"
         android:clipChildren="true"
         android:clipToOutline="true">
 
@@ -28,7 +27,8 @@
             android:id="@+id/mediaImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_media_placeholder"
+            android:background="@drawable/bg_media_clip"
+            android:clipToOutline="true"
             android:contentDescription="@string/feed_sponsored"
             android:scaleType="centerCrop" />
 

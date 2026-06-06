@@ -1,9 +1,18 @@
 package com.nbn.adfeed.ui.detail;
 
 import android.content.Context;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,6 +20,9 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.media3.ui.PlayerView;
 
 import com.nbn.adfeed.R;
@@ -26,6 +38,7 @@ import com.nbn.adfeed.data.repository.RepositoryProvider;
 import com.nbn.adfeed.ui.feed.InteractionStore;
 import com.nbn.adfeed.ui.feed.TagChipBinder;
 import com.nbn.adfeed.ui.media.AdMediaLoader;
+import com.nbn.adfeed.ui.media.AdMediaResources;
 import com.nbn.adfeed.video.VideoPlaybackManager;
 import com.nbn.adfeed.video.player.Media3VideoPlayerController;
 
@@ -37,7 +50,7 @@ import java.util.List;
  *
  * <p>要点：</p>
  * <ul>
- *   <li>展示图文/视频详情；视频默认暂停，点击播放（演示占位）。</li>
+ *   <li>展示图文/视频详情；视频默认暂停，点击后用 Media3 播放。</li>
  *   <li>与信息流共享 {@link InteractionStore}：在详情页点赞/收藏后，返回列表自动同步。</li>
  *   <li>通过 {@link AdAiService} 获取 AI 摘要和标签展示。</li>
  *   <li>通过 {@link AdMediaLoader} 加载广告图片。</li>
@@ -79,6 +92,9 @@ public final class AdDetailActivity extends AppCompatActivity {
     private Media3VideoPlayerController videoController;
     private PlayerView playerView;
 
+    /** 上次点赞时间（ms），用于连赞窗口判定（1 秒内连点只播动画不取消）。 */
+    private long lastLikeTimeMs = 0L;
+
     // 互动栏视图。
     private ImageView likeIcon;
     private ImageView collectIcon;
@@ -112,6 +128,18 @@ public final class AdDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ad_detail);
+
+        // 适配 Android 15+ edge-to-edge：顶部返回栏避开状态栏
+        final View detailTopBar = findViewById(R.id.detailTopBar);
+        if (detailTopBar != null) {
+            final int basePaddingTop = detailTopBar.getPaddingTop();
+            ViewCompat.setOnApplyWindowInsetsListener(detailTopBar, (v, insets) -> {
+                int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+                v.setPadding(v.getPaddingLeft(), basePaddingTop + statusBarHeight,
+                        v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
+        }
 
         // 获取 Repository 和 AI 服务入口。
         repository = RepositoryProvider.getRepository(this);
@@ -237,8 +265,8 @@ public final class AdDetailActivity extends AppCompatActivity {
         ImageView playButton = findViewById(R.id.detailPlayButton);
         TextView videoState = findViewById(R.id.detailVideoState);
         playerView = findViewById(R.id.detailPlayerView);
-        String videoUrl = ad.getVideoUrl();
-        boolean playable = isVideo && videoUrl != null && !videoUrl.trim().isEmpty();
+        String playableUri = AdMediaResources.playableVideoUri(ad);
+        boolean playable = isVideo && playableUri != null;
         if (playable) {
             scrim.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
@@ -246,7 +274,7 @@ public final class AdDetailActivity extends AppCompatActivity {
             updateVideoState(videoState, scrim, playButton);
             // 不在这里创建 ExoPlayer，改为点击播放时懒初始化，
             // 避免 onCreate 阶段主线程阻塞（ExoPlayer 构造约 100-300ms）。
-            playButton.setOnClickListener(v -> startVideoPlayback(videoUrl, videoState, scrim, playButton));
+            playButton.setOnClickListener(v -> startVideoPlayback(playableUri, videoState, scrim, playButton));
         } else {
             // 非视频，或视频缺少有效 URL：隐藏播放相关控件，只展示封面图。
             scrim.setVisibility(View.GONE);
@@ -259,7 +287,7 @@ public final class AdDetailActivity extends AppCompatActivity {
     }
 
     /** 点击播放：显示 PlayerView，隐藏封面与遮罩，调用成员C的控制器真正播放视频。 */
-    private void startVideoPlayback(String videoUrl, TextView videoState, View scrim, ImageView playButton) {
+    private void startVideoPlayback(String playableUri, TextView videoState, View scrim, ImageView playButton) {
         if (playerView == null) {
             return;
         }
@@ -272,7 +300,7 @@ public final class AdDetailActivity extends AppCompatActivity {
         if (detailMedia != null) {
             detailMedia.setVisibility(View.GONE);
         }
-        boolean started = videoController.play(ad.getId(), videoUrl, playerView);
+        boolean started = videoController.play(ad.getId(), playableUri, playerView);
         if (started) {
             videoPlaying = true;
             // 进入播放：隐藏遮罩和大播放按钮，交给 PlayerView 自带控制条。
@@ -302,13 +330,12 @@ public final class AdDetailActivity extends AppCompatActivity {
         }
     }
 
-    /** 通过 AdAiService 异步获取 AI 摘要和标签，并行加载，展示到页面上。 */
+    /** 通过 AdAiService 异步获取 AI 摘要，展示到页面上（标签保持与信息流一致，不做替换）。 */
     private void loadAiContent() {
         if (aiService == null || ad == null) {
             return;
         }
         final String adId = ad.getId();
-        // 摘要和标签各自异步并行请求，互不等待，总耗时 = max(摘要, 标签) 而非 sum。
         aiExecutor.execute(() -> {
             try {
                 com.nbn.adfeed.ai.AiResponse<String> summaryResponse = aiService.getAiSummary(adId);
@@ -324,20 +351,8 @@ public final class AdDetailActivity extends AppCompatActivity {
                 });
             } catch (Exception ignored) { }
         });
-        aiExecutor.execute(() -> {
-            try {
-                com.nbn.adfeed.ai.AiResponse<List<String>> tagsResponse = aiService.getAiTags(adId);
-                if (isFinishing() || isDestroyed()) return;
-                runOnUiThread(() -> {
-                    if (isFinishing() || isDestroyed()) return;
-                    if (tagsResponse != null && tagsResponse.getValue() != null
-                            && !tagsResponse.getValue().isEmpty()) {
-                        LinearLayout tagGroup = findViewById(R.id.detailTagGroup);
-                        TagChipBinder.bind(tagGroup, tagsResponse.getValue());
-                    }
-                });
-            } catch (Exception ignored) { }
-        });
+        // 不再异步加载 AI 标签 —— 标签统一使用 bindContent() 中从 Intent 传入的原始标签，
+        // 保证详情页与信息流卡片完全一致。
     }
 
     /** 绑定返回、点赞、收藏、分享。 */
@@ -350,18 +365,28 @@ public final class AdDetailActivity extends AppCompatActivity {
         renderCollect();
 
         findViewById(R.id.likeContainer).setOnClickListener(v -> {
-            boolean liked = interactionStore.toggleLike(ad);
-            // 后台线程上报后端，避免主线程网络调用。
-            reportInteraction(InteractionAction.TOGGLE_LIKE);
-            if (liked) {
+            long now = SystemClock.elapsedRealtime();
+            // 未点赞 → 点亮 + 爱心 + 记录时间
+            if (!state.isLiked()) {
+                state.setLiked(true);
+                reportInteraction(InteractionAction.TOGGLE_LIKE);
                 analyticsTracker.trackLike(ad.getId());
-            } else {
-                analyticsTracker.trackUnlike(ad.getId());
-            }
-            renderLike();
-            if (liked) {
+                renderLike();
+                lastLikeTimeMs = now;
                 playLikeBurst();
+                return;
             }
+            // 已点赞且 1 秒内连点 → 只弹爱心
+            if (now - lastLikeTimeMs < 1000L) {
+                renderLike();
+                playLikeBurst();
+                return;
+            }
+            // 超过 1 秒 → 取消点赞
+            state.setLiked(false);
+            reportInteraction(InteractionAction.TOGGLE_LIKE);
+            analyticsTracker.trackUnlike(ad.getId());
+            renderLike();
         });
         findViewById(R.id.collectContainer).setOnClickListener(v -> {
             boolean collected = interactionStore.toggleCollect(ad);
@@ -449,17 +474,62 @@ public final class AdDetailActivity extends AppCompatActivity {
         collectIcon.setColorFilter(color);
     }
 
-    /** 点赞彩蛋：心形放大回弹一次。 */
+    /**
+     * 抖音式连赞特效：爱心从点赞按钮位置弹出，向上飘动 + 随机旋转 + 放大 + 淡出。
+     * 每次点击独立创建爱心，互不干扰，支持快速连点多个爱心同时飘。
+     */
     private void playLikeBurst() {
-        likeIcon.animate().cancel();
-        likeIcon.setScaleX(0.7f);
-        likeIcon.setScaleY(0.7f);
-        likeIcon.animate()
-                .scaleX(1.3f).scaleY(1.3f)
-                .setDuration(160)
-                .setInterpolator(new android.view.animation.OvershootInterpolator())
-                .withEndAction(() -> likeIcon.animate().scaleX(1f).scaleY(1f).setDuration(120).start())
-                .start();
+        View root = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (!(root instanceof ViewGroup)) return;
+        ViewGroup parent = (ViewGroup) root;
+
+        float density = root.getResources().getDisplayMetrics().density;
+        int size = (int) (density * 80);
+
+        // 爱心起始于 likeIcon 位置
+        int[] loc = new int[2];
+        likeIcon.getLocationOnScreen(loc);
+        int[] rootLoc = new int[2];
+        root.getLocationOnScreen(rootLoc);
+        float startX = loc[0] - rootLoc[0] + likeIcon.getWidth() / 2f - size / 2f;
+        float startY = loc[1] - rootLoc[1] - size / 2f;
+
+        ImageView heart = new ImageView(this);
+        heart.setImageResource(R.drawable.ic_like);
+        heart.setColorFilter(getColor(R.color.nbn_like_active));
+        heart.setAlpha(0f);
+        heart.setScaleX(0.4f);
+        heart.setScaleY(0.4f);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
+        params.leftMargin = (int) startX;
+        params.topMargin = (int) startY;
+        heart.setLayoutParams(params);
+        parent.addView(heart);
+
+        float riseDistance = -(density * (180 + (float) Math.random() * 120));
+        float driftX = density * ((float) (Math.random() - 0.5) * 80);
+        float rotation = (float) ((Math.random() - 0.5) * 60);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                ObjectAnimator.ofFloat(heart, "scaleX", 0.4f, 1.2f, 1.5f),
+                ObjectAnimator.ofFloat(heart, "scaleY", 0.4f, 1.2f, 1.5f),
+                ObjectAnimator.ofFloat(heart, "alpha", 0f, 1f, 1f, 0.4f, 0f),
+                ObjectAnimator.ofFloat(heart, "translationY", 0f, riseDistance * 0.6f, riseDistance),
+                ObjectAnimator.ofFloat(heart, "translationX", 0f, driftX * 0.3f, driftX),
+                ObjectAnimator.ofFloat(heart, "rotation", 0f, rotation * 0.4f, rotation)
+        );
+        set.setDuration(1000);
+        set.setInterpolator(new AccelerateInterpolator(0.8f));
+
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                parent.removeView(heart);
+            }
+        });
+        set.start();
     }
 
     /** 关闭页面并播放"左进右出"返回动画，与进入时的滑入呼应。 */

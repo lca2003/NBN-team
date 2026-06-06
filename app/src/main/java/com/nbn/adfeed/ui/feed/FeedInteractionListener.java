@@ -27,4 +27,7 @@ public interface FeedInteractionListener {
 
     /** 点击视频卡的播放按钮（仅视频卡触发）。 */
     void onVideoPlayClick(AdItem ad, int position);
+
+    /** 视频卡离屏或复用时释放播放器绑定。 */
+    void onVideoCardDetached(AdItem ad);
 }

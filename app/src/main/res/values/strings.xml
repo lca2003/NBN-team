@@ -42,10 +42,12 @@
     <string name="detail_title">广告详情</string>
     <string name="detail_back">返回</string>
     <string name="detail_tags_title">智能标签</string>
-    <string name="detail_play_hint">点击播放视频（演示占位）</string>
+    <string name="detail_play_hint">点击播放视频</string>
     <string name="detail_pause_hint">已暂停</string>
     <string name="detail_playing_hint">播放中…</string>
     <string name="detail_video_unavailable">视频暂时无法播放</string>
+    <string name="detail_buffering_hint">加载中…</string>
+    <string name="detail_video_error_hint">视频播放失败</string>
 
     <!-- ===== 统计页（人员C）相关文案 ===== -->
     <string name="nav_home">首页</string>

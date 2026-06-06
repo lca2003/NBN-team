@@ -32,7 +32,7 @@ public final class FeedAdapterMediaBindingTest {
         RecyclerView.ViewHolder holder = adapter.onCreateViewHolder(parent, 1);
         AdItem ad = ad("ad_001", AdContentType.LARGE_IMAGE);
 
-        ((FeedAdapter.AdViewHolder) holder).bind(ad);
+        ((FeedAdViewHolder) holder).bind(ad, noopListener(), Collections.emptySet(), InteractionStore.get());
 
         ImageView mediaImage = holder.itemView.findViewById(R.id.mediaImage);
         assertNotNull(mediaImage.getDrawable());
@@ -45,7 +45,7 @@ public final class FeedAdapterMediaBindingTest {
         RecyclerView.ViewHolder holder = adapter.onCreateViewHolder(parent, 3);
         AdItem ad = ad("ad_003", AdContentType.VIDEO);
 
-        ((FeedAdapter.AdViewHolder) holder).bind(ad);
+        ((FeedAdViewHolder) holder).bind(ad, noopListener(), Collections.emptySet(), InteractionStore.get());
 
         ImageView mediaImage = holder.itemView.findViewById(R.id.mediaImage);
         assertNotNull(mediaImage.getDrawable());
@@ -97,6 +97,10 @@ public final class FeedAdapterMediaBindingTest {
 
             @Override
             public void onVideoPlayClick(AdItem ad, int position) {
+            }
+
+            @Override
+            public void onVideoCardDetached(AdItem ad) {
             }
         };
     }

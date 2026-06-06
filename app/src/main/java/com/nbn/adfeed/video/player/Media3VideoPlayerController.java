@@ -64,7 +64,7 @@ public final class Media3VideoPlayerController {
             }
             if (isPlaying) {
                 callback.onPlaying(activeAdId);
-            } else {
+            } else if (player != null && !player.getPlayWhenReady()) {
                 callback.onPaused(activeAdId);
             }
         }

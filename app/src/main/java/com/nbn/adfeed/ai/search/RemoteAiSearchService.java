@@ -2,6 +2,10 @@ package com.nbn.adfeed.ai.search;
 
 import com.nbn.adfeed.data.mock.MockAdRepository;
 import com.nbn.adfeed.data.model.AdItem;
+import com.nbn.adfeed.data.model.DataResult;
+import com.nbn.adfeed.data.model.PageRequest;
+import com.nbn.adfeed.data.model.PageResult;
+import com.nbn.adfeed.data.model.SearchRequest;
 import com.nbn.adfeed.data.remote.AiSearchApi;
 import com.nbn.adfeed.data.remote.AiSearchRequest;
 import com.nbn.adfeed.data.remote.AiSearchResponse;
@@ -18,7 +22,8 @@ import retrofit2.Response;
 //基于 Retrofit 实现的远程 AI 搜索服务
 public final class RemoteAiSearchService implements AiSearchService {
     //当远程 AI 服务不可用时，将返回此提示。
-    private static final String FALLBACK_ANSWER = "AI搜索不可用，使用mock降级数据";
+    private static final String FALLBACK_ANSWER = "AI搜索不可用，已使用本地/后端降级数据";
+    private static final int FALLBACK_SEARCH_LIMIT = 100;
 
     //远程 API 接口实例，用于按候选地址发起 AI 搜索请求。
     private final List<AiSearchApi> aiSearchApis;
@@ -97,8 +102,25 @@ public final class RemoteAiSearchService implements AiSearchService {
 
     //创建降级搜索结果
     private AiSearchResult createFallbackResult(String query) {
-        List<AdItem> matchedAds = fallbackRepository.searchByKeyword(query);
+        List<AdItem> matchedAds = searchFallbackRepository(query);
         return new AiSearchResult(FALLBACK_ANSWER, toAdIds(matchedAds), true);
+    }
+
+    private List<AdItem> searchFallbackRepository(String query) {
+        SearchRequest request = new SearchRequest(
+                query,
+                "",
+                "",
+                PageRequest.FIRST_CURSOR,
+                FALLBACK_SEARCH_LIMIT,
+                "ai_search_fallback"
+        );
+        DataResult<PageResult<AdItem>> result = fallbackRepository.searchAds(request);
+        PageResult<AdItem> page = result == null ? null : result.getData();
+        if (page != null && !page.getItems().isEmpty()) {
+            return page.getItems();
+        }
+        return fallbackRepository.searchByKeyword(query);
     }
 
     //将广告列表转换为广告 ID 字符串列表
