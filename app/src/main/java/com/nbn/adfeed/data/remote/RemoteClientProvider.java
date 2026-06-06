@@ -1,5 +1,8 @@
 package com.nbn.adfeed.data.remote;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -9,8 +12,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 // 网络基础设施客户端
 //用于创建 {@link AiSearchApi} 的 Retrofit 客户端实例，封装了 OkHttpClient 的超时配置
 public final class RemoteClientProvider {
-    //用于连接本地 AI 后端；配合 adb reverse tcp:8081 tcp:8081 使用
-    public static final String DEFAULT_BASE_URL = "http://127.0.0.1:8081/";
+    // Android 模拟器访问宿主机本地 AI 后端使用 10.0.2.2。
+    public static final String DEFAULT_BASE_URL = "http://10.0.2.2:8081/";
+    // 真机或特殊调试场景可配合 adb reverse tcp:8081 tcp:8081 使用。
+    public static final String ADB_REVERSE_BASE_URL = "http://127.0.0.1:8081/";
 
     private static final long CONNECT_TIMEOUT_SECONDS = 5L;
     private static final long READ_TIMEOUT_SECONDS = 10L;
@@ -24,6 +29,26 @@ public final class RemoteClientProvider {
 
     public static AiSearchApi createAiSearchApi(String baseUrl) {
         return createRetrofit(baseUrl).create(AiSearchApi.class);
+    }
+
+    public static List<AiSearchApi> createAiSearchApis() {
+        List<AiSearchApi> apis = new ArrayList<>();
+        for (String baseUrl : defaultBaseUrls()) {
+            apis.add(createAiSearchApi(baseUrl));
+        }
+        return apis;
+    }
+
+    public static List<String> defaultBaseUrls() {
+        String configuredBaseUrl = System.getProperty("nbn.ai.baseUrl", "").trim();
+        if (!configuredBaseUrl.isEmpty()) {
+            return Collections.singletonList(normalizeBaseUrl(configuredBaseUrl));
+        }
+
+        List<String> urls = new ArrayList<>();
+        urls.add(DEFAULT_BASE_URL);
+        urls.add(ADB_REVERSE_BASE_URL);
+        return Collections.unmodifiableList(urls);
     }
 
 

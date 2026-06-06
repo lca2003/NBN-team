@@ -70,6 +70,34 @@ public final class RemoteAiSearchServiceTest {
         assertTrue(results.get(0).isFallback());
     }
 
+    @Test
+    public void searchTriesNextRemoteApiBeforeLocalFallback() {
+        CapturingAiSearchApi firstApi = new CapturingAiSearchApi(
+                ImmediateCall.failure(new IOException("emulator route unavailable"))
+        );
+        CapturingAiSearchApi secondApi = new CapturingAiSearchApi(
+                ImmediateCall.success(new AiSearchResponse(
+                        "second endpoint answer",
+                        Collections.singletonList("ad_003"),
+                        false
+                ))
+        );
+        RemoteAiSearchService service = new RemoteAiSearchService(
+                Arrays.asList(firstApi, secondApi),
+                new FixedAdRepository(Collections.singletonList(ad("fallback_ad")))
+        );
+        List<AiSearchResult> results = new ArrayList<>();
+
+        service.search("student sports", results::add);
+
+        assertEquals("student sports", firstApi.lastRequest.getQuery());
+        assertEquals("student sports", secondApi.lastRequest.getQuery());
+        assertEquals(1, results.size());
+        assertEquals("second endpoint answer", results.get(0).getAnswer());
+        assertEquals(Collections.singletonList("ad_003"), results.get(0).getMatchedAdIds());
+        assertFalse(results.get(0).isFallback());
+    }
+
     private static AdItem ad(String id) {
         return new AdItem(
                 id,
