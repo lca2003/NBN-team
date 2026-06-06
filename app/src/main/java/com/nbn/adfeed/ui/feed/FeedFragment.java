@@ -198,6 +198,9 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
             public void onScrollStateChanged(@NonNull RecyclerView rv, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     rv.post(exposureDelegate.getExposureCheckRunnable());
+                    rv.post(() -> interactionDelegate.autoPlayMostVisibleVideo(layoutManager));
+                } else {
+                    interactionDelegate.pauseActiveVideo();
                 }
             }
 
@@ -244,8 +247,6 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         Media3VideoPlayerController videoController = new Media3VideoPlayerController(
                 requireContext(), videoPlaybackManager);
         interactionDelegate.bindVideo(videoPlaybackManager, videoController);
-        exposureDelegate.setOnVisibilityChangedListener(() ->
-                interactionDelegate.autoPlayMostVisibleVideo(layoutManager));
 
         // 筛选管理器：管理标签筛选状态与筛选栏 UI。
         filterManager.bind(requireContext(), adapter, filterBarContainer, filterBar);

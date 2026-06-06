@@ -106,8 +106,8 @@ public final class Media3VideoPlayerController {
 
     public boolean play(String adId, String videoUri, PlayerView playerView) {
         String normalizedAdId = normalize(adId);
-        String normalizedVideoUri = resolveVideoUri(videoUri);
-        if (normalizedAdId == null || normalizedVideoUri == null || playerView == null) {
+        String requestedVideoUri = resolveVideoUri(videoUri);
+        if (normalizedAdId == null || requestedVideoUri == null || playerView == null) {
             return false;
         }
 
@@ -116,6 +116,7 @@ public final class Media3VideoPlayerController {
         attachPlayerView(playerView, mediaPlayer);
         applyMutedState(mediaPlayer);
         fallbackVideoUri = packagedFallbackVideoUri(normalizedAdId);
+        String normalizedVideoUri = fallbackVideoUri == null ? requestedVideoUri : fallbackVideoUri;
 
         if (isCurrentMedia(normalizedAdId, normalizedVideoUri, mediaPlayer)) {
             playbackManager.resume(normalizedAdId);
@@ -225,7 +226,7 @@ public final class Media3VideoPlayerController {
         if (player == null) {
             player = playerFactory.create(appContext);
             player.addListener(playerListener);
-            player.setRepeatMode(Player.REPEAT_MODE_OFF);
+            player.setRepeatMode(Player.REPEAT_MODE_ONE);
             applyMutedState(player);
         }
         return player;

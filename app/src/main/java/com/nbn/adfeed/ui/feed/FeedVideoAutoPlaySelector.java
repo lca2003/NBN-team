@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Map;
 
 final class FeedVideoAutoPlaySelector {
-    static final float MIN_VISIBLE_RATIO = 0.60f;
+    static final float MIN_VISIBLE_RATIO = 0.50f;
 
     private FeedVideoAutoPlaySelector() {
     }
@@ -19,7 +19,7 @@ final class FeedVideoAutoPlaySelector {
 
         for (Map.Entry<Integer, Float> entry : visibleRatios.entrySet()) {
             Float ratio = entry.getValue();
-            if (ratio != null && ratio >= selectedRatio) {
+            if (ratio != null && ratio > selectedRatio) {
                 selectedPosition = entry.getKey();
                 selectedRatio = ratio;
             }

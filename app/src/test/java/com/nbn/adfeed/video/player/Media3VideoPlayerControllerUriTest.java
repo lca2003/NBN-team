@@ -50,7 +50,7 @@ public final class Media3VideoPlayerControllerUriTest {
     }
 
     @Test
-    public void remotePlaybackErrorFallsBackToPackagedVideoResource() {
+    public void knownAdUsesPackagedVideoWithoutWaitingForRemoteFailure() {
         FakePlayer fakePlayer = new FakePlayer();
         Media3VideoPlayerController controller = new Media3VideoPlayerController(
                 RuntimeEnvironment.getApplication(),
@@ -63,9 +63,6 @@ public final class Media3VideoPlayerControllerUriTest {
                 "https://res.cloudinary.com/demo/video/upload/du_12/sea_turtle.mp4",
                 playerView()
         ));
-        shadowOf(Looper.getMainLooper()).idle();
-
-        fakePlayer.failPlayback();
         shadowOf(Looper.getMainLooper()).idle();
 
         assertEquals(
@@ -93,6 +90,21 @@ public final class Media3VideoPlayerControllerUriTest {
 
         assertNull(manager.getActiveAdId());
         assertEquals(0L, manager.getPositionMs("ad_018"));
+    }
+
+    @Test
+    public void activeVideoRepeatsUntilVisibilityRuleStopsIt() {
+        FakePlayer fakePlayer = new FakePlayer();
+        Media3VideoPlayerController controller = new Media3VideoPlayerController(
+                RuntimeEnvironment.getApplication(),
+                new VideoPlaybackManager(),
+                context -> fakePlayer
+        );
+
+        assertTrue(controller.play("ad_018", "raw/ad_video_local_sports.mp4", playerView()));
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertEquals(Player.REPEAT_MODE_ONE, fakePlayer.repeatMode);
     }
 
     private static PlayerView playerView() {
