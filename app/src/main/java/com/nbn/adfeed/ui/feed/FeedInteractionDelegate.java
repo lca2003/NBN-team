@@ -1,18 +1,22 @@
 package com.nbn.adfeed.ui.feed;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.media3.ui.PlayerView;
-
-import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieDrawable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nbn.adfeed.R;
@@ -45,6 +49,9 @@ final class FeedInteractionDelegate {
     private String playingAdId;
     /** 当前播放中卡片在 RecyclerView 中的位置。 */
     private int playingPosition = RecyclerView.NO_POSITION;
+
+    /** 上次点赞时间（ms），用于连赞窗口判定（1 秒内连点只播动画不取消）。 */
+    private long lastLikeTimeMs = 0L;
 
     /**
      * 绑定外部依赖。在 Fragment.onViewCreated 之后调用。
@@ -136,25 +143,41 @@ final class FeedInteractionDelegate {
         }
     }
 
-    /** 点赞切换，返回是否为"点亮"状态（用于外层决定是否播放彩蛋）。 */
+    /**
+     * 点赞逻辑：
+     * - 未点赞 → 点亮 + 弹出爱心 + 记录时间
+     * - 已点赞且距上次 < 1s → 连赞，只弹出爱心不取消
+     * - 已点赞且距上次 ≥ 1s → 取消点赞，不弹爱心
+     */
     boolean onLikeClick(AdItem ad, int position) {
-        boolean liked = interactionStore.toggleLike(ad);
+        InteractionState state = interactionStore.stateOf(ad);
+        long now = SystemClock.elapsedRealtime();
+        if (!state.isLiked()) {
+            state.setLiked(true);
+            adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
+            adapter.notifyItemChanged(position);
+            lastLikeTimeMs = now;
+            playLikeBurst(position);
+            return true;
+        }
+        if (now - lastLikeTimeMs < 1000L) {
+            // 1 秒内连赞：不改变状态，只弹出爱心
+            adapter.notifyItemChanged(position);
+            playLikeBurst(position);
+            return true;
+        }
+        // 超过 1 秒：取消点赞
+        state.setLiked(false);
         adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_LIKE);
         adapter.notifyItemChanged(position);
-        if (liked) {
-            playLikeBurst(position);
-        }
-        return liked;
+        return false;
     }
 
     /** 收藏切换。 */
     void onCollectClick(AdItem ad, int position) {
-        boolean collected = interactionStore.toggleCollect(ad);
+        interactionStore.toggleCollect(ad);
         adCatalog.updateInteraction(ad.getId(), InteractionAction.TOGGLE_COLLECT);
         adapter.notifyItemChanged(position);
-        if (collected) {
-            playCollectBurst(position);
-        }
     }
 
     /** 分享：上报事件 + 弹出系统分享面板。 */
@@ -188,10 +211,10 @@ final class FeedInteractionDelegate {
 
         // 找到当前卡片的 ViewHolder，获取播放器相关控件。
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-        if (!(holder instanceof FeedAdapter.AdViewHolder)) {
+        if (!(holder instanceof FeedAdViewHolder)) {
             return;
         }
-        FeedAdapter.AdViewHolder vh = (FeedAdapter.AdViewHolder) holder;
+        FeedAdViewHolder vh = (FeedAdViewHolder) holder;
 
         // 如果点击的是同一张正在播放的卡 → 暂停。
         if (adId.equals(playingAdId)) {
@@ -225,7 +248,7 @@ final class FeedInteractionDelegate {
     // ---- 视频 UI 切换 ----
 
     /** 切换卡片到"播放中"模式：隐藏封面与遮罩，显示 PlayerView。 */
-    private void showVideoPlayingUi(FeedAdapter.AdViewHolder vh, boolean showCover) {
+    private void showVideoPlayingUi(FeedAdViewHolder vh, boolean showCover) {
         if (vh.mediaImage != null) vh.mediaImage.setVisibility(showCover ? View.VISIBLE : View.GONE);
         if (vh.videoScrim != null) vh.videoScrim.setVisibility(View.GONE);
         if (vh.playButton != null) vh.playButton.setVisibility(View.GONE);
@@ -236,7 +259,7 @@ final class FeedInteractionDelegate {
     }
 
     /** 切换卡片到"暂停/封面"模式：隐藏 PlayerView，显示封面与播放按钮。 */
-    private void showVideoCoverUi(FeedAdapter.AdViewHolder vh, boolean showCover) {
+    private void showVideoCoverUi(FeedAdViewHolder vh, boolean showCover) {
         if (vh.mediaImage != null) vh.mediaImage.setVisibility(showCover ? View.VISIBLE : View.GONE);
         if (vh.videoScrim != null) vh.videoScrim.setVisibility(View.VISIBLE);
         if (vh.playButton != null) vh.playButton.setVisibility(View.VISIBLE);
@@ -259,67 +282,84 @@ final class FeedInteractionDelegate {
             videoController.releaseOffscreen(playingAdId);
         }
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(playingPosition);
-        if (holder instanceof FeedAdapter.AdViewHolder) {
-            showVideoCoverUi((FeedAdapter.AdViewHolder) holder, true);
+        if (holder instanceof FeedAdViewHolder) {
+            showVideoCoverUi((FeedAdViewHolder) holder, true);
         }
         playingAdId = null;
         playingPosition = RecyclerView.NO_POSITION;
     }
 
-    // ---- 内部方法 ----
-
     /**
-     * 在图标上方叠加 Lottie 动画，播放一次后自动移除。
-     *
-     * @param icon     目标图标（用于定位）
-     * @param rawResId Lottie JSON 资源 id（R.raw.lottie_like_burst / lottie_collect_burst）
+     * 抖音式连赞特效：爱心从点赞按钮位置弹出，缩放放大后向上飘动、
+     * 随机旋转、逐渐放大并淡出。每次点击独立创建爱心，互不干扰。
      */
-    private void playLottieOverlay(View icon, int rawResId) {
-        if (icon == null) return;
-        View root = icon.getRootView();
-        if (!(root instanceof ViewGroup)) return;
-
-        int[] loc = new int[2];
-        icon.getLocationOnScreen(loc);
-        int size = (int) (icon.getResources().getDisplayMetrics().density * 80);
-
-        LottieAnimationView lottie = new LottieAnimationView(icon.getContext());
-        lottie.setAnimation(rawResId);
-        lottie.setRepeatCount(0);
-        lottie.setSpeed(1.5f);
-        lottie.setLayoutParams(new FrameLayout.LayoutParams(size, size));
-
-        // 用 rootView 的 Overlay 来叠加，不干扰原有布局
-        ViewGroup overlay = (ViewGroup) root;
-        // 计算 root 坐标系中的位置
-        int[] rootLoc = new int[2];
-        root.getLocationOnScreen(rootLoc);
-        int x = loc[0] - rootLoc[0] + icon.getWidth() / 2 - size / 2;
-        int y = loc[1] - rootLoc[1] + icon.getHeight() / 2 - size / 2;
-        lottie.setX(x);
-        lottie.setY(y);
-
-        overlay.addView(lottie);
-        lottie.playAnimation();
-        lottie.addAnimatorListener(new android.animation.AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(android.animation.Animator animation) {
-                overlay.removeView(lottie);
-            }
-        });
-    }
-
-    /** 点赞 Lottie 动画。 */
     private void playLikeBurst(int position) {
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-        if (!(holder instanceof FeedAdapter.AdViewHolder)) return;
-        playLottieOverlay(holder.itemView.findViewById(R.id.likeIcon), R.raw.lottie_like_burst);
-    }
+        if (!(holder instanceof FeedAdViewHolder)) return;
+        View likeIcon = holder.itemView.findViewById(R.id.likeIcon);
+        if (likeIcon == null) return;
 
-    /** 收藏 Lottie 动画。 */
-    private void playCollectBurst(int position) {
-        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-        if (!(holder instanceof FeedAdapter.AdViewHolder)) return;
-        playLottieOverlay(holder.itemView.findViewById(R.id.collectIcon), R.raw.lottie_collect_burst);
+        View root = recyclerView.getRootView();
+        if (!(root instanceof ViewGroup)) return;
+        ViewGroup parent = (ViewGroup) root;
+
+        float density = root.getResources().getDisplayMetrics().density;
+        int size = (int) (density * 80);
+
+        // 计算爱心起始位置（like 图标正上方）
+        int[] loc = new int[2];
+        likeIcon.getLocationOnScreen(loc);
+        int[] rootLoc = new int[2];
+        root.getLocationOnScreen(rootLoc);
+        float startX = loc[0] - rootLoc[0] + likeIcon.getWidth() / 2f - size / 2f;
+        float startY = loc[1] - rootLoc[1] - size / 2f;
+
+        ImageView heart = new ImageView(root.getContext());
+        heart.setImageResource(R.drawable.ic_like);
+        heart.setColorFilter(root.getContext().getColor(R.color.nbn_like_active));
+        heart.setAlpha(0f);
+        heart.setScaleX(0.4f);
+        heart.setScaleY(0.4f);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
+        params.leftMargin = (int) startX;
+        params.topMargin = (int) startY;
+        heart.setLayoutParams(params);
+        parent.addView(heart);
+
+        // 向上飘动距离（屏幕高度的 30%~50%，随机让轨迹不同）
+        float riseDistance = -(density * (180 + (float) Math.random() * 120));
+        // 水平漂移（±40dp 随机，形成扇形扩散）
+        float driftX = density * ((float) (Math.random() - 0.5) * 80);
+        // 随机旋转角度
+        float rotation = (float) ((Math.random() - 0.5) * 60);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                // 缩放：0.4 → 1.3 → 1.6
+                ObjectAnimator.ofFloat(heart, "scaleX", 0.4f, 1.2f, 1.5f),
+                ObjectAnimator.ofFloat(heart, "scaleY", 0.4f, 1.2f, 1.5f),
+                // 透明度：渐显 → 保持 → 渐隐
+                ObjectAnimator.ofFloat(heart, "alpha", 0f, 1f, 1f, 0.4f, 0f),
+                // 向上飘动
+                ObjectAnimator.ofFloat(heart, "translationY", 0f, riseDistance * 0.6f, riseDistance),
+                // 水平漂移
+                ObjectAnimator.ofFloat(heart, "translationX", 0f, driftX * 0.3f, driftX),
+                // 旋转
+                ObjectAnimator.ofFloat(heart, "rotation", 0f, rotation * 0.4f, rotation)
+        );
+        set.setDuration(1000);
+        // alpha 关键帧时间分布：前 30% 渐变显，中间 40% 保持，后 30% 渐隐
+        ((ObjectAnimator) set.getChildAnimations().get(2))
+                .setInterpolator(new LinearInterpolator());
+        set.setInterpolator(new AccelerateInterpolator(0.8f));
+
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                parent.removeView(heart);
+            }
+        });
+        set.start();
     }
 }

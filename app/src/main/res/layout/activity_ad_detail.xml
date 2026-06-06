@@ -11,6 +11,7 @@
 
     <!-- 顶部返回栏 -->
     <LinearLayout
+        android:id="@+id/detailTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -64,7 +65,8 @@
                     android:id="@+id/detailMedia"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_media_placeholder"
+                    android:background="@drawable/bg_media_clip"
+                    android:clipToOutline="true"
                     android:contentDescription="@string/detail_title"
                     android:scaleType="centerCrop" />
 

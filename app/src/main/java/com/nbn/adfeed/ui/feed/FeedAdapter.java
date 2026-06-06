@@ -1,11 +1,7 @@
 package com.nbn.adfeed.ui.feed;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,21 +10,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nbn.adfeed.R;
 import com.nbn.adfeed.data.model.AdContentType;
 import com.nbn.adfeed.data.model.AdItem;
-import com.nbn.adfeed.data.model.InteractionState;
-import com.nbn.adfeed.ui.media.AdMediaLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 单列信息流适配器，支持多样式卡片（大图/小图/视频）+ 底部加载 footer。
+ * 单列信息流适配器，负责数据管理与 ViewType 分发。
+ *
+ * <p>卡片绑定已委托给 {@link FeedAdViewHolder}，footer 绑定已委托给
+ * {@link FeedFooterViewHolder}，本类仅保留数据增删改与 RecyclerView 标准回调。</p>
  *
  * <p>设计要点：</p>
  * <ul>
- *   <li>按 {@link AdContentType} 返回不同 viewType，复用对应 ViewHolder，满足课题“多样式卡片 + cell 复用”。</li>
- *   <li>互动状态统一从 {@link InteractionStore} 读取，保证与详情页同步。</li>
- *   <li>所有点击事件通过 {@link FeedInteractionListener} 抛给 Fragment，Adapter 不直接耦合统计/视频模块。</li>
- *   <li>列表末尾追加一个 footer item 展示“加载中/没有更多/重试”。</li>
+ *   <li>按 {@link AdContentType} 返回不同 viewType，三种卡片共享一个 ViewHolder。</li>
+ *   <li>末尾追加一个 footer item 展示"加载中 / 没有更多 / 重试"。</li>
+ *   <li>标签筛选变化时通过 payload "tags" 做精简绑定（只刷新 chip，不重新加载图片）。</li>
  * </ul>
  */
 public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -39,7 +35,7 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final int TYPE_VIDEO = 3;
     private static final int TYPE_FOOTER = 9;
 
-    /** Payload key：标签筛选变化时只刷新 tag chip，不重新绑定图片/文字。 */
+    /** Payload key：标签筛选变化时只刷新 tag chip。 */
     private static final String PAYLOAD_TAGS = "tags";
 
     private final List<AdItem> items = new ArrayList<>();
@@ -49,19 +45,22 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     /** 当前筛选选中的标签集合，命中的标签会在卡片上高亮展示。 */
     private java.util.Set<String> selectedTags = java.util.Collections.emptySet();
 
-    /** 当前 footer 状态，决定列表末尾那一项怎么显示。 */
+    /** 当前 footer 状态。 */
     private FooterState footerState = FooterState.HIDDEN;
+
+    /** footer 错误态的重试回调，由 Fragment 注入。 */
+    private Runnable footerRetryListener;
 
     public FeedAdapter(FeedInteractionListener listener) {
         this.listener = listener;
-        // 稳定 id 有助于刷新时的动画与复用正确性。
         setHasStableIds(false);
     }
 
-    /** 更新当前筛选标签集合并刷新列表，使卡片上命中的标签高亮。 */
+    // ---- 数据操作 ----
+
+    /** 更新筛选标签集合并通过 payload 刷新（只重建 chip，不重新加载图片/文字）。 */
     public void setSelectedTags(java.util.Set<String> tags) {
         this.selectedTags = (tags == null) ? java.util.Collections.emptySet() : new java.util.HashSet<>(tags);
-        // 使用 payload 只刷新标签显示，避免全量 rebind（图片、文字不变）。
         notifyItemRangeChanged(0, items.size(), PAYLOAD_TAGS);
     }
 
@@ -74,9 +73,7 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     /** 追加一页数据（上拉加载更多时用）。 */
     public void append(List<AdItem> moreItems) {
-        if (moreItems == null || moreItems.isEmpty()) {
-            return;
-        }
+        if (moreItems == null || moreItems.isEmpty()) return;
         int start = items.size();
         items.addAll(moreItems);
         notifyItemRangeInserted(start, moreItems.size());
@@ -84,50 +81,40 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     /** 更新 footer 状态并刷新最后一项。 */
     public void setFooterState(FooterState state) {
-        if (footerState == state) {
-            return;
-        }
+        if (footerState == state) return;
         footerState = state;
         notifyItemChanged(items.size());
     }
 
-    public FooterState getFooterState() {
-        return footerState;
+    public void setFooterRetryListener(Runnable retry) {
+        this.footerRetryListener = retry;
     }
 
-    public boolean isEmpty() {
-        return items.isEmpty();
-    }
+    public FooterState getFooterState() { return footerState; }
+    public boolean isEmpty() { return items.isEmpty(); }
 
-    //让 FeedFragment 能根据 RecyclerView 位置拿到对应广告数据
+    /** 根据 RecyclerView 位置获取广告数据。 */
     @Nullable
     public AdItem getAdAt(int position) {
-        if (position < 0 || position >= items.size()) {
-            return null;
-        }
+        if (position < 0 || position >= items.size()) return null;
         return items.get(position);
     }
 
-    /** 列表项数 = 数据条数 + 1 个 footer。 */
+    // ---- RecyclerView.Adapter 回调 ----
+
     @Override
     public int getItemCount() {
-        return items.size() + 1;
+        return items.size() + 1; // 数据条数 + 1 个 footer
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == items.size()) {
-            return TYPE_FOOTER;
-        }
+        if (position == items.size()) return TYPE_FOOTER;
         AdContentType type = items.get(position).getContentType();
         switch (type) {
-            case VIDEO:
-                return TYPE_VIDEO;
-            case SMALL_IMAGE:
-                return TYPE_SMALL_IMAGE;
-            case LARGE_IMAGE:
-            default:
-                return TYPE_LARGE_IMAGE;
+            case VIDEO:       return TYPE_VIDEO;
+            case SMALL_IMAGE: return TYPE_SMALL_IMAGE;
+            default:          return TYPE_LARGE_IMAGE;
         }
     }
 
@@ -137,29 +124,28 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         switch (viewType) {
             case TYPE_VIDEO:
-                return new AdViewHolder(
+                return new FeedAdViewHolder(
                         inflater.inflate(R.layout.item_ad_video, parent, false), true);
             case TYPE_SMALL_IMAGE:
-                return new AdViewHolder(
+                return new FeedAdViewHolder(
                         inflater.inflate(R.layout.item_ad_small_image, parent, false), false);
             case TYPE_FOOTER:
-                return new FooterViewHolder(
+                return new FeedFooterViewHolder(
                         inflater.inflate(R.layout.item_feed_footer, parent, false));
-            case TYPE_LARGE_IMAGE:
             default:
-                return new AdViewHolder(
+                return new FeedAdViewHolder(
                         inflater.inflate(R.layout.item_ad_large_image, parent, false), false);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof FooterViewHolder) {
-            ((FooterViewHolder) holder).bind(footerState);
+        if (holder instanceof FeedFooterViewHolder) {
+            ((FeedFooterViewHolder) holder).bind(footerState, footerRetryListener);
             return;
         }
         AdItem ad = items.get(position);
-        ((AdViewHolder) holder).bind(ad);
+        ((FeedAdViewHolder) holder).bind(ad, listener, selectedTags, interactionStore);
     }
 
     @Override
@@ -169,209 +155,15 @@ public final class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             onBindViewHolder(holder, position);
             return;
         }
-        if (holder instanceof AdViewHolder) {
+        if (holder instanceof FeedAdViewHolder) {
             AdItem ad = items.get(position);
             for (Object payload : payloads) {
                 if (PAYLOAD_TAGS.equals(payload)) {
-                    // 仅刷新标签 chip，跳过图片/文字/互动栏绑定。
-                    ((AdViewHolder) holder).bindTags(ad);
+                    ((FeedAdViewHolder) holder).bindTags(ad, listener, selectedTags);
                     return;
                 }
             }
         }
-        // 其他 payload 或不认识 → 走完整绑定。
         onBindViewHolder(holder, position);
-    }
-
-    /**
-     * 广告卡片 ViewHolder，三种样式共用。
-     *
-     * <p>三种卡片布局里 id 命名保持一致（titleText/summaryText/brandText/tagGroup/statsText
-     * 以及互动栏的 likeContainer 等），因此可以用同一个 ViewHolder 绑定，差异只在视频卡多出
-     * 播放按钮与播放状态。</p>
-     */
-    final class AdViewHolder extends RecyclerView.ViewHolder {
-        final ImageView mediaImage;
-        final TextView brandText;
-        final TextView titleText;
-        final TextView summaryText;
-        final LinearLayout tagGroup;
-        final TextView statsText;
-
-        // 互动栏（来自 include 的 view_interaction_bar）。
-        final View likeContainer;
-        final ImageView likeIcon;
-        final View collectContainer;
-        final ImageView collectIcon;
-        final View shareContainer;
-
-        // 仅视频卡有这些控件；其他卡为 null。
-        final View playButton;
-        final TextView videoStateText;
-        final View videoScrim;
-        final androidx.media3.ui.PlayerView videoPlayerView;
-
-        AdViewHolder(@NonNull View itemView, boolean isVideo) {
-            super(itemView);
-            mediaImage = itemView.findViewById(R.id.mediaImage);
-            brandText = itemView.findViewById(R.id.brandText);
-            titleText = itemView.findViewById(R.id.titleText);
-            summaryText = itemView.findViewById(R.id.summaryText);
-            tagGroup = itemView.findViewById(R.id.tagGroup);
-            statsText = itemView.findViewById(R.id.statsText);
-
-            likeContainer = itemView.findViewById(R.id.likeContainer);
-            likeIcon = itemView.findViewById(R.id.likeIcon);
-            collectContainer = itemView.findViewById(R.id.collectContainer);
-            collectIcon = itemView.findViewById(R.id.collectIcon);
-            shareContainer = itemView.findViewById(R.id.shareContainer);
-
-            playButton = isVideo ? itemView.findViewById(R.id.playButton) : null;
-            videoStateText = isVideo ? itemView.findViewById(R.id.videoStateText) : null;
-            videoScrim = isVideo ? itemView.findViewById(R.id.videoScrim) : null;
-            videoPlayerView = isVideo ? itemView.findViewById(R.id.videoPlayerView) : null;
-        }
-
-        void bind(AdItem ad) {
-            // 使用 AdMediaLoader 加载广告图片（https 优先，失败走 fallback）。
-            AdMediaLoader.loadFeedImage(mediaImage, ad);
-            brandText.setText(ad.getBrand());
-            titleText.setText(ad.getTitle());
-            summaryText.setText(ad.getSummary());
-            //标签点击时把事件转发给 FeedFragment
-            //标签点击时把事件转发给 FeedFragment，命中筛选的标签高亮
-            TagChipBinder.bind(tagGroup, ad.getTags(), tag -> {
-                int pos = getBindingAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    listener.onTagClick(ad, tag, pos);
-                }
-            }, selectedTags);
-
-            // 互动状态统一从 Store 读取，保证与详情页一致。
-            InteractionState state = interactionStore.stateOf(ad);
-            renderLike(state.isLiked());
-            renderCollect(state.isCollected());
-            statsText.setText(itemView.getContext().getString(
-                    R.string.feed_stats_format, state.getExposureCount(), state.getClickCount()));
-
-            // 视频卡默认暂停态文案。
-            if (videoStateText != null) {
-                videoStateText.setText(itemView.getContext().getString(R.string.detail_pause_hint));
-            }
-
-            // 整张卡片点击进详情。getBindingAdapterPosition 避免复用后位置错乱。
-            itemView.setOnClickListener(v -> {
-                int pos = getBindingAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    listener.onCardClick(ad, pos);
-                }
-            });
-
-            likeContainer.setOnClickListener(v -> {
-                int pos = getBindingAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    listener.onLikeClick(ad, pos);
-                }
-            });
-            collectContainer.setOnClickListener(v -> {
-                int pos = getBindingAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    listener.onCollectClick(ad, pos);
-                }
-            });
-            shareContainer.setOnClickListener(v -> {
-                int pos = getBindingAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    listener.onShareClick(ad, pos);
-                }
-            });
-            if (playButton != null) {
-                playButton.setOnClickListener(v -> {
-                    int pos = getBindingAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION) {
-                        listener.onVideoPlayClick(ad, pos);
-                    }
-                });
-            }
-        }
-
-        /** 仅刷新标签 chip（payload 精简绑定），跳过图片加载与文字设置。 */
-        void bindTags(AdItem ad) {
-            TagChipBinder.bind(tagGroup, ad.getTags(), tag -> {
-                int pos = getBindingAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    listener.onTagClick(ad, tag, pos);
-                }
-            }, selectedTags);
-        }
-
-        /** 根据点赞态切换心形图标颜色。 */
-        private void renderLike(boolean liked) {
-            int color = liked
-                    ? itemView.getContext().getColor(R.color.nbn_like_active)
-                    : itemView.getContext().getColor(R.color.nbn_text_secondary);
-            likeIcon.setColorFilter(color);
-        }
-
-        /** 根据收藏态切换图标颜色。 */
-        private void renderCollect(boolean collected) {
-            int color = collected
-                    ? itemView.getContext().getColor(R.color.nbn_collect_active)
-                    : itemView.getContext().getColor(R.color.nbn_text_secondary);
-            collectIcon.setColorFilter(color);
-        }
-    }
-
-    /** 底部 footer 的 ViewHolder：三态切换 + 错误态点击重试。 */
-    final class FooterViewHolder extends RecyclerView.ViewHolder {
-        private final View loadingView;
-        private final TextView textView;
-
-        FooterViewHolder(@NonNull View itemView) {
-            super(itemView);
-            loadingView = itemView.findViewById(R.id.footerLoading);
-            textView = itemView.findViewById(R.id.footerText);
-        }
-
-        void bind(FooterState state) {
-            switch (state) {
-                case LOADING:
-                    loadingView.setVisibility(View.VISIBLE);
-                    textView.setVisibility(View.GONE);
-                    itemView.setOnClickListener(null);
-                    break;
-                case NO_MORE:
-                    loadingView.setVisibility(View.GONE);
-                    textView.setVisibility(View.VISIBLE);
-                    textView.setText(R.string.feed_no_more);
-                    itemView.setOnClickListener(null);
-                    break;
-                case ERROR:
-                    loadingView.setVisibility(View.GONE);
-                    textView.setVisibility(View.VISIBLE);
-                    textView.setText(R.string.feed_error);
-                    // 错误态：点击 footer 触发重试。复用 onVideoPlayClick 之外的语义不合适，
-                    // 这里用专门的重试回调更清晰 —— 通过 listener 之外的字段暴露。
-                    itemView.setOnClickListener(v -> {
-                        if (footerRetryListener != null) {
-                            footerRetryListener.run();
-                        }
-                    });
-                    break;
-                case HIDDEN:
-                default:
-                    loadingView.setVisibility(View.GONE);
-                    textView.setVisibility(View.GONE);
-                    itemView.setOnClickListener(null);
-                    break;
-            }
-        }
-    }
-
-    /** footer 错误态的重试回调，由 Fragment 注入。 */
-    private Runnable footerRetryListener;
-
-    public void setFooterRetryListener(Runnable retry) {
-        this.footerRetryListener = retry;
     }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 媒体图片圆角裁剪：作为 ImageView 的 background 提供 outline，配合 clipToOutline 裁剪图片 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/transparent" />
+    <corners android:radius="20dp" />
+</shape>

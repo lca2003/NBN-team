@@ -243,7 +243,7 @@ final class FeedDataController {
     /** 从 SQLite 取曝光/点击次数并在后台线程执行，避免主线程 SQLite GROUP BY 查询阻塞。 */
     private void hydratePersistentCounts(List<AdItem> ads) {
         if (ads == null || ads.isEmpty() || analyticsTracker == null) return;
-        final List<AdItem> snapshot = new ArrayList<>(ads);
+    final List<AdItem> snapshot = new ArrayList<>(ads);
         final int count = snapshot.size();
         backgroundExecutor.execute(() -> {
             Map<String, AdAnalyticsEventCounts> countsByAdId = analyticsTracker.loadCountsByAdId();

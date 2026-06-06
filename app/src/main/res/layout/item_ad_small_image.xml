@@ -67,7 +67,8 @@
             android:layout_width="100dp"
             android:layout_height="80dp"
             android:layout_marginStart="12dp"
-            android:background="@drawable/bg_media_placeholder"
+            android:background="@drawable/bg_media_clip"
+            android:clipToOutline="true"
             android:contentDescription="@string/feed_sponsored"
             android:scaleType="centerCrop" />
     </LinearLayout>

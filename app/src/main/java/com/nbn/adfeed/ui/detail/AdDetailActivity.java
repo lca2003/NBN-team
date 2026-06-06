@@ -1,10 +1,17 @@
 package com.nbn.adfeed.ui.detail;
 
 import android.content.Context;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,9 +20,10 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.media3.ui.PlayerView;
-
-import com.airbnb.lottie.LottieAnimationView;
 
 import com.nbn.adfeed.R;
 import com.nbn.adfeed.ai.AdAiService;
@@ -81,6 +89,9 @@ public final class AdDetailActivity extends AppCompatActivity {
     private Media3VideoPlayerController videoController;
     private PlayerView playerView;
 
+    /** 上次点赞时间（ms），用于连赞窗口判定（1 秒内连点只播动画不取消）。 */
+    private long lastLikeTimeMs = 0L;
+
     // 互动栏视图。
     private ImageView likeIcon;
     private ImageView collectIcon;
@@ -114,6 +125,18 @@ public final class AdDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ad_detail);
+
+        // 适配 Android 15+ edge-to-edge：顶部返回栏避开状态栏
+        final View detailTopBar = findViewById(R.id.detailTopBar);
+        if (detailTopBar != null) {
+            final int basePaddingTop = detailTopBar.getPaddingTop();
+            ViewCompat.setOnApplyWindowInsetsListener(detailTopBar, (v, insets) -> {
+                int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+                v.setPadding(v.getPaddingLeft(), basePaddingTop + statusBarHeight,
+                        v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
+        }
 
         // 获取 Repository 和 AI 服务入口。
         repository = RepositoryProvider.getRepository(this);
@@ -338,22 +361,32 @@ public final class AdDetailActivity extends AppCompatActivity {
         renderCollect();
 
         findViewById(R.id.likeContainer).setOnClickListener(v -> {
-            boolean liked = interactionStore.toggleLike(ad);
-            // 后台线程上报后端，避免主线程网络调用。
+            long now = SystemClock.elapsedRealtime();
+            // 未点赞 → 点亮 + 爱心 + 记录时间
+            if (!state.isLiked()) {
+                state.setLiked(true);
+                reportInteraction(InteractionAction.TOGGLE_LIKE);
+                renderLike();
+                lastLikeTimeMs = now;
+                playLikeBurst();
+                return;
+            }
+            // 已点赞且 1 秒内连点 → 只弹爱心
+            if (now - lastLikeTimeMs < 1000L) {
+                renderLike();
+                playLikeBurst();
+                return;
+            }
+            // 超过 1 秒 → 取消点赞
+            state.setLiked(false);
             reportInteraction(InteractionAction.TOGGLE_LIKE);
             renderLike();
-            if (liked) {
-                playLikeBurst();
-            }
         });
         findViewById(R.id.collectContainer).setOnClickListener(v -> {
-            boolean collected = interactionStore.toggleCollect(ad);
+            interactionStore.toggleCollect(ad);
             // 后台线程上报后端。
             reportInteraction(InteractionAction.TOGGLE_COLLECT);
             renderCollect();
-            if (collected) {
-                playCollectBurst();
-            }
         });
         findViewById(R.id.shareContainer).setOnClickListener(v -> {
             // 后台线程上报后端。
@@ -429,40 +462,63 @@ public final class AdDetailActivity extends AppCompatActivity {
         collectIcon.setColorFilter(color);
     }
 
-    /** 在图标上方叠加 Lottie 动画 overlay，播放一次后自动移除。 */
-    private void playLottieOverlay(View icon, int rawResId) {
-        if (icon == null) return;
+    /**
+     * 抖音式连赞特效：爱心从点赞按钮位置弹出，向上飘动 + 随机旋转 + 放大 + 淡出。
+     * 每次点击独立创建爱心，互不干扰，支持快速连点多个爱心同时飘。
+     */
+    private void playLikeBurst() {
         View root = getWindow().getDecorView().findViewById(android.R.id.content);
         if (!(root instanceof ViewGroup)) return;
+        ViewGroup parent = (ViewGroup) root;
 
-        int[] loc = new int[2];
-        icon.getLocationOnScreen(loc);
-        float density = icon.getResources().getDisplayMetrics().density;
+        float density = root.getResources().getDisplayMetrics().density;
         int size = (int) (density * 80);
 
-        LottieAnimationView lottie = new LottieAnimationView(icon.getContext());
-        lottie.setAnimation(rawResId);
-        lottie.setRepeatCount(0);
-        lottie.setSpeed(1.5f);
-        lottie.setLayoutParams(new FrameLayout.LayoutParams(size, size));
-        lottie.setX(loc[0] + icon.getWidth() / 2f - size / 2f);
-        lottie.setY(loc[1] + icon.getHeight() / 2f - size / 2f);
+        // 爱心起始于 likeIcon 位置
+        int[] loc = new int[2];
+        likeIcon.getLocationOnScreen(loc);
+        int[] rootLoc = new int[2];
+        root.getLocationOnScreen(rootLoc);
+        float startX = loc[0] - rootLoc[0] + likeIcon.getWidth() / 2f - size / 2f;
+        float startY = loc[1] - rootLoc[1] - size / 2f;
 
-        ((ViewGroup) root).addView(lottie);
-        lottie.playAnimation();
-        lottie.addAnimatorListener(new android.animation.AnimatorListenerAdapter() {
+        ImageView heart = new ImageView(this);
+        heart.setImageResource(R.drawable.ic_like);
+        heart.setColorFilter(getColor(R.color.nbn_like_active));
+        heart.setAlpha(0f);
+        heart.setScaleX(0.4f);
+        heart.setScaleY(0.4f);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
+        params.leftMargin = (int) startX;
+        params.topMargin = (int) startY;
+        heart.setLayoutParams(params);
+        parent.addView(heart);
+
+        float riseDistance = -(density * (180 + (float) Math.random() * 120));
+        float driftX = density * ((float) (Math.random() - 0.5) * 80);
+        float rotation = (float) ((Math.random() - 0.5) * 60);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                ObjectAnimator.ofFloat(heart, "scaleX", 0.4f, 1.2f, 1.5f),
+                ObjectAnimator.ofFloat(heart, "scaleY", 0.4f, 1.2f, 1.5f),
+                ObjectAnimator.ofFloat(heart, "alpha", 0f, 1f, 1f, 0.4f, 0f),
+                ObjectAnimator.ofFloat(heart, "translationY", 0f, riseDistance * 0.6f, riseDistance),
+                ObjectAnimator.ofFloat(heart, "translationX", 0f, driftX * 0.3f, driftX),
+                ObjectAnimator.ofFloat(heart, "rotation", 0f, rotation * 0.4f, rotation)
+        );
+        set.setDuration(1000);
+        set.setInterpolator(new AccelerateInterpolator(0.8f));
+
+        set.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(android.animation.Animator animation) {
-                ((ViewGroup) root).removeView(lottie);
+            public void onAnimationEnd(Animator animation) {
+                parent.removeView(heart);
             }
         });
+        set.start();
     }
-
-    /** 点赞 Lottie 动画。 */
-    private void playLikeBurst() { playLottieOverlay(likeIcon, R.raw.lottie_like_burst); }
-
-    /** 收藏 Lottie 动画。 */
-    private void playCollectBurst() { playLottieOverlay(collectIcon, R.raw.lottie_collect_burst); }
 
     /** 关闭页面并播放"左进右出"返回动画，与进入时的滑入呼应。 */
     private void finishWithAnimation() {
