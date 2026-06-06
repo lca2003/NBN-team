@@ -38,6 +38,7 @@ final class FeedExposureDelegate {
     private InteractionStore interactionStore;
     private AdCatalog adCatalog;
     private AnalyticsTracker analyticsTracker;
+    private Runnable visibilityChangedListener;
 
     /**
      * 绑定所有外部依赖。在 Fragment.onViewCreated 之后调用。
@@ -58,6 +59,10 @@ final class FeedExposureDelegate {
     /** 获取曝光检查 Runnable，供 Fragment 在加载完成后 post 执行。 */
     Runnable getExposureCheckRunnable() {
         return exposureCheckRunnable;
+    }
+
+    void setOnVisibilityChangedListener(Runnable listener) {
+        visibilityChangedListener = listener;
     }
 
     /** 执行一次曝光可见性检测。滚动回调和加载完成时由外部触发。 */
@@ -98,6 +103,9 @@ final class FeedExposureDelegate {
             if (ad != null && position != null && visibleRatio != null) {
                 recordExposure(ad, position, visibleRatio);
             }
+        }
+        if (visibilityChangedListener != null) {
+            visibilityChangedListener.run();
         }
         scheduleNextExposureCheck(nowMillis);
     }
