@@ -16,6 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -125,6 +127,12 @@ final class FeedInteractionDelegate {
         playingAdId = null;
         playingPosition = RecyclerView.NO_POSITION;
     }
+
+    /** 滚动停止后自动播放最可见的视频卡片（dev 分支功能，占位等待完整实现）。 */
+    void autoPlayMostVisibleVideo(LinearLayoutManager layoutManager) { }
+
+    /** 视频卡片从屏幕分离时清理（dev 分支功能，占位等待完整实现）。 */
+    void onVideoCardDetached(AdItem ad) { }
 
     // ---- 交互处理 ----
 

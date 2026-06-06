@@ -384,11 +384,6 @@ public final class AdDetailActivity extends AppCompatActivity {
             // 超过 1 秒 → 取消点赞
             state.setLiked(false);
             reportInteraction(InteractionAction.TOGGLE_LIKE);
-            if (liked) {
-                analyticsTracker.trackLike(ad.getId());
-            } else {
-                analyticsTracker.trackUnlike(ad.getId());
-            }
             renderLike();
         });
         findViewById(R.id.collectContainer).setOnClickListener(v -> {
