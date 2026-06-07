@@ -1,6 +1,7 @@
 package com.nbn.adfeed.ui.stats;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -8,6 +9,9 @@ import android.os.Looper;
 
 import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.data.model.AdItem;
+import com.nbn.adfeed.data.model.DataResult;
+import com.nbn.adfeed.data.model.PageRequest;
+import com.nbn.adfeed.data.model.PageResult;
 import com.nbn.adfeed.data.repository.AdRepository;
 
 import org.junit.Test;
@@ -56,6 +60,29 @@ public final class StatsDataLoaderTest {
         assertTrue(repositoryRanOffMainThread.get());
         assertNotNull(loadedAds.get());
         assertTrue(callbackRanOnMainThread.get());
+        loader.close();
+    }
+
+    @Test
+    public void loadsStatsWithSingleLargePageRequest() throws Exception {
+        CountDownLatch repositoryCalled = new CountDownLatch(1);
+        AtomicReference<PageRequest> capturedRequest = new AtomicReference<>();
+        AdRepository repository = new AdRepository() {
+            @Override
+            public DataResult<PageResult<AdItem>> loadAds(PageRequest request) {
+                capturedRequest.set(request);
+                repositoryCalled.countDown();
+                return DataResult.empty(PageResult.empty(request, "test"), "test", "empty");
+            }
+        };
+        StatsDataLoader loader = new StatsDataLoader();
+
+        loader.load(repository, null, (ads, eventCounts) -> { });
+
+        assertTrue(repositoryCalled.await(5, TimeUnit.SECONDS));
+        assertNotNull(capturedRequest.get());
+        assertEquals(1000, capturedRequest.get().getPageSize());
+        assertEquals(PageRequest.FIRST_CURSOR, capturedRequest.get().getCursor());
         loader.close();
     }
 }

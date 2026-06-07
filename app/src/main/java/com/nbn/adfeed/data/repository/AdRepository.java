@@ -10,11 +10,11 @@ import com.nbn.adfeed.data.model.SearchRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public interface AdRepository {
+    int STATS_PAGE_SIZE = 1000;
+
     default DataResult<PageResult<AdItem>> loadAds(PageRequest request) {
         PageRequest safeRequest = request == null
                 ? PageRequest.firstPage("", PageRequest.DEFAULT_PAGE_SIZE)
@@ -42,32 +42,15 @@ public interface AdRepository {
     }
 
     default List<AdItem> getAllAdsForStats() {
-        List<AdItem> allAds = new ArrayList<>();
-        Set<String> visitedCursors = new HashSet<>();
         PageRequest request = new PageRequest(
                 "",
                 PageRequest.FIRST_CURSOR,
-                PageRequest.DEFAULT_PAGE_SIZE,
+                STATS_PAGE_SIZE,
                 true,
                 "stats"
         );
-
-        while (visitedCursors.add(request.getCursor())) {
-            PageResult<AdItem> page = pageData(loadAds(request));
-            if (page == null || page.getItems().isEmpty()) {
-                break;
-            }
-
-            allAds.addAll(page.getItems());
-            String nextCursor = page.getNextCursor();
-            if (!page.hasMore() || nextCursor == null || nextCursor.trim().isEmpty()) {
-                break;
-            }
-
-            request = new PageRequest("", nextCursor, page.getPageSize(), false, "stats");
-        }
-
-        return allAds;
+        PageResult<AdItem> page = pageData(loadAds(request));
+        return page == null ? Collections.emptyList() : new ArrayList<>(page.getItems());
     }
 
     default List<AdItem> getAdsByChannel(String channel) {

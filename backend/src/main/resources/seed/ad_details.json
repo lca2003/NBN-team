@@ -388,6 +388,1951 @@
           "ctaText": "查看通勤搭配"
         }
       ]
+    },
+    {
+      "adId": "ad_006",
+      "title": "本地健身体验课",
+      "longCopy": "附近小团课体验，覆盖力量训练、体态改善和新手入门指导。 详情页补充了本地场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "本地健身体验课更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖本地和运动高频场景",
+        "本地健身小团课，适合新手体验。",
+        "突出新手卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_fit_block",
+        "name": "Fit Block 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-10.png",
+        "rating": 4.7,
+        "address": "人民广场步行街 18 号",
+        "distance": "620m",
+        "businessStatus": "营业中 · 22:00 打烊"
+      },
+      "offer": {
+        "offerId": "offer_ad_006",
+        "priceText": "¥29",
+        "originalPriceText": "¥59",
+        "discountText": "首节小团课体验价",
+        "ctaText": "预约体验课 ¥29"
+      },
+      "stats": {
+        "exposureText": "1,762",
+        "clickText": "281",
+        "likeText": "3",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_007",
+          "userId": "user_runner_001",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "nickname": "晚课后夜跑",
+          "timeText": "12 分钟前",
+          "content": "本地健身小团课，适合新手体验，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_007",
+          "targetType": "ad",
+          "targetId": "ad_006",
+          "parentCommentId": "",
+          "userId": "user_commuter_003",
+          "nickname": "地铁早八人",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "8 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_007",
+          "title": "AI 学习助手会员",
+          "imageUrl": "stitch_ui/images/ad-desk-storage.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_007",
+      "title": "AI 学习助手会员",
+      "longCopy": "面向课程复习、资料整理和错题总结的学习助手服务。 详情页补充了AI场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "AI 学习助手会员面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖AI和学习高频场景",
+        "AI 学习助手，辅助复习整理。",
+        "突出效率卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        }
+      ],
+      "video": {
+        "localResourceUrl": "file:///android_res/raw/ad_video_study_ai.mp4",
+        "caption": "本地学习助手演示视频，可离线验证播放体验。"
+      },
+      "merchant": {
+        "merchantId": "merchant_study_mate",
+        "name": "Study Mate 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-11.png",
+        "rating": 4.8,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_007",
+        "priceText": "¥19/月",
+        "originalPriceText": "¥39/月",
+        "discountText": "学生认证 5 折",
+        "ctaText": "开通试用"
+      },
+      "stats": {
+        "exposureText": "1,899",
+        "clickText": "332",
+        "likeText": "4",
+        "collectText": "3"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_008",
+          "userId": "user_commuter_003",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "nickname": "地铁早八人",
+          "timeText": "今天",
+          "content": "AI 学习助手，辅助复习整理，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_008",
+          "targetType": "ad",
+          "targetId": "ad_007",
+          "parentCommentId": "",
+          "userId": "user_dorm_004",
+          "nickname": "期末复习人",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "15 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_008",
+          "title": "周边周末露营装备",
+          "imageUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_008",
+      "title": "周边周末露营装备",
+      "longCopy": "轻量帐篷、折叠椅和便携照明组合，适合周边短途露营。 详情页补充了露营场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "周边周末露营装备更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖露营和户外高频场景",
+        "周末露营装备，轻量便携。",
+        "突出周末卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_camp_go",
+        "name": "Camp Go 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-12.png",
+        "rating": 4.5,
+        "address": "城市青年中心 3 层",
+        "distance": "1.2km",
+        "businessStatus": "周末开放"
+      },
+      "offer": {
+        "offerId": "offer_ad_008",
+        "priceText": "¥199",
+        "originalPriceText": "¥299",
+        "discountText": "周末露营组合价",
+        "ctaText": "查看露营装备"
+      },
+      "stats": {
+        "exposureText": "2,036",
+        "clickText": "264",
+        "likeText": "1",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_009",
+          "userId": "user_dorm_004",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "nickname": "期末复习人",
+          "timeText": "昨天",
+          "content": "周末露营装备，轻量便携，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_009",
+          "targetType": "ad",
+          "targetId": "ad_008",
+          "parentCommentId": "",
+          "userId": "user_rider_005",
+          "nickname": "夜骑下班路",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "今天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_009",
+          "title": "通勤双肩包防泼水",
+          "imageUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_009",
+      "title": "通勤双肩包防泼水",
+      "longCopy": "分层收纳电脑、雨伞和水杯，适合上课、实习和日常通勤。 详情页补充了通勤场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "通勤双肩包防泼水面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖通勤和学生党高频场景",
+        "防泼水双肩包，适合上课通勤。",
+        "突出数码卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_metro_bag",
+        "name": "Metro Bag 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-15.png",
+        "rating": 4.6,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_009",
+        "priceText": "¥159",
+        "originalPriceText": "¥189",
+        "discountText": "限时立减 30 元",
+        "ctaText": "查看通勤包"
+      },
+      "stats": {
+        "exposureText": "2,173",
+        "clickText": "315",
+        "likeText": "2",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_010",
+          "userId": "user_rider_005",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "nickname": "夜骑下班路",
+          "timeText": "2 小时前",
+          "content": "防泼水双肩包，适合上课通勤，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_010",
+          "targetType": "ad",
+          "targetId": "ad_009",
+          "parentCommentId": "",
+          "userId": "user_student_002",
+          "nickname": "周末写论文",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "昨天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_010",
+          "title": "社区早餐新店开业",
+          "imageUrl": "stitch_ui/images/stitch-04.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_010",
+      "title": "社区早餐新店开业",
+      "longCopy": "提供热饮、三明治和简餐，适合早八、上班和周末早午餐。 详情页补充了本地场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "社区早餐新店开业更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖本地和早餐高频场景",
+        "社区早餐新店，适合早八通勤。",
+        "突出通勤卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_morning_hub",
+        "name": "Morning Hub 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-09.png",
+        "rating": 4.7,
+        "address": "大学路 88 号",
+        "distance": "350m",
+        "businessStatus": "营业中 · 21:30 打烊"
+      },
+      "offer": {
+        "offerId": "offer_ad_010",
+        "priceText": "¥18",
+        "originalPriceText": "¥28",
+        "discountText": "新店早餐券",
+        "ctaText": "领取早餐优惠"
+      },
+      "stats": {
+        "exposureText": "2,310",
+        "clickText": "369",
+        "likeText": "3",
+        "collectText": "3"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_011",
+          "userId": "user_student_002",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "nickname": "周末写论文",
+          "timeText": "刚刚",
+          "content": "社区早餐新店，适合早八通勤，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_011",
+          "targetType": "ad",
+          "targetId": "ad_010",
+          "parentCommentId": "",
+          "userId": "user_runner_001",
+          "nickname": "晚课后夜跑",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "刚刚"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_011",
+          "title": "运动水杯夏季轻量款",
+          "imageUrl": "stitch_ui/images/stitch-02.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_011",
+      "title": "运动水杯夏季轻量款",
+      "longCopy": "大容量但便携，适合跑步、骑行、健身和日常校园携带。 详情页补充了运动场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "运动水杯夏季轻量款面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖运动和校园高频场景",
+        "轻量运动水杯，适合校园健身。",
+        "突出轻量卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_hydro_way",
+        "name": "Hydro Way 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-10.png",
+        "rating": 4.8,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_011",
+        "priceText": "¥39",
+        "originalPriceText": "¥59",
+        "discountText": "夏季轻量款优惠",
+        "ctaText": "查看运动水杯"
+      },
+      "stats": {
+        "exposureText": "2,447",
+        "clickText": "428",
+        "likeText": "4",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_012",
+          "userId": "user_runner_001",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "nickname": "晚课后夜跑",
+          "timeText": "12 分钟前",
+          "content": "轻量运动水杯，适合校园健身，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_012",
+          "targetType": "ad",
+          "targetId": "ad_011",
+          "parentCommentId": "",
+          "userId": "user_commuter_003",
+          "nickname": "地铁早八人",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "8 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_012",
+          "title": "咖啡豆新鲜烘焙订阅",
+          "imageUrl": "stitch_ui/images/stitch-04.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_012",
+      "title": "咖啡豆新鲜烘焙订阅",
+      "longCopy": "每周小批量烘焙寄送，适合宿舍手冲、办公室分享和周末慢生活。 详情页补充了咖啡场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "咖啡豆新鲜烘焙订阅面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖咖啡和电商高频场景",
+        "新鲜烘焙咖啡豆，适合手冲。",
+        "突出生活方式卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_bean_lab",
+        "name": "Bean Lab 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-11.png",
+        "rating": 4.5,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_012",
+        "priceText": "¥49/周",
+        "originalPriceText": "¥69/周",
+        "discountText": "首单减 10 元",
+        "ctaText": "订阅新鲜烘焙"
+      },
+      "stats": {
+        "exposureText": "2,584",
+        "clickText": "335",
+        "likeText": "1",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_013",
+          "userId": "user_commuter_003",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "nickname": "地铁早八人",
+          "timeText": "今天",
+          "content": "新鲜烘焙咖啡豆，适合手冲，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_013",
+          "targetType": "ad",
+          "targetId": "ad_012",
+          "parentCommentId": "",
+          "userId": "user_dorm_004",
+          "nickname": "期末复习人",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "15 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_013",
+          "title": "图书馆周边自习空间",
+          "imageUrl": "stitch_ui/images/ad-desk-storage.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_013",
+      "title": "图书馆周边自习空间",
+      "longCopy": "安静座位、插座和储物柜，适合期末复习、小组讨论和考研自习。 详情页补充了本地场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "图书馆周边自习空间更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖本地和学习高频场景",
+        "本地自习空间，适合复习讨论。",
+        "突出学生党卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_quiet_room",
+        "name": "Quiet Room 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-12.png",
+        "rating": 4.6,
+        "address": "城市青年中心 3 层",
+        "distance": "1.2km",
+        "businessStatus": "周末开放"
+      },
+      "offer": {
+        "offerId": "offer_ad_013",
+        "priceText": "¥12/小时",
+        "originalPriceText": "¥20/小时",
+        "discountText": "学生自习时段价",
+        "ctaText": "预约自习座位"
+      },
+      "stats": {
+        "exposureText": "2,721",
+        "clickText": "394",
+        "likeText": "2",
+        "collectText": "3"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_014",
+          "userId": "user_dorm_004",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "nickname": "期末复习人",
+          "timeText": "昨天",
+          "content": "本地自习空间，适合复习讨论，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_014",
+          "targetType": "ad",
+          "targetId": "ad_013",
+          "parentCommentId": "",
+          "userId": "user_rider_005",
+          "nickname": "夜骑下班路",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "今天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_014",
+          "title": "学生党多场景装备包",
+          "imageUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_014",
+      "title": "学生党多场景装备包",
+      "longCopy": "集合通勤、运动、露营与数码收纳用品，适合需要一套装备覆盖多种日常任务的学生党。 详情页补充了学生党场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "学生党多场景装备包面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖学生党和通勤高频场景",
+        "通勤、健身和露营都能复用的轻量装备组合。",
+        "突出运动卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_urban_kit",
+        "name": "Urban Kit 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-15.png",
+        "rating": 4.7,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_014",
+        "priceText": "¥259",
+        "originalPriceText": "¥369",
+        "discountText": "多场景装备套装价",
+        "ctaText": "查看组合推荐"
+      },
+      "stats": {
+        "exposureText": "2,858",
+        "clickText": "457",
+        "likeText": "3",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_015",
+          "userId": "user_rider_005",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "nickname": "夜骑下班路",
+          "timeText": "2 小时前",
+          "content": "通勤、健身和露营都能复用的轻量装备组合，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_015",
+          "targetType": "ad",
+          "targetId": "ad_014",
+          "parentCommentId": "",
+          "userId": "user_student_002",
+          "nickname": "周末写论文",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "昨天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_015",
+          "title": "便携蓝牙音箱户外版",
+          "imageUrl": "stitch_ui/images/ad-headphones.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_015",
+      "title": "便携蓝牙音箱户外版",
+      "longCopy": "小体积、防泼水、低延迟，适合露营、骑行休息和宿舍影音。 详情页补充了数码场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "便携蓝牙音箱户外版面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖数码和露营高频场景",
+        "便携蓝牙音箱，适合户外宿舍。",
+        "突出视频卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        }
+      ],
+      "video": {
+        "localResourceUrl": "file:///android_res/raw/ad_video_headphones.mp4",
+        "caption": "复用本地数码类视频素材，展示便携音箱的户外使用场景。"
+      },
+      "merchant": {
+        "merchantId": "merchant_sound_lab",
+        "name": "Sound Lab 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-09.png",
+        "rating": 4.8,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_015",
+        "priceText": "¥129",
+        "originalPriceText": "¥199",
+        "discountText": "户外音箱套装价",
+        "ctaText": "查看蓝牙音箱"
+      },
+      "stats": {
+        "exposureText": "2,995",
+        "clickText": "524",
+        "likeText": "4",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_016",
+          "userId": "user_student_002",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "nickname": "周末写论文",
+          "timeText": "刚刚",
+          "content": "便携蓝牙音箱，适合户外宿舍，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_016",
+          "targetType": "ad",
+          "targetId": "ad_015",
+          "parentCommentId": "",
+          "userId": "user_runner_001",
+          "nickname": "晚课后夜跑",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "刚刚"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_016",
+          "title": "商圈午餐优惠合集",
+          "imageUrl": "stitch_ui/images/stitch-04.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_016",
+      "title": "商圈午餐优惠合集",
+      "longCopy": "围绕学校和办公区整理的午餐选择，支持快取和多人拼单。 详情页补充了本地场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "商圈午餐优惠合集更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖本地和午餐高频场景",
+        "本地午餐合集，适合快取拼单。",
+        "突出通勤卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_lunch_map",
+        "name": "Lunch Map 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-10.png",
+        "rating": 4.5,
+        "address": "人民广场步行街 18 号",
+        "distance": "620m",
+        "businessStatus": "营业中 · 22:00 打烊"
+      },
+      "offer": {
+        "offerId": "offer_ad_016",
+        "priceText": "¥24",
+        "originalPriceText": "¥36",
+        "discountText": "商圈午餐券",
+        "ctaText": "领取午餐优惠"
+      },
+      "stats": {
+        "exposureText": "3,132",
+        "clickText": "407",
+        "likeText": "1",
+        "collectText": "3"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_017",
+          "userId": "user_runner_001",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "nickname": "晚课后夜跑",
+          "timeText": "12 分钟前",
+          "content": "本地午餐合集，适合快取拼单，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_017",
+          "targetType": "ad",
+          "targetId": "ad_016",
+          "parentCommentId": "",
+          "userId": "user_commuter_003",
+          "nickname": "地铁早八人",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "8 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_017",
+          "title": "学生党平价护眼台灯",
+          "imageUrl": "stitch_ui/images/ad-desk-storage.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_017",
+      "title": "学生党平价护眼台灯",
+      "longCopy": "采用三档色温和无频闪灯珠，适合宿舍晚间阅读、课程笔记和桌面学习。 详情页补充了学生党场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "学生党平价护眼台灯面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖学生党和宿舍高频场景",
+        "护眼台灯，适合宿舍学习。",
+        "突出学习卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_bright_desk",
+        "name": "Bright Desk 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-11.png",
+        "rating": 4.6,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_017",
+        "priceText": "¥59",
+        "originalPriceText": "¥89",
+        "discountText": "学生宿舍护眼价",
+        "ctaText": "查看护眼台灯"
+      },
+      "stats": {
+        "exposureText": "3,269",
+        "clickText": "474",
+        "likeText": "2",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_018",
+          "userId": "user_commuter_003",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "nickname": "地铁早八人",
+          "timeText": "今天",
+          "content": "护眼台灯，适合宿舍学习，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_018",
+          "targetType": "ad",
+          "targetId": "ad_017",
+          "parentCommentId": "",
+          "userId": "user_dorm_004",
+          "nickname": "期末复习人",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "15 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_018",
+          "title": "城市夜跑路线推荐",
+          "imageUrl": "stitch_ui/images/stitch-02.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_018",
+      "title": "城市夜跑路线推荐",
+      "longCopy": "精选安全照明、补给便利和风景较好的城市夜跑路线。 详情页补充了运动场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "城市夜跑路线推荐更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖运动和夜跑高频场景",
+        "城市夜跑路线，适合下班运动。",
+        "突出本地卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        }
+      ],
+      "video": {
+        "localResourceUrl": "file:///android_res/raw/ad_video_local_sports.mp4",
+        "caption": "复用本地运动类视频素材，适合夜跑路线和城市运动场景。"
+      },
+      "merchant": {
+        "merchantId": "merchant_run_city",
+        "name": "Run City 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-12.png",
+        "rating": 4.7,
+        "address": "城市青年中心 3 层",
+        "distance": "1.2km",
+        "businessStatus": "周末开放"
+      },
+      "offer": {
+        "offerId": "offer_ad_018",
+        "priceText": "免费领取",
+        "originalPriceText": "¥19",
+        "discountText": "夜跑路线包限免",
+        "ctaText": "查看夜跑路线"
+      },
+      "stats": {
+        "exposureText": "3,406",
+        "clickText": "544",
+        "likeText": "3",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_019",
+          "userId": "user_dorm_004",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "nickname": "期末复习人",
+          "timeText": "昨天",
+          "content": "城市夜跑路线，适合下班运动，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_019",
+          "targetType": "ad",
+          "targetId": "ad_018",
+          "parentCommentId": "",
+          "userId": "user_rider_005",
+          "nickname": "夜骑下班路",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "今天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_019",
+          "title": "社区宠物友好咖啡馆",
+          "imageUrl": "stitch_ui/images/stitch-04.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_019",
+      "title": "社区宠物友好咖啡馆",
+      "longCopy": "可携宠、轻食、露台座位，适合周末放松和朋友聚会。 详情页补充了本地场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "社区宠物友好咖啡馆更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖本地和咖啡高频场景",
+        "宠物友好咖啡馆，适合周末聚会。",
+        "突出宠物卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_paw_cafe",
+        "name": "Paw Cafe 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-15.png",
+        "rating": 4.8,
+        "address": "周末市集南门",
+        "distance": "1.8km",
+        "businessStatus": "今日有名额"
+      },
+      "offer": {
+        "offerId": "offer_ad_019",
+        "priceText": "¥46",
+        "originalPriceText": "¥68",
+        "discountText": "周末双人饮品券",
+        "ctaText": "查看宠物友好店"
+      },
+      "stats": {
+        "exposureText": "3,543",
+        "clickText": "620",
+        "likeText": "4",
+        "collectText": "3"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_020",
+          "userId": "user_rider_005",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "nickname": "夜骑下班路",
+          "timeText": "2 小时前",
+          "content": "宠物友好咖啡馆，适合周末聚会，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_020",
+          "targetType": "ad",
+          "targetId": "ad_019",
+          "parentCommentId": "",
+          "userId": "user_student_002",
+          "nickname": "周末写论文",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "昨天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_020",
+          "title": "轻薄平板键盘套",
+          "imageUrl": "stitch_ui/images/ad-headphones.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_020",
+      "title": "轻薄平板键盘套",
+      "longCopy": "兼顾课程笔记、移动办公和短途出差，支持多角度支架。 详情页补充了数码场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "轻薄平板键盘套面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖数码和学习高频场景",
+        "平板键盘套，适合移动学习办公。",
+        "突出通勤卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_key_dock",
+        "name": "Key Dock 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-09.png",
+        "rating": 4.5,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_020",
+        "priceText": "¥199",
+        "originalPriceText": "¥259",
+        "discountText": "键盘套组合价",
+        "ctaText": "查看平板键盘"
+      },
+      "stats": {
+        "exposureText": "3,680",
+        "clickText": "478",
+        "likeText": "1",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_021",
+          "userId": "user_student_002",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "nickname": "周末写论文",
+          "timeText": "刚刚",
+          "content": "平板键盘套，适合移动学习办公，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_021",
+          "targetType": "ad",
+          "targetId": "ad_020",
+          "parentCommentId": "",
+          "userId": "user_runner_001",
+          "nickname": "晚课后夜跑",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "刚刚"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_021",
+          "title": "城市徒步补给包",
+          "imageUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_021",
+      "title": "城市徒步补给包",
+      "longCopy": "包含便携雨衣、能量小食和小型急救包，适合城市徒步和短途探索。 详情页补充了徒步场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "城市徒步补给包更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖徒步和户外高频场景",
+        "城市徒步补给包，轻便实用。",
+        "突出通勤卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_walk_kit",
+        "name": "Walk Kit 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-10.png",
+        "rating": 4.6,
+        "address": "人民广场步行街 18 号",
+        "distance": "620m",
+        "businessStatus": "营业中 · 22:00 打烊"
+      },
+      "offer": {
+        "offerId": "offer_ad_021",
+        "priceText": "¥69",
+        "originalPriceText": "¥99",
+        "discountText": "城市徒步补给包",
+        "ctaText": "查看补给清单"
+      },
+      "stats": {
+        "exposureText": "3,817",
+        "clickText": "553",
+        "likeText": "2",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_022",
+          "userId": "user_runner_001",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "nickname": "晚课后夜跑",
+          "timeText": "12 分钟前",
+          "content": "城市徒步补给包，轻便实用，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_022",
+          "targetType": "ad",
+          "targetId": "ad_021",
+          "parentCommentId": "",
+          "userId": "user_commuter_003",
+          "nickname": "地铁早八人",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "8 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_022",
+          "title": "附近篮球馆夜场",
+          "imageUrl": "stitch_ui/images/stitch-02.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_022",
+      "title": "附近篮球馆夜场",
+      "longCopy": "工作日夜场和周末拼场信息，适合同学组队和下班运动。 详情页补充了本地场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "附近篮球馆夜场更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖本地和运动高频场景",
+        "附近篮球夜场，适合组队运动。",
+        "突出篮球卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        }
+      ],
+      "video": {
+        "localResourceUrl": "file:///android_res/raw/ad_video_local_sports.mp4",
+        "caption": "复用本地运动类视频素材，突出附近篮球馆夜场氛围。"
+      },
+      "merchant": {
+        "merchantId": "merchant_hoop_zone",
+        "name": "Hoop Zone 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-11.png",
+        "rating": 4.7,
+        "address": "滨河运动公园旁",
+        "distance": "800m",
+        "businessStatus": "可预约"
+      },
+      "offer": {
+        "offerId": "offer_ad_022",
+        "priceText": "¥35/场",
+        "originalPriceText": "¥58/场",
+        "discountText": "夜场拼场价",
+        "ctaText": "预约篮球夜场"
+      },
+      "stats": {
+        "exposureText": "3,954",
+        "clickText": "632",
+        "likeText": "3",
+        "collectText": "3"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_023",
+          "userId": "user_commuter_003",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "nickname": "地铁早八人",
+          "timeText": "今天",
+          "content": "附近篮球夜场，适合组队运动，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_023",
+          "targetType": "ad",
+          "targetId": "ad_022",
+          "parentCommentId": "",
+          "userId": "user_dorm_004",
+          "nickname": "期末复习人",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "15 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_023",
+          "title": "咖啡通勤保温杯",
+          "imageUrl": "stitch_ui/images/stitch-04.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_023",
+      "title": "咖啡通勤保温杯",
+      "longCopy": "适合早八咖啡、办公室热饮和短途出行，杯身易清洗。 详情页补充了咖啡场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "咖啡通勤保温杯面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖咖啡和通勤高频场景",
+        "通勤保温杯，适合咖啡热饮。",
+        "突出电商卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_bean_bottle",
+        "name": "Bean Bottle 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-12.png",
+        "rating": 4.8,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_023",
+        "priceText": "¥69",
+        "originalPriceText": "¥99",
+        "discountText": "赠清洁刷",
+        "ctaText": "查看通勤保温杯"
+      },
+      "stats": {
+        "exposureText": "4,091",
+        "clickText": "715",
+        "likeText": "4",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_024",
+          "userId": "user_dorm_004",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "nickname": "期末复习人",
+          "timeText": "昨天",
+          "content": "通勤保温杯，适合咖啡热饮，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_024",
+          "targetType": "ad",
+          "targetId": "ad_023",
+          "parentCommentId": "",
+          "userId": "user_rider_005",
+          "nickname": "夜骑下班路",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "今天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_024",
+          "title": "校园社团招新物料",
+          "imageUrl": "stitch_ui/images/ad-desk-storage.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_024",
+      "title": "校园社团招新物料",
+      "longCopy": "海报、贴纸、桌牌和社媒图模板，适合社团招新和活动宣传。 详情页补充了校园场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "校园社团招新物料适合作为首页探索内容，卖点集中在场景覆盖、轻量决策和收藏后的二次查看价值。",
+      "sellingPoints": [
+        "覆盖校园和学生党高频场景",
+        "社团招新物料，适合活动宣传。",
+        "突出设计卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_poster_kit",
+        "name": "Poster Kit 精选推荐",
+        "avatarUrl": "stitch_ui/images/stitch-15.png",
+        "rating": 4.5,
+        "address": "线上精选专题",
+        "distance": "可在线查看",
+        "businessStatus": "持续更新"
+      },
+      "offer": {
+        "offerId": "offer_ad_024",
+        "priceText": "¥79",
+        "originalPriceText": "¥119",
+        "discountText": "社团招新物料包",
+        "ctaText": "领取设计模板"
+      },
+      "stats": {
+        "exposureText": "4,228",
+        "clickText": "549",
+        "likeText": "1",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_025",
+          "userId": "user_rider_005",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "nickname": "夜骑下班路",
+          "timeText": "2 小时前",
+          "content": "社团招新物料，适合活动宣传，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_025",
+          "targetType": "ad",
+          "targetId": "ad_024",
+          "parentCommentId": "",
+          "userId": "user_student_002",
+          "nickname": "周末写论文",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "content": "新手第一次使用这套方案合适吗？",
+          "timeText": "昨天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_025",
+          "title": "本地周末市集指南",
+          "imageUrl": "stitch_ui/images/stitch-04.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_025",
+      "title": "本地周末市集指南",
+      "longCopy": "手作、咖啡、轻食和户外摊位集合，适合周末拍照和朋友同行。 详情页补充了本地场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "本地周末市集指南更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖本地和咖啡高频场景",
+        "周末市集指南，覆盖咖啡轻食。",
+        "突出周末卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_market_walk",
+        "name": "Market Walk 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-09.png",
+        "rating": 4.6,
+        "address": "大学路 88 号",
+        "distance": "350m",
+        "businessStatus": "营业中 · 21:30 打烊"
+      },
+      "offer": {
+        "offerId": "offer_ad_025",
+        "priceText": "免费入场",
+        "originalPriceText": "¥20",
+        "discountText": "周末市集地图",
+        "ctaText": "查看市集指南"
+      },
+      "stats": {
+        "exposureText": "4,365",
+        "clickText": "632",
+        "likeText": "2",
+        "collectText": "3"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_026",
+          "userId": "user_student_002",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "nickname": "周末写论文",
+          "timeText": "刚刚",
+          "content": "周末市集指南，覆盖咖啡轻食，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_026",
+          "targetType": "ad",
+          "targetId": "ad_025",
+          "parentCommentId": "",
+          "userId": "user_runner_001",
+          "nickname": "晚课后夜跑",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "刚刚"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_026",
+          "title": "运动恢复筋膜球",
+          "imageUrl": "stitch_ui/images/stitch-02.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_026",
+      "title": "运动恢复筋膜球",
+      "longCopy": "训练后放松工具，适合跑步、健身和久坐通勤后的肌肉放松。 详情页补充了运动场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "运动恢复筋膜球面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖运动和健身高频场景",
+        "运动恢复工具，适合训练后放松。",
+        "突出通勤卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_fit_block",
+        "name": "Fit Block 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-10.png",
+        "rating": 4.7,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_026",
+        "priceText": "¥39",
+        "originalPriceText": "¥59",
+        "discountText": "运动恢复入门装",
+        "ctaText": "查看筋膜球"
+      },
+      "stats": {
+        "exposureText": "4,502",
+        "clickText": "720",
+        "likeText": "3",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_027",
+          "userId": "user_runner_001",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "nickname": "晚课后夜跑",
+          "timeText": "12 分钟前",
+          "content": "运动恢复工具，适合训练后放松，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_027",
+          "targetType": "ad",
+          "targetId": "ad_026",
+          "parentCommentId": "",
+          "userId": "user_commuter_003",
+          "nickname": "地铁早八人",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "8 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_027",
+          "title": "城市光影摄影课",
+          "imageUrl": "stitch_ui/images/ad-desk-storage.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_027",
+      "title": "城市光影摄影课",
+      "longCopy": "线下小班课程，覆盖手机摄影、夜景构图和短视频拍摄。 详情页补充了本地场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "城市光影摄影课更适合关注距离、预约成本和即时体验的用户，推荐理由集中在本地可达性和周末决策效率。",
+      "sellingPoints": [
+        "覆盖本地和摄影高频场景",
+        "本地摄影课，覆盖夜景和短视频。",
+        "突出视频卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        }
+      ],
+      "video": {
+        "localResourceUrl": "file:///android_res/raw/ad_video_study_ai.mp4",
+        "caption": "复用本地学习类视频素材，用于线下摄影课程的短视频教学场景。"
+      },
+      "merchant": {
+        "merchantId": "merchant_lens_local",
+        "name": "Lens Local 本地店",
+        "avatarUrl": "stitch_ui/images/stitch-11.png",
+        "rating": 4.8,
+        "address": "滨河运动公园旁",
+        "distance": "800m",
+        "businessStatus": "可预约"
+      },
+      "offer": {
+        "offerId": "offer_ad_027",
+        "priceText": "¥99",
+        "originalPriceText": "¥159",
+        "discountText": "线下小班试听价",
+        "ctaText": "预约摄影课"
+      },
+      "stats": {
+        "exposureText": "4,639",
+        "clickText": "811",
+        "likeText": "4",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_028",
+          "userId": "user_commuter_003",
+          "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+          "nickname": "地铁早八人",
+          "timeText": "今天",
+          "content": "本地摄影课，覆盖夜景和短视频，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_028",
+          "targetType": "ad",
+          "targetId": "ad_027",
+          "parentCommentId": "",
+          "userId": "user_dorm_004",
+          "nickname": "期末复习人",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "content": "这周末需要提前预约或到店核销吗？",
+          "timeText": "15 分钟前"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_028",
+          "title": "学生党数码配件包",
+          "imageUrl": "stitch_ui/images/ad-headphones.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_028",
+      "title": "学生党数码配件包",
+      "longCopy": "收纳充电线、转接头、U 盘和耳机，适合宿舍、图书馆和通勤。 详情页补充了学生党场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "学生党数码配件包面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖学生党和数码高频场景",
+        "数码配件包，适合学生通勤。",
+        "突出通勤卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_cable_box",
+        "name": "Cable Box 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-12.png",
+        "rating": 4.5,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_028",
+        "priceText": "¥89",
+        "originalPriceText": "¥129",
+        "discountText": "线材全收纳套装",
+        "ctaText": "查看配件包"
+      },
+      "stats": {
+        "exposureText": "4,776",
+        "clickText": "620",
+        "likeText": "1",
+        "collectText": "3"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_029",
+          "userId": "user_dorm_004",
+          "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+          "nickname": "期末复习人",
+          "timeText": "昨天",
+          "content": "数码配件包，适合学生通勤，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_029",
+          "targetType": "ad",
+          "targetId": "ad_028",
+          "parentCommentId": "",
+          "userId": "user_rider_005",
+          "nickname": "夜骑下班路",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "今天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_029",
+          "title": "精选通勤雨伞轻量版",
+          "imageUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_029",
+      "title": "精选通勤雨伞轻量版",
+      "longCopy": "小包可放、开合顺手，适合梅雨季通勤和校园日常。 详情页补充了通勤场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "精选通勤雨伞轻量版面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖通勤和校园高频场景",
+        "轻量雨伞，适合通勤校园。",
+        "突出轻量卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_rain_go",
+        "name": "Rain Go 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-15.png",
+        "rating": 4.6,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_029",
+        "priceText": "¥49",
+        "originalPriceText": "¥79",
+        "discountText": "梅雨季通勤价",
+        "ctaText": "查看轻量雨伞"
+      },
+      "stats": {
+        "exposureText": "4,913",
+        "clickText": "712",
+        "likeText": "2",
+        "collectText": "1"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_030",
+          "userId": "user_rider_005",
+          "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+          "nickname": "夜骑下班路",
+          "timeText": "2 小时前",
+          "content": "轻量雨伞，适合通勤校园，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_030",
+          "targetType": "ad",
+          "targetId": "ad_029",
+          "parentCommentId": "",
+          "userId": "user_student_002",
+          "nickname": "周末写论文",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "昨天"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_030",
+          "title": "新品展示拍摄套装",
+          "imageUrl": "stitch_ui/images/ad-desk-storage.svg",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
+    },
+    {
+      "adId": "ad_030",
+      "title": "新品展示拍摄套装",
+      "longCopy": "包含背景板、补光灯和小道具，帮助学生社团、二手转卖和小店主快速拍出干净的商品展示图。 详情页补充了展示场景下的使用方式、适合人群和优惠信息，方便用户在首页点击后继续判断是否收藏或转化。",
+      "aiDeepInsight": "新品展示拍摄套装面向对价格、功能和场景匹配敏感的用户，转化点集中在优惠力度、复用频率和低决策成本。",
+      "sellingPoints": [
+        "覆盖展示和拍摄高频场景",
+        "小型商品展示套装，适合社团和宿舍拍摄。",
+        "突出数码卖点，适合首页快速决策"
+      ],
+      "mediaAssets": [
+        {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        }
+      ],
+      "merchant": {
+        "merchantId": "merchant_display_lab",
+        "name": "Display Lab 官方旗舰",
+        "avatarUrl": "stitch_ui/images/stitch-09.png",
+        "rating": 4.7,
+        "address": "线上旗舰店",
+        "distance": "配送至全国",
+        "businessStatus": "营业中"
+      },
+      "offer": {
+        "offerId": "offer_ad_030",
+        "priceText": "¥119",
+        "originalPriceText": "¥169",
+        "discountText": "新品展示拍摄套装价",
+        "ctaText": "查看拍摄套装"
+      },
+      "stats": {
+        "exposureText": "5,050",
+        "clickText": "808",
+        "likeText": "3",
+        "collectText": "2"
+      },
+      "reviews": [
+        {
+          "reviewId": "review_031",
+          "userId": "user_student_002",
+          "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+          "nickname": "周末写论文",
+          "timeText": "刚刚",
+          "content": "小型商品展示套装，适合社团和宿舍拍摄，详情里的适用场景写得很清楚，适合先收藏再对比。",
+          "likeCount": 1
+        }
+      ],
+      "comments": [
+        {
+          "commentId": "comment_031",
+          "targetType": "ad",
+          "targetId": "ad_030",
+          "parentCommentId": "",
+          "userId": "user_runner_001",
+          "nickname": "晚课后夜跑",
+          "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+          "content": "这个优惠活动到什么时候结束？",
+          "timeText": "刚刚"
+        }
+      ],
+      "relatedItems": [
+        {
+          "itemId": "ad_006",
+          "title": "本地健身体验课",
+          "imageUrl": "stitch_ui/images/stitch-02.png",
+          "reason": "同为相近场景推荐",
+          "ctaText": "查看相关内容"
+        }
+      ]
     }
   ]
 }

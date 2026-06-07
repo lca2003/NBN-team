@@ -23,15 +23,15 @@ public final class JsonSeedStoreTest {
         JsonSeedStore store = JsonSeedStore.loadDefault(BackendServer.class.getClassLoader());
 
         assertEquals(3, store.feedChannelCount());
-        assertEquals(5, store.feedItemCount());
-        assertEquals(5, store.detailCount());
+        assertEquals(30, store.feedItemCount());
+        assertEquals(30, store.detailCount());
         assertEquals(6, store.searchSuggestionCount());
         assertEquals(4, store.searchResultCount());
         assertEquals(5, store.notificationCount());
         assertEquals(4, store.conversationCount());
         assertEquals(5, store.profilePostCount());
-        assertEquals(5, store.reviewGroupCount());
-        assertEquals(6, store.commentCount());
+        assertEquals(30, store.reviewGroupCount());
+        assertEquals(31, store.commentCount());
         assertEquals(6, store.assetCount());
     }
 
@@ -41,12 +41,12 @@ public final class JsonSeedStoreTest {
 
         String summary = store.domainSummaryJson();
 
-        assertTrue(summary.contains("\"feedItems\":5"));
-        assertTrue(summary.contains("\"adDetails\":5"));
+        assertTrue(summary.contains("\"feedItems\":30"));
+        assertTrue(summary.contains("\"adDetails\":30"));
         assertTrue(summary.contains("\"searchResults\":4"));
         assertTrue(summary.contains("\"profilePosts\":5"));
-        assertTrue(summary.contains("\"reviewGroups\":5"));
-        assertTrue(summary.contains("\"comments\":6"));
+        assertTrue(summary.contains("\"reviewGroups\":30"));
+        assertTrue(summary.contains("\"comments\":31"));
         assertTrue(summary.contains("\"assets\":6"));
     }
 }

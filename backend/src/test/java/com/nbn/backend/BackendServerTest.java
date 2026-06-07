@@ -54,7 +54,7 @@ public final class BackendServerTest {
         assertTrue(result.body.contains("\"expectedCount\":7"));
         assertTrue(result.body.contains("\"loadedCount\":7"));
         assertTrue(result.body.contains("\"domains\":{"));
-        assertTrue(result.body.contains("\"feedItems\":5"));
+        assertTrue(result.body.contains("\"feedItems\":30"));
     }
 
     @Test
@@ -107,8 +107,8 @@ public final class BackendServerTest {
         assertEquals(7, server.seedStatus().expectedCount());
         assertEquals(7, server.seedStatus().loadedCount());
         assertEquals("loaded", server.seedStatus().status());
-        assertEquals(5, server.seedStore().feedItemCount());
-        assertEquals(5, server.seedStore().detailCount());
+        assertEquals(30, server.seedStore().feedItemCount());
+        assertEquals(30, server.seedStore().detailCount());
         assertEquals(6, server.seedStore().searchSuggestionCount());
     }
 
@@ -126,7 +126,7 @@ public final class BackendServerTest {
         assertEquals(200, feed.statusCode);
         JSONObject data = new JSONObject(feed.body).getJSONObject("data");
         assertEquals("featured", data.getString("channel"));
-        assertEquals(5, data.getInt("totalCount"));
+        assertEquals(30, data.getInt("totalCount"));
         assertEquals(2, data.getJSONArray("items").length());
         assertTrue(data.getBoolean("hasMore"));
     }
@@ -334,7 +334,7 @@ public final class BackendServerTest {
         assertTrue(homeData.has("appConfig"));
         assertEquals(200, detail.statusCode);
         JSONObject detailData = data(detail);
-        assertEquals(5, detailData.getJSONObject("details").getJSONArray("details").length());
+        assertEquals(30, detailData.getJSONObject("details").getJSONArray("details").length());
         assertTrue(detailData.has("reviews"));
         assertTrue(detailData.has("appConfig"));
 
@@ -897,7 +897,7 @@ public final class BackendServerTest {
         assertTrue(manifest.getJSONArray("assetManifest").length() >= 3);
 
         JSONObject homeContent = data(request("GET", "/v1/design-content/home", "req-design-home"));
-        assertEquals(5, homeContent.getJSONObject("homeFeed").getJSONObject("page").getJSONArray("items").length());
+        assertEquals(30, homeContent.getJSONObject("homeFeed").getJSONObject("page").getJSONArray("items").length());
 
         JSONObject events = data(request(
                 "POST",
