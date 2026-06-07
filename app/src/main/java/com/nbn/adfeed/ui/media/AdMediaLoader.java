@@ -16,6 +16,12 @@ public final class AdMediaLoader {
             load(imageView, null, null, AdMediaResources.fallbackDrawable((AdItem) null));
             return;
         }
+        // 优先用 manifest 里的真实 https URL（后端可能在 AdItem 里塞了本地路径）
+        AdMediaManifest.Entry manifest = AdMediaManifest.of(item.getId());
+        if (manifest != null && manifest.hasHttpsImage()) {
+            load(imageView, manifest.thumbnailUrl, manifest.imageUrl, AdMediaResources.fallbackDrawable(item));
+            return;
+        }
         load(imageView, item.getThumbnailUrl(), item.getImageUrl(), AdMediaResources.fallbackDrawable(item));
     }
 
@@ -24,7 +30,24 @@ public final class AdMediaLoader {
             load(imageView, null, null, AdMediaResources.fallbackDrawable((AdItem) null));
             return;
         }
+        AdMediaManifest.Entry manifest = AdMediaManifest.of(item.getId());
+        if (manifest != null && manifest.hasHttpsImage()) {
+            load(imageView, manifest.imageUrl, manifest.thumbnailUrl, AdMediaResources.fallbackDrawable(item));
+            return;
+        }
         load(imageView, item.getImageUrl(), item.getThumbnailUrl(), AdMediaResources.fallbackDrawable(item));
+    }
+
+    /**
+     * 从 manifest 获取广告的真实 https 视频 URL。
+     * @return null 表示无匹配或无视频
+     */
+    public static String getManifestVideoUrl(String adId) {
+        AdMediaManifest.Entry manifest = AdMediaManifest.of(adId);
+        if (manifest != null && manifest.hasHttpsVideo()) {
+            return manifest.videoUrl;
+        }
+        return null;
     }
 
     public static void loadSearchThumbnail(ImageView imageView, String thumbnailUrl, String imageUrl, int fallbackResId) {

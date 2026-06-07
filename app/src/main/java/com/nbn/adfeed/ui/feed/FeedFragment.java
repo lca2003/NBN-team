@@ -21,6 +21,7 @@ import com.nbn.adfeed.R;
 import com.nbn.adfeed.analytics.AnalyticsTracker;
 import com.nbn.adfeed.data.model.AdItem;
 import com.nbn.adfeed.data.repository.AdRepository;
+import com.nbn.adfeed.ui.media.AdMediaManifest;
 import com.nbn.adfeed.video.VideoPlaybackManager;
 import com.nbn.adfeed.video.player.Media3VideoPlayerController;
 
@@ -126,6 +127,9 @@ public final class FeedFragment extends Fragment implements FeedInteractionListe
         wireFilterClearButton();
 
         dataController.onAttach();
+
+        // 预加载媒体清单（供 AdMediaLoader 解析真实 https URL）
+        AdMediaManifest.ensureLoaded(requireContext());
 
         // 首次进入加载"精选"频道。
         dataController.refreshChannel(FeedDataController.CHANNELS.get(0), true);
