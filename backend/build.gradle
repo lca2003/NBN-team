@@ -36,3 +36,21 @@ tasks.named('test') {
 springBoot {
     mainClass = 'com.nbn.backend.BackendServer'
 }
+
+tasks.register('runBackend8080', JavaExec) {
+    group = 'application'
+    description = 'Runs legacy /v1 backend on http://127.0.0.1:8080'
+    dependsOn(tasks.named('classes'))
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass.set('com.nbn.backend.BackendServer')
+    args '8080'
+}
+
+tasks.register('runAiBackend8081', JavaExec) {
+    group = 'application'
+    description = 'Runs Spring AI search backend on http://127.0.0.1:8081'
+    dependsOn(tasks.named('classes'))
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass.set('com.nbn.adfeed.backend.AdFeedBackendApplication')
+    args '--server.port=8081'
+}

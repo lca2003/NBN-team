@@ -28,6 +28,12 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 21)
 export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 ./gradlew assembleDebug
+
+```
+后端启动：
+```bash
+.\gradlew.bat :backend:runAiBackend8081
+.\gradlew.bat :backend:runBackend8080
 ```
 
 ## 项目结构
