@@ -39,22 +39,34 @@ export ANDROID_SDK_ROOT=$ANDROID_HOME
 ## 项目结构
 
 ```text
-app/
-  src/main/java/com/nbn/adfeed/
-    ai/                  AI 摘要、标签、搜索接口与降级实现
-    analytics/           曝光、点击、互动统计
-    data/model/          广告数据模型与互动状态
-    data/mock/           本地 Mock 数据
-    data/repository/     数据访问接口
-    video/               视频播放资源管理
-    MainActivity.java    当前最小启动入口
-docs/
-  api-contract.md        广告、AI、统计接口契约
-  demo-script.md         演示视频脚本
-  team-plan.md           三人分工与排期
-  technical-design.md    技术方案设计
-reports/
-  课题文档提取材料
+app/                       Android 客户端主模块
+  ai/                      AI 摘要、标签、搜索与降级
+  analytics/               曝光、点击、互动统计
+  data/                    广告模型、Mock 数据、Repository、远程数据源
+  ui/feed/                 首页信息流与广告卡片交互
+  ui/detail/               广告详情页
+  ui/search/               AI 对话式搜索页面
+  ui/stats/                统计数据展示页面
+  ui/media/                图片、视频封面加载
+  video/                   视频播放管理
+  res/                     布局、图标、颜色、字符串等资源
+  assets/                  本地广告数据与媒体映射
+
+backend/                   后端服务模块
+  ad/                      广告数据服务
+  ai/                      AI 搜索服务
+  domain/                  业务逻辑
+  store/                   JSON 种子数据读取
+  resources/               配置、Prompt、种子数据
+
+docs/                      项目文档
+  technical-design.md      技术方案设计
+  api-contract.md          接口契约
+  team-plan.md             团队分工与排期
+  demo-script.md           演示脚本
+
+reports/                   项目报告与过程材料
+README.md                  项目说明
 ```
 
 ## 当前已完成
