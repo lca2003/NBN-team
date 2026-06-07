@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 信息流卡片背景：与主页面同色 + 极淡描边 + 圆角，配合 elevation 产生立体感。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/nbn_card" />
+    <corners android:radius="40dp" />
+    <stroke
+        android:width="0.5dp"
+        android:color="#E0D8D0" />
+</shape>

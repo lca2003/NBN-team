@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 信息流主页面：
+     顶部 APP 名称 → 胶囊按钮频道选择 → 列表 → 分割线 → 底部导航栏。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/nbn_surface"
+    android:orientation="vertical">
+
+    <!-- 顶部 APP 名称，居中 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/nbn_surface"
+        android:gravity="center"
+        android:paddingTop="14dp"
+        android:paddingBottom="6dp"
+        android:text="InformationStream"
+        android:textColor="@color/nbn_text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- 频道胶囊按钮组（替代 TabLayout） -->
+    <LinearLayout
+        android:id="@+id/channelTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/nbn_surface"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="10dp">
+
+        <TextView
+            android:id="@+id/tabFeatured"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_pill_selector"
+            android:gravity="center"
+            android:text="@string/feed_tab_featured"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tabEcommerce"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/bg_pill_selector"
+            android:gravity="center"
+            android:text="@string/feed_tab_ecommerce"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tabLocal"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_pill_selector"
+            android:gravity="center"
+            android:text="@string/feed_tab_local"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- 已选筛选标签栏：仅在有筛选标签时显示，横向可滚动，每个标签后带 × 可取消 -->
+    <LinearLayout
+        android:id="@+id/filterBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/nbn_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone">
+
+        <!-- 左侧"筛选"提示文字 -->
+        <TextView
+            android:id="@+id/filterBarLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/feed_filter_label"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="13sp" />
+
+        <!-- 已选标签横向滚动区 -->
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/filterBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <!-- 右侧"清除全部"按钮 -->
+        <TextView
+            android:id="@+id/filterClearAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="4dp"
+            android:text="@string/feed_filter_clear_all"
+            android:textColor="@color/nbn_tab_indicator"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- 列表 + 状态覆盖层 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/feedRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:scrollbarSize="4dp"
+                android:scrollbarThumbVertical="@drawable/bg_scrollbar_thumb"
+                android:scrollbarTrackVertical="@android:color/transparent"
+                android:scrollbarAlwaysDrawVerticalTrack="false" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <!-- 首屏加载中 -->
+        <ProgressBar
+            android:id="@+id/loadingView"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/nbn_text_primary"
+            android:visibility="gone" />
+
+        <!-- 空态 / 错误态 -->
+        <LinearLayout
+            android:id="@+id/statusContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/statusView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/nbn_text_secondary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/statusRetryHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_pill_normal"
+                android:gravity="center"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="10dp"
+                android:text="点击重试"
+                android:textColor="@color/nbn_text_primary"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

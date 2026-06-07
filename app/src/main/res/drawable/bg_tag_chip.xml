@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 标签 chip 背景（参考图风格）：浅灰底、无描边、小圆角。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#F5F5F5" />
+    <corners android:radius="4dp" />
+</shape>

@@ -1,0 +1,153 @@
+{
+  "suggestions": [
+    {
+      "suggestionId": "sg_001",
+      "text": "春季野餐",
+      "icon": "park",
+      "sortIndex": 0
+    },
+    {
+      "suggestionId": "sg_002",
+      "text": "新款智能手表",
+      "icon": "watch",
+      "sortIndex": 1
+    },
+    {
+      "suggestionId": "sg_003",
+      "text": "法式甜品",
+      "icon": "bakery_dining",
+      "sortIndex": 2
+    },
+    {
+      "suggestionId": "sg_004",
+      "text": "高性价比跑鞋",
+      "icon": "directions_run",
+      "sortIndex": 3
+    },
+    {
+      "suggestionId": "sg_005",
+      "text": "宿舍桌面收纳",
+      "icon": "inventory_2",
+      "sortIndex": 4
+    },
+    {
+      "suggestionId": "sg_006",
+      "text": "城市骑行通勤",
+      "icon": "directions_bike",
+      "sortIndex": 5
+    }
+  ],
+  "session": {
+    "sessionId": "search_session_demo_001",
+    "userQuery": "适合学生党通勤的高性价比装备",
+    "createdAtMillis": 1780200000000,
+    "context": "from_home_ai_search"
+  },
+  "messages": [
+    {
+      "messageId": "msg_user_001",
+      "sessionId": "search_session_demo_001",
+      "senderType": "user",
+      "content": "适合学生党通勤的高性价比装备",
+      "messageType": "text",
+      "createdAtMillis": 1780200000000
+    },
+    {
+      "messageId": "msg_ai_001",
+      "sessionId": "search_session_demo_001",
+      "senderType": "ai",
+      "content": "已按学生党、通勤、价格敏感和近期互动率筛出 3 个结果。",
+      "messageType": "assistant_summary",
+      "createdAtMillis": 1780200001200
+    }
+  ],
+  "results": [
+    {
+      "adId": "ad_001",
+      "title": "轻量跑鞋新品首发",
+      "reason": "命中学生党、通勤、性价比，点击率高于频道均值。",
+      "priceText": "¥168",
+      "localAssetName": "stitch_ui/images/stitch-02.png",
+      "imageUrl": "stitch_ui/images/stitch-02.png",
+      "ctaText": "查看跑鞋",
+      "recommendationReason": {
+        "summary": "预算友好，运动和日常通勤都能覆盖。",
+        "matchedTags": [
+          "学生党",
+          "通勤",
+          "性价比"
+        ],
+        "valueExplanation": "首发价低于同类跑鞋，收藏转化率高。",
+        "score": 0.94
+      }
+    },
+    {
+      "adId": "ad_003",
+      "title": "通勤降噪耳机体验片",
+      "reason": "命中通勤、科技感、白领，也适合宿舍自习。",
+      "priceText": "¥299",
+      "localAssetName": "stitch_ui/images/ad-headphones.svg",
+      "imageUrl": "stitch_ui/images/ad-headphones.svg",
+      "ctaText": "看视频体验",
+      "recommendationReason": {
+        "summary": "降噪需求明确，适合地铁和图书馆。",
+        "matchedTags": [
+          "通勤",
+          "科技感",
+          "白领"
+        ],
+        "valueExplanation": "视频完播率高，详情收藏率稳定。",
+        "score": 0.88
+      }
+    },
+    {
+      "adId": "ad_004",
+      "title": "宿舍桌面收纳套装",
+      "reason": "命中宿舍、低预算、学习效率，收藏率高。",
+      "priceText": "¥49",
+      "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+      "imageUrl": "stitch_ui/images/ad-desk-storage.svg",
+      "ctaText": "看收纳方案",
+      "recommendationReason": {
+        "summary": "适合桌面空间不足和期末复习场景。",
+        "matchedTags": [
+          "宿舍",
+          "收纳",
+          "低预算"
+        ],
+        "valueExplanation": "单套价格低，收藏率高于曝光均值。",
+        "score": 0.84
+      }
+    },
+    {
+      "adId": "ad_005",
+      "title": "城市骑行轻风夹克",
+      "reason": "命中骑行、通勤、防泼水，适合城市短途。",
+      "priceText": "¥129",
+      "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+      "imageUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+      "ctaText": "看骑行夹克",
+      "recommendationReason": {
+        "summary": "解决小雨通勤和夜骑可见性问题。",
+        "matchedTags": [
+          "骑行",
+          "通勤",
+          "防泼水"
+        ],
+        "valueExplanation": "价格低于专业冲锋衣，更贴近日常骑行。",
+        "score": 0.82
+      }
+    }
+  ],
+  "fallback": {
+    "aiAvailable": false,
+    "message": "AI 暂时不可用，已切换到本地热门标签与默认结果。",
+    "defaultAdIds": [
+      "ad_001",
+      "ad_002",
+      "ad_003",
+      "ad_004",
+      "ad_005"
+    ]
+  }
+}

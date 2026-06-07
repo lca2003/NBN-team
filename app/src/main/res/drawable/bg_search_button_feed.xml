@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 搜索入口按钮背景：品牌浅底色胶囊，带微描边，比默认 Button 更精致。 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 按压态：加深底色 -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/nbn_brand_light" />
+            <corners android:radius="20dp" />
+            <stroke android:width="1dp" android:color="@color/nbn_brand" />
+        </shape>
+    </item>
+    <!-- 默认态 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/nbn_search_btn_bg" />
+            <corners android:radius="20dp" />
+            <stroke android:width="1dp" android:color="@color/nbn_brand_light" />
+        </shape>
+    </item>
+</selector>

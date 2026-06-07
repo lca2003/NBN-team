@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: nbn-adfeed-backend
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY:not-configured}
+      chat:
+        options:
+          model: qwen3-8b
+          enable-thinking: false

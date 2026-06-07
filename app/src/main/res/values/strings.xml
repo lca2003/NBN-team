@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NBN Ad Feed</string>
+    <string name="home_title">NBN 单列广告信息流</string>
+    <string name="home_subtitle">Android Java 21 初始工程已就绪，后续按 Feed、数据与 AI、统计搜索三个方向协作开发。</string>
+    <string name="home_framework_ready">当前版本包含：应用入口、Mock 数据模型、AI 摘要/标签接口占位、曝光点击统计占位、视频播放管理占位、团队文档骨架。</string>
+    <!-- 对话式搜索相关静态文字资源 -->
+    <string name="open_conversational_search">对话式搜索</string>
+    <string name="search_title">对话式搜索</string>
+    <string name="search_close">关闭</string>
+    <string name="search_input_hint">输入你想找的广告</string>
+    <string name="search_send">发送</string>
+    <string name="search_welcome_message">你好，可以输入“找适合学生党的运动广告”试试。</string>
+    <string name="search_mock_reply">已收到：%1$s。下一步会接入广告匹配结果。</string>
+    <string name="search_results_reply">为你找到 %1$d 条匹配广告，已同步到后方信息流。</string>
+    <string name="search_no_results_reply">暂时没有找到匹配广告，可以换个关键词试试。</string>
+    <string name="home_search_result_prefix">搜索结果广告 ID：</string>
+
+    <!-- ===== 信息流 Feed（人员A）相关文案 ===== -->
+    <string name="feed_tab_featured">精选</string>
+    <string name="feed_tab_ecommerce">电商</string>
+    <string name="feed_tab_local">本地</string>
+    <string name="feed_loading">正在加载…</string>
+    <string name="feed_load_more">上拉加载更多</string>
+    <string name="feed_loading_more">加载中…</string>
+    <string name="feed_no_more">没有更多了</string>
+    <string name="feed_empty">该频道暂时没有广告，下拉试试</string>
+    <string name="feed_error">加载失败，点击重试</string>
+    <string name="feed_sponsored">广告</string>
+    <string name="feed_video_badge">视频</string>
+    <string name="feed_play">播放</string>
+    <string name="feed_action_like">点赞</string>
+    <string name="feed_action_collect">收藏</string>
+    <string name="feed_action_share">分享</string>
+    <string name="feed_shared_toast">已分享：%1$s</string>
+    <string name="feed_stats_format">曝光 %1$d · 点击 %2$d</string>
+    <string name="feed_filter_label">筛选</string>
+    <string name="feed_filter_clear_all">清除全部</string>
+    <string name="feed_filter_empty">没有同时包含这些标签的广告</string>
+
+    <!-- ===== 广告详情页（人员A）相关文案 ===== -->
+    <string name="detail_title">广告详情</string>
+    <string name="detail_back">返回</string>
+    <string name="detail_tags_title">智能标签</string>
+    <string name="detail_play_hint">点击播放视频</string>
+    <string name="detail_pause_hint">已暂停</string>
+    <string name="detail_playing_hint">播放中…</string>
+    <string name="detail_video_unavailable">视频暂时无法播放</string>
+    <string name="detail_buffering_hint">加载中…</string>
+    <string name="detail_video_error_hint">视频播放失败</string>
+
+    <!-- ===== 统计页（人员C）相关文案 ===== -->
+    <string name="nav_home">首页</string>
+    <string name="nav_search">搜索</string>
+    <string name="nav_stats">统计</string>
+    <string name="stats_title">数据统计</string>
+    <string name="stats_total_exposure">总曝光</string>
+    <string name="stats_total_click">总点击</string>
+    <string name="stats_click_rate">点击率</string>
+    <string name="stats_total_like">点赞</string>
+    <string name="stats_total_collect">收藏</string>
+    <string name="stats_total_share">分享</string>
+    <string name="stats_interaction_rate">互动率</string>
+    <string name="stats_top_ads">热门广告 Top 5</string>
+    <string name="stats_content_type">内容类型占比</string>
+    <string name="stats_tag_heat">标签热度</string>
+    <string name="stats_total_ads_format">共 %1$d 条</string>
+    <string name="stats_type_large_image">大图</string>
+    <string name="stats_type_small_image">小图</string>
+    <string name="stats_type_video">视频</string>
+    <string name="stats_type_line_format">%1$s %2$d 条</string>
+    <string name="stats_percent_format">%1$d%%</string>
+    <string name="stats_top_ad_line_format">曝光 %1$d · 点击 %2$d · 赞 %3$d · 藏 %4$d · 分享 %5$d</string>
+    <string name="stats_empty_top_ads">暂无曝光数据，浏览广告后再查看</string>
+
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 空态/错误态的背景装饰：浅色圆形底 + 居中感叹号/空盒子视觉暗示。
+     让空态不再只是一行文字，而是有视觉重心的完整状态页。 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 大圆底色 -->
+    <item
+        android:gravity="center"
+        android:width="120dp"
+        android:height="120dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/nbn_empty_bg" />
+        </shape>
+    </item>
+    <!-- 内圆：品牌浅色 -->
+    <item
+        android:gravity="center"
+        android:width="64dp"
+        android:height="64dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/nbn_brand_light" />
+        </shape>
+    </item>
+    <!-- 最内层小圆：品牌色点缀 -->
+    <item
+        android:gravity="center"
+        android:width="24dp"
+        android:height="24dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/nbn_brand" />
+        </shape>
+    </item>
+</layer-list>

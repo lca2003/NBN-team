@@ -1,0 +1,110 @@
+{
+  "remoteConfig": {
+    "aiEnabled": true,
+    "requestTimeoutMillis": 3000,
+    "featureSwitches": [
+      {
+        "key": "stitch_data_driven_home",
+        "enabled": true,
+        "description": "首页信息流读取 stitch_data/home_feed.json"
+      },
+      {
+        "key": "ai_search_demo_remote",
+        "enabled": true,
+        "description": "AI 搜索优先展示 demo remote 结果，失败后使用 fallback"
+      },
+      {
+        "key": "profile_edit_enabled",
+        "enabled": false,
+        "description": "资料编辑 UI 第二阶段接入"
+      }
+    ],
+    "channels": [
+      {
+        "channelId": "featured",
+        "title": "精选",
+        "visible": true,
+        "sortIndex": 0
+      },
+      {
+        "channelId": "ecommerce",
+        "title": "电商",
+        "visible": true,
+        "sortIndex": 1
+      },
+      {
+        "channelId": "local",
+        "title": "本地",
+        "visible": true,
+        "sortIndex": 2
+      }
+    ]
+  },
+  "assetManifest": [
+  {
+    "assetId": "asset_home_001",
+    "localAssetName": "stitch_ui/images/stitch-02.png",
+    "remoteUrl": "stitch_ui/images/stitch-02.png",
+    "assetType": "image",
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "assetId": "asset_home_002",
+    "localAssetName": "stitch_ui/images/stitch-04.png",
+    "remoteUrl": "stitch_ui/images/stitch-04.png",
+    "assetType": "image",
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "assetId": "asset_home_004",
+    "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+    "remoteUrl": "stitch_ui/images/ad-desk-storage.svg",
+    "assetType": "image",
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "assetId": "asset_home_005",
+    "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+    "remoteUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+    "assetType": "image",
+    "width": 1200,
+    "height": 800
+  },
+    {
+      "assetId": "asset_search_003",
+      "localAssetName": "stitch_ui/images/ad-headphones.svg",
+      "remoteUrl": "stitch_ui/images/ad-headphones.svg",
+      "assetType": "image",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "assetId": "asset_video_003",
+      "localAssetName": "raw/ad_video_headphones.mp4",
+      "remoteUrl": "raw/ad_video_headphones.mp4",
+      "assetType": "video",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "analyticsSummary": {
+    "eventTypes": [
+      "APP_OPEN",
+      "AD_EXPOSURE",
+      "AD_CLICK",
+      "AD_LIKE",
+      "AD_COLLECT",
+      "AD_SHARE",
+      "SEARCH",
+      "DETAIL_OPEN"
+    ],
+    "exposureRule": {
+      "minVisiblePercent": 50,
+      "minDwellMillis": 1000,
+      "dedupeByAdAndPosition": true
+    }
+  }
+}

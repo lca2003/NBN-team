@@ -1,0 +1,197 @@
+{
+  "userProfile": {
+    "userId": "user_current_001",
+    "nickname": "新用户",
+    "avatarUrl": "stitch_ui/images/stitch-14.png",
+    "level": "Lv.1 新用户",
+    "bio": "",
+    "stats": {
+      "likedAndCollectedCount": 0,
+      "followingCount": 0,
+      "followerCount": 0,
+      "postCount": 0
+    },
+    "achievements": []
+  },
+  "users": [
+    {
+      "userId": "1",
+      "nickname": "NBN 系统管理员",
+      "avatarUrl": "stitch_ui/images/stitch-09.png",
+      "level": "系统账号",
+      "bio": "系统管理员账号，负责发布和维护广告内容。",
+      "verified": true,
+      "stats": {
+        "likedAndCollectedCount": 0,
+        "followingCount": 0,
+        "followerCount": 0,
+        "postCount": 0
+      },
+      "achievements": []
+    },
+    {
+      "userId": "user_runner_001",
+      "nickname": "晚课后夜跑",
+      "avatarUrl": "stitch_ui/images/stitch-12.png",
+      "level": "Lv.3 体验用户",
+      "bio": "记录校园夜跑和通勤装备体验。",
+      "stats": {
+        "likedAndCollectedCount": 0,
+        "followingCount": 0,
+        "followerCount": 0,
+        "postCount": 1
+      },
+      "achievements": []
+    },
+    {
+      "userId": "user_student_002",
+      "nickname": "周末写论文",
+      "avatarUrl": "stitch_ui/images/stitch-13.png",
+      "level": "Lv.2 本地生活用户",
+      "bio": "喜欢整理咖啡馆、自习空间和轻办公地点。",
+      "stats": {
+        "likedAndCollectedCount": 0,
+        "followingCount": 0,
+        "followerCount": 0,
+        "postCount": 1
+      },
+      "achievements": []
+    },
+    {
+      "userId": "user_commuter_003",
+      "nickname": "地铁早八人",
+      "avatarUrl": "stitch_ui/images/stitch-11.png",
+      "level": "Lv.2 数码体验用户",
+      "bio": "通勤路上测试耳机、平板和效率装备。",
+      "stats": {
+        "likedAndCollectedCount": 0,
+        "followingCount": 0,
+        "followerCount": 0,
+        "postCount": 1
+      },
+      "achievements": []
+    },
+    {
+      "userId": "user_dorm_004",
+      "nickname": "期末复习人",
+      "avatarUrl": "stitch_ui/images/stitch-10.png",
+      "level": "Lv.2 宿舍改造用户",
+      "bio": "小空间收纳和期末复习桌面改造实践者。",
+      "stats": {
+        "likedAndCollectedCount": 0,
+        "followingCount": 0,
+        "followerCount": 0,
+        "postCount": 1
+      },
+      "achievements": []
+    },
+    {
+      "userId": "user_rider_005",
+      "nickname": "夜骑下班路",
+      "avatarUrl": "stitch_ui/images/stitch-16.png",
+      "level": "Lv.2 城市骑行用户",
+      "bio": "关注骑行通勤、轻户外和防泼水装备。",
+      "stats": {
+        "likedAndCollectedCount": 0,
+        "followingCount": 0,
+        "followerCount": 0,
+        "postCount": 1
+      },
+      "achievements": []
+    }
+  ],
+  "posts": [
+    {
+      "postId": "post_note_001",
+      "userId": "user_runner_001",
+      "author": {
+        "userId": "user_runner_001",
+        "nickname": "晚课后夜跑",
+        "avatarUrl": "stitch_ui/images/stitch-12.png",
+        "verified": false,
+        "bio": "记录校园夜跑和通勤装备体验。"
+      },
+      "tab": "notes",
+      "title": "夜跑鞋真实通勤一周体验",
+      "coverUrl": "stitch_ui/images/stitch-02.png",
+      "sourceAdId": "ad_001",
+      "content": "晚课后跑操场三圈，鞋底回弹够明显，反光条在校道上也更安心。",
+      "likeCount": 2,
+      "timeText": "2 天前"
+    },
+    {
+      "postId": "post_note_002",
+      "userId": "user_student_002",
+      "author": {
+        "userId": "user_student_002",
+        "nickname": "周末写论文",
+        "avatarUrl": "stitch_ui/images/stitch-13.png",
+        "verified": false,
+        "bio": "喜欢整理咖啡馆、自习空间和轻办公地点。"
+      },
+      "tab": "notes",
+      "title": "周末咖啡地图收藏清单",
+      "coverUrl": "stitch_ui/images/stitch-04.png",
+      "sourceAdId": "ad_002",
+      "content": "二楼靠窗位插座多，下午三点以后人少，适合写论文和轻办公。",
+      "likeCount": 1,
+      "timeText": "昨天"
+    },
+    {
+      "postId": "post_note_003",
+      "userId": "user_commuter_003",
+      "author": {
+        "userId": "user_commuter_003",
+        "nickname": "地铁早八人",
+        "avatarUrl": "stitch_ui/images/stitch-11.png",
+        "verified": false,
+        "bio": "通勤路上测试耳机、平板和效率装备。"
+      },
+      "tab": "notes",
+      "title": "通勤降噪耳机体验片",
+      "coverUrl": "stitch_ui/images/ad-headphones.svg",
+      "sourceAdId": "ad_003",
+      "content": "地铁和图书馆两种场景都试了，视频比参数表更容易判断是否适合自己。",
+      "likeCount": 1,
+      "timeText": "今天"
+    },
+    {
+      "postId": "post_note_004",
+      "userId": "user_dorm_004",
+      "author": {
+        "userId": "user_dorm_004",
+        "nickname": "期末复习人",
+        "avatarUrl": "stitch_ui/images/stitch-10.png",
+        "verified": false,
+        "bio": "小空间收纳和期末复习桌面改造实践者。"
+      },
+      "tab": "notes",
+      "title": "90cm 宿舍桌面收纳改造",
+      "coverUrl": "stitch_ui/images/ad-desk-storage.svg",
+      "sourceAdId": "ad_004",
+      "content": "用分区盒把文具、护肤和充电线分开后，复习时不用再先收拾半小时。",
+      "likeCount": 1,
+      "timeText": "3 小时前"
+    },
+    {
+      "postId": "post_note_005",
+      "userId": "user_rider_005",
+      "author": {
+        "userId": "user_rider_005",
+        "nickname": "夜骑下班路",
+        "avatarUrl": "stitch_ui/images/stitch-16.png",
+        "verified": false,
+        "bio": "关注骑行通勤、轻户外和防泼水装备。"
+      },
+      "tab": "notes",
+      "title": "城市骑行通勤装备清单",
+      "coverUrl": "stitch_ui/images/ad-cycling-jacket.svg",
+      "sourceAdId": "ad_005",
+      "content": "轻风夹克、防泼水背包和反光贴组合，比专业骑行套装更适合日常通勤。",
+      "likeCount": 1,
+      "timeText": "1 小时前"
+    }
+  ],
+  "followers": [],
+  "following": []
+}

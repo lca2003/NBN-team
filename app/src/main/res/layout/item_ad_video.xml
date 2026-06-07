@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 视频卡（参考图风格）：封面铺满顶部，播放按钮居中，下方文字区。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/bg_feed_card"
+    android:clickable="true"
+    android:elevation="2dp"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical">
+
+    <!-- 视频封面区：铺满卡片宽度，圆角裁剪 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:clipChildren="true"
+        android:clipToOutline="true">
+
+        <!-- 播放器放在封面下方，准备阶段可预热 Surface，首帧就绪后再隐藏封面。 -->
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/videoPlayerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:resize_mode="zoom"
+            app:surface_type="texture_view"
+            app:use_controller="false"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/mediaImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_media_clip"
+            android:clipToOutline="true"
+            android:contentDescription="@string/feed_video_badge"
+            android:scaleType="centerCrop" />
+
+        <!-- 半透明遮罩 -->
+        <View
+            android:id="@+id/videoScrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_video_scrim" />
+
+        <!-- 播放按钮 -->
+        <ImageView
+            android:id="@+id/playButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/feed_play"
+            android:src="@drawable/ic_play" />
+
+        <!-- 右上角"视频"角标 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_video_badge"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:text="@string/feed_video_badge"
+            android:textColor="@android:color/white"
+            android:textSize="11sp" />
+
+        <!-- 左上角"广告"角标 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_sponsored_badge"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:text="@string/feed_sponsored"
+            android:textColor="@android:color/white"
+            android:textSize="11sp" />
+
+        <!-- 播放状态文案 -->
+        <TextView
+            android:id="@+id/videoStateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            tools:text="已暂停" />
+    </FrameLayout>
+
+    <!-- 文字区域 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="14dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/nbn_text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="智能耳机降噪体验" />
+
+        <TextView
+            android:id="@+id/summaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="13sp"
+            tools:text="主打通勤降噪和长续航的视频广告。" />
+
+        <TextView
+            android:id="@+id/brandText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="12sp"
+            tools:text="Sound Lab" />
+
+        <!-- 标签容器 -->
+        <LinearLayout
+            android:id="@+id/tagGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" />
+
+        <!-- 统计 -->
+        <TextView
+            android:id="@+id/statsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/nbn_text_secondary"
+            android:textSize="11sp"
+            tools:text="曝光 1 · 点击 0" />
+
+        <!-- 互动栏 -->
+        <include layout="@layout/view_interaction_bar" />
+    </LinearLayout>
+</LinearLayout>

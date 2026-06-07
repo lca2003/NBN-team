@@ -1,0 +1,2269 @@
+{
+  "channels": [
+    {
+      "id": "featured",
+      "title": "精选",
+      "subtitle": "AI 挑选高互动广告",
+      "enabled": true,
+      "sortIndex": 0
+    },
+    {
+      "id": "ecommerce",
+      "title": "电商",
+      "subtitle": "可购买商品与视频种草",
+      "enabled": true,
+      "sortIndex": 1
+    },
+    {
+      "id": "local",
+      "title": "本地",
+      "subtitle": "周边餐饮、运动与生活服务",
+      "enabled": true,
+      "sortIndex": 2
+    }
+  ],
+  "page": {
+    "cursor": "page_1",
+    "nextCursor": "",
+    "hasMore": false,
+    "totalCount": 30,
+    "items": [
+      {
+        "adId": "ad_001",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "featured": true,
+        "title": "轻量跑鞋新品首发",
+        "subtitle": "校园通勤和夜跑都能兼顾",
+        "description": "主打轻量缓震和夜跑反光设计，适合校园通勤、夜跑和日常训练。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "NBN Sports",
+        "category": "运动",
+        "publishTime": "2026-05-31T09:30:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_sport",
+            "name": "运动",
+            "category": "interest"
+          },
+          {
+            "id": "tag_student",
+            "name": "学生党",
+            "category": "audience"
+          },
+          {
+            "id": "tag_value",
+            "name": "性价比",
+            "category": "value"
+          },
+          {
+            "id": "tag_running_shoes",
+            "name": "跑鞋",
+            "category": "interest"
+          }
+        ],
+        "stats": {
+          "likeCount": 2,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 1,
+          "exposureCount": 1680,
+          "clickCount": 268
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_runner_001",
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_student_002"
+        ],
+        "sharedUserIds": [
+          "user_runner_001"
+        ]
+      },
+      {
+        "adId": "ad_002",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "周末本地咖啡地图",
+        "subtitle": "步行 800 米内的安静咖啡馆",
+        "description": "精选适合自习、约会和轻办公的本地咖啡店，附距离、营业时间和优惠。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "City Cafe",
+        "category": "本地餐饮",
+        "publishTime": "2026-05-31T10:10:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_local",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_food",
+            "name": "餐饮",
+            "category": "interest"
+          },
+          {
+            "id": "tag_social",
+            "name": "社交",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 1320,
+          "clickCount": 226
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_runner_001",
+          "user_student_002"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_003",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "featured": true,
+        "title": "通勤降噪耳机体验片",
+        "subtitle": "地铁、办公室、宿舍三种场景实测",
+        "description": "视频展示自适应降噪、轻量佩戴和多设备切换，适合白领与学生通勤。",
+        "cover": {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        },
+        "video": {
+          "url": "raw/ad_video_headphones.mp4",
+          "localAssetName": "raw/ad_video_headphones.mp4",
+          "width": 1280,
+          "height": 720,
+          "cropStrategy": "fitCenter",
+          "dominantColor": "#26384f",
+          "blurHash": "L35#xT00%Mxu_4t7Rjay~qxuogj["
+        },
+        "adType": "VIDEO",
+        "brand": "NBN Audio",
+        "category": "科技数码",
+        "publishTime": "2026-05-31T11:00:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_tech",
+            "name": "科技感",
+            "category": "interest"
+          },
+          {
+            "id": "tag_white_collar",
+            "name": "白领",
+            "category": "audience"
+          },
+          {
+            "id": "tag_commute",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 1,
+          "exposureCount": 1880,
+          "clickCount": 342
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_commuter_003"
+        ],
+        "collectedUserIds": [
+          "user_commuter_003"
+        ],
+        "sharedUserIds": [
+          "user_student_002"
+        ]
+      },
+      {
+        "adId": "ad_004",
+        "channelIds": [
+          "ecommerce"
+        ],
+        "title": "宿舍桌面收纳套装",
+        "subtitle": "小空间也能整理出学习区",
+        "description": "面向宿舍、出租屋和小书桌场景，提供可拆分收纳盒、理线夹和桌面增高架组合。",
+        "cover": {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Tiny Space",
+        "category": "宿舍生活",
+        "publishTime": "2026-05-31T13:20:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_dorm",
+            "name": "宿舍",
+            "category": "scene"
+          },
+          {
+            "id": "tag_storage",
+            "name": "收纳",
+            "category": "interest"
+          },
+          {
+            "id": "tag_budget",
+            "name": "低预算",
+            "category": "value"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 980,
+          "clickCount": 154
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "collectedUserIds": [
+          "user_student_002",
+          "user_dorm_004"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_005",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "城市骑行轻风夹克",
+        "subtitle": "通勤、夜骑、防小雨一件解决",
+        "description": "主打防泼水、反光条和可折叠收纳，适合共享单车通勤和周末城市骑行。",
+        "cover": {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Urban Ride",
+        "category": "城市户外",
+        "publishTime": "2026-05-31T14:10:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_cycling",
+            "name": "骑行",
+            "category": "interest"
+          },
+          {
+            "id": "tag_weather",
+            "name": "防泼水",
+            "category": "feature"
+          },
+          {
+            "id": "tag_commute",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 1,
+          "exposureCount": 1180,
+          "clickCount": 205
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_rider_005"
+        ],
+        "collectedUserIds": [
+          "user_rider_005"
+        ],
+        "sharedUserIds": [
+          "user_runner_001"
+        ]
+      },
+      {
+        "adId": "ad_006",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "本地健身体验课",
+        "subtitle": "本地健身小团课，适合新手体验。",
+        "description": "附近小团课体验，覆盖力量训练、体态改善和新手入门指导。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Fit Block",
+        "category": "本地健身",
+        "publishTime": "2026-05-31T17:18:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_006_1",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_006_2",
+            "name": "运动",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_006_3",
+            "name": "新手",
+            "category": "audience"
+          }
+        ],
+        "stats": {
+          "likeCount": 3,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 1762,
+          "clickCount": 281
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_runner_001",
+          "user_commuter_003",
+          "user_dorm_004"
+        ],
+        "collectedUserIds": [
+          "user_commuter_003",
+          "user_dorm_004"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_007",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "AI 学习助手会员",
+        "subtitle": "AI 学习助手，辅助复习整理。",
+        "description": "面向课程复习、资料整理和错题总结的学习助手服务。",
+        "cover": {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        },
+        "video": {
+          "url": "raw/ad_video_study_ai.mp4",
+          "localAssetName": "raw/ad_video_study_ai.mp4",
+          "width": 1280,
+          "height": 720,
+          "cropStrategy": "fitCenter",
+          "dominantColor": "#5b6470",
+          "blurHash": "L35#xT00%Mxu_4t7Rjay~qxuogj["
+        },
+        "adType": "VIDEO",
+        "brand": "Study Mate",
+        "category": "学习工具",
+        "publishTime": "2026-05-31T17:41:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_007_1",
+            "name": "AI",
+            "category": "feature"
+          },
+          {
+            "id": "tag_ad_007_2",
+            "name": "学习",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_007_3",
+            "name": "效率",
+            "category": "feature"
+          }
+        ],
+        "stats": {
+          "likeCount": 4,
+          "commentCount": 1,
+          "collectCount": 3,
+          "shareCount": 1,
+          "exposureCount": 1899,
+          "clickCount": 332
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_commuter_003",
+          "user_dorm_004",
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_dorm_004",
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "sharedUserIds": [
+          "user_rider_005"
+        ],
+        "featured": true
+      },
+      {
+        "adId": "ad_008",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "周边周末露营装备",
+        "subtitle": "周末露营装备，轻量便携。",
+        "description": "轻量帐篷、折叠椅和便携照明组合，适合周边短途露营。",
+        "cover": {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Camp Go",
+        "category": "户外露营",
+        "publishTime": "2026-05-31T18:04:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_008_1",
+            "name": "露营",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_008_2",
+            "name": "户外",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_008_3",
+            "name": "周末",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 2,
+          "exposureCount": 2036,
+          "clickCount": 264
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "collectedUserIds": [
+          "user_rider_005"
+        ],
+        "sharedUserIds": [
+          "user_student_002",
+          "user_runner_001"
+        ]
+      },
+      {
+        "adId": "ad_009",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "通勤双肩包防泼水",
+        "subtitle": "防泼水双肩包，适合上课通勤。",
+        "description": "分层收纳电脑、雨伞和水杯，适合上课、实习和日常通勤。",
+        "cover": {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Metro Bag",
+        "category": "通勤箱包",
+        "publishTime": "2026-05-31T18:27:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_009_1",
+            "name": "通勤",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_009_2",
+            "name": "学生党",
+            "category": "audience"
+          },
+          {
+            "id": "tag_ad_009_3",
+            "name": "数码",
+            "category": "interest"
+          }
+        ],
+        "stats": {
+          "likeCount": 2,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 2173,
+          "clickCount": 315
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_student_002",
+          "user_runner_001"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_010",
+        "channelIds": [
+          "local"
+        ],
+        "title": "社区早餐新店开业",
+        "subtitle": "社区早餐新店，适合早八通勤。",
+        "description": "提供热饮、三明治和简餐，适合早八、上班和周末早午餐。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Morning Hub",
+        "category": "本地餐饮",
+        "publishTime": "2026-05-31T18:50:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_010_1",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_010_2",
+            "name": "早餐",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_010_3",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 3,
+          "commentCount": 1,
+          "collectCount": 3,
+          "shareCount": 1,
+          "exposureCount": 2310,
+          "clickCount": 369
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_student_002",
+          "user_runner_001",
+          "user_commuter_003"
+        ],
+        "collectedUserIds": [
+          "user_runner_001",
+          "user_commuter_003",
+          "user_dorm_004"
+        ],
+        "sharedUserIds": [
+          "user_commuter_003"
+        ]
+      },
+      {
+        "adId": "ad_011",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "运动水杯夏季轻量款",
+        "subtitle": "轻量运动水杯，适合校园健身。",
+        "description": "大容量但便携，适合跑步、骑行、健身和日常校园携带。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Hydro Way",
+        "category": "运动装备",
+        "publishTime": "2026-05-31T19:13:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_011_1",
+            "name": "运动",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_011_2",
+            "name": "校园",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_011_3",
+            "name": "轻量",
+            "category": "feature"
+          }
+        ],
+        "stats": {
+          "likeCount": 4,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 2,
+          "exposureCount": 2447,
+          "clickCount": 428
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_runner_001",
+          "user_commuter_003",
+          "user_dorm_004",
+          "user_rider_005"
+        ],
+        "collectedUserIds": [
+          "user_commuter_003"
+        ],
+        "sharedUserIds": [
+          "user_dorm_004",
+          "user_rider_005"
+        ]
+      },
+      {
+        "adId": "ad_012",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "咖啡豆新鲜烘焙订阅",
+        "subtitle": "新鲜烘焙咖啡豆，适合手冲。",
+        "description": "每周小批量烘焙寄送，适合宿舍手冲、办公室分享和周末慢生活。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Bean Lab",
+        "category": "咖啡订阅",
+        "publishTime": "2026-05-31T19:36:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_012_1",
+            "name": "咖啡",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_012_2",
+            "name": "电商",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_012_3",
+            "name": "生活方式",
+            "category": "interest"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 2584,
+          "clickCount": 335
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_commuter_003"
+        ],
+        "collectedUserIds": [
+          "user_dorm_004",
+          "user_rider_005"
+        ],
+        "sharedUserIds": [],
+        "featured": true
+      },
+      {
+        "adId": "ad_013",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "图书馆周边自习空间",
+        "subtitle": "本地自习空间，适合复习讨论。",
+        "description": "安静座位、插座和储物柜，适合期末复习、小组讨论和考研自习。",
+        "cover": {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Quiet Room",
+        "category": "自习空间",
+        "publishTime": "2026-05-31T19:59:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_013_1",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_013_2",
+            "name": "学习",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_013_3",
+            "name": "学生党",
+            "category": "audience"
+          }
+        ],
+        "stats": {
+          "likeCount": 2,
+          "commentCount": 1,
+          "collectCount": 3,
+          "shareCount": 1,
+          "exposureCount": 2721,
+          "clickCount": 394
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_dorm_004",
+          "user_rider_005"
+        ],
+        "collectedUserIds": [
+          "user_rider_005",
+          "user_student_002",
+          "user_runner_001"
+        ],
+        "sharedUserIds": [
+          "user_student_002"
+        ]
+      },
+      {
+        "adId": "ad_014",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "学生党多场景装备包",
+        "subtitle": "通勤、健身和露营都能复用的轻量装备组合。",
+        "description": "集合通勤、运动、露营与数码收纳用品，适合需要一套装备覆盖多种日常任务的学生党。",
+        "cover": {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Urban Kit",
+        "category": "多场景装备",
+        "publishTime": "2026-05-31T20:22:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_014_1",
+            "name": "学生党",
+            "category": "audience"
+          },
+          {
+            "id": "tag_ad_014_2",
+            "name": "通勤",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_014_3",
+            "name": "运动",
+            "category": "interest"
+          }
+        ],
+        "stats": {
+          "likeCount": 3,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 2,
+          "exposureCount": 2858,
+          "clickCount": 457
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_rider_005",
+          "user_student_002",
+          "user_runner_001"
+        ],
+        "collectedUserIds": [
+          "user_student_002"
+        ],
+        "sharedUserIds": [
+          "user_runner_001",
+          "user_commuter_003"
+        ]
+      },
+      {
+        "adId": "ad_015",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "便携蓝牙音箱户外版",
+        "subtitle": "便携蓝牙音箱，适合户外宿舍。",
+        "description": "小体积、防泼水、低延迟，适合露营、骑行休息和宿舍影音。",
+        "cover": {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        },
+        "video": {
+          "url": "raw/ad_video_headphones.mp4",
+          "localAssetName": "raw/ad_video_headphones.mp4",
+          "width": 1280,
+          "height": 720,
+          "cropStrategy": "fitCenter",
+          "dominantColor": "#26384f",
+          "blurHash": "L35#xT00%Mxu_4t7Rjay~qxuogj["
+        },
+        "adType": "VIDEO",
+        "brand": "Sound Lab",
+        "category": "数码音频",
+        "publishTime": "2026-05-31T20:45:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_015_1",
+            "name": "数码",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_015_2",
+            "name": "露营",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_015_3",
+            "name": "视频",
+            "category": "feature"
+          }
+        ],
+        "stats": {
+          "likeCount": 4,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 2995,
+          "clickCount": 524
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_student_002",
+          "user_runner_001",
+          "user_commuter_003",
+          "user_dorm_004"
+        ],
+        "collectedUserIds": [
+          "user_runner_001",
+          "user_commuter_003"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_016",
+        "channelIds": [
+          "local"
+        ],
+        "title": "商圈午餐优惠合集",
+        "subtitle": "本地午餐合集，适合快取拼单。",
+        "description": "围绕学校和办公区整理的午餐选择，支持快取和多人拼单。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Lunch Map",
+        "category": "本地餐饮",
+        "publishTime": "2026-05-31T21:08:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_016_1",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_016_2",
+            "name": "午餐",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_016_3",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 3,
+          "shareCount": 1,
+          "exposureCount": 3132,
+          "clickCount": 407
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "collectedUserIds": [
+          "user_commuter_003",
+          "user_dorm_004",
+          "user_rider_005"
+        ],
+        "sharedUserIds": [
+          "user_dorm_004"
+        ]
+      },
+      {
+        "adId": "ad_017",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "学生党平价护眼台灯",
+        "subtitle": "护眼台灯，适合宿舍学习。",
+        "description": "采用三档色温和无频闪灯珠，适合宿舍晚间阅读、课程笔记和桌面学习。",
+        "cover": {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Bright Desk",
+        "category": "学习照明",
+        "publishTime": "2026-05-31T21:31:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_017_1",
+            "name": "学生党",
+            "category": "audience"
+          },
+          {
+            "id": "tag_ad_017_2",
+            "name": "宿舍",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_017_3",
+            "name": "学习",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 2,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 2,
+          "exposureCount": 3269,
+          "clickCount": 474
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_commuter_003",
+          "user_dorm_004"
+        ],
+        "collectedUserIds": [
+          "user_dorm_004"
+        ],
+        "sharedUserIds": [
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "featured": true
+      },
+      {
+        "adId": "ad_018",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "城市夜跑路线推荐",
+        "subtitle": "城市夜跑路线，适合下班运动。",
+        "description": "精选安全照明、补给便利和风景较好的城市夜跑路线。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "video": {
+          "url": "raw/ad_video_local_sports.mp4",
+          "localAssetName": "raw/ad_video_local_sports.mp4",
+          "width": 1280,
+          "height": 720,
+          "cropStrategy": "fitCenter",
+          "dominantColor": "#3b5f56",
+          "blurHash": "L35#xT00%Mxu_4t7Rjay~qxuogj["
+        },
+        "adType": "VIDEO",
+        "brand": "Run City",
+        "category": "城市运动",
+        "publishTime": "2026-05-31T21:54:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_018_1",
+            "name": "运动",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_018_2",
+            "name": "夜跑",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_018_3",
+            "name": "本地",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 3,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 3406,
+          "clickCount": 544
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_dorm_004",
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_019",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "社区宠物友好咖啡馆",
+        "subtitle": "宠物友好咖啡馆，适合周末聚会。",
+        "description": "可携宠、轻食、露台座位，适合周末放松和朋友聚会。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Paw Cafe",
+        "category": "本地餐饮",
+        "publishTime": "2026-05-31T22:17:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_019_1",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_019_2",
+            "name": "咖啡",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_019_3",
+            "name": "宠物",
+            "category": "interest"
+          }
+        ],
+        "stats": {
+          "likeCount": 4,
+          "commentCount": 1,
+          "collectCount": 3,
+          "shareCount": 1,
+          "exposureCount": 3543,
+          "clickCount": 620
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_rider_005",
+          "user_student_002",
+          "user_runner_001",
+          "user_commuter_003"
+        ],
+        "collectedUserIds": [
+          "user_student_002",
+          "user_runner_001",
+          "user_commuter_003"
+        ],
+        "sharedUserIds": [
+          "user_runner_001"
+        ]
+      },
+      {
+        "adId": "ad_020",
+        "channelIds": [
+          "ecommerce"
+        ],
+        "title": "轻薄平板键盘套",
+        "subtitle": "平板键盘套，适合移动学习办公。",
+        "description": "兼顾课程笔记、移动办公和短途出差，支持多角度支架。",
+        "cover": {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Key Dock",
+        "category": "数码配件",
+        "publishTime": "2026-05-31T22:40:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_020_1",
+            "name": "数码",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_020_2",
+            "name": "学习",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_020_3",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 2,
+          "exposureCount": 3680,
+          "clickCount": 478
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_runner_001"
+        ],
+        "sharedUserIds": [
+          "user_commuter_003",
+          "user_dorm_004"
+        ]
+      },
+      {
+        "adId": "ad_021",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "城市徒步补给包",
+        "subtitle": "城市徒步补给包，轻便实用。",
+        "description": "包含便携雨衣、能量小食和小型急救包，适合城市徒步和短途探索。",
+        "cover": {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Walk Kit",
+        "category": "城市户外",
+        "publishTime": "2026-05-31T23:03:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_021_1",
+            "name": "徒步",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_021_2",
+            "name": "户外",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_021_3",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 2,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 3817,
+          "clickCount": 553
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_runner_001",
+          "user_commuter_003"
+        ],
+        "collectedUserIds": [
+          "user_commuter_003",
+          "user_dorm_004"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_022",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "附近篮球馆夜场",
+        "subtitle": "附近篮球夜场，适合组队运动。",
+        "description": "工作日夜场和周末拼场信息，适合同学组队和下班运动。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "video": {
+          "url": "raw/ad_video_local_sports.mp4",
+          "localAssetName": "raw/ad_video_local_sports.mp4",
+          "width": 1280,
+          "height": 720,
+          "cropStrategy": "fitCenter",
+          "dominantColor": "#3b5f56",
+          "blurHash": "L35#xT00%Mxu_4t7Rjay~qxuogj["
+        },
+        "adType": "VIDEO",
+        "brand": "Hoop Zone",
+        "category": "本地运动",
+        "publishTime": "2026-05-31T23:26:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_022_1",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_022_2",
+            "name": "运动",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_022_3",
+            "name": "篮球",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 3,
+          "commentCount": 1,
+          "collectCount": 3,
+          "shareCount": 1,
+          "exposureCount": 3954,
+          "clickCount": 632
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_commuter_003",
+          "user_dorm_004",
+          "user_rider_005"
+        ],
+        "collectedUserIds": [
+          "user_dorm_004",
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "sharedUserIds": [
+          "user_rider_005"
+        ],
+        "featured": true
+      },
+      {
+        "adId": "ad_023",
+        "channelIds": [
+          "ecommerce"
+        ],
+        "title": "咖啡通勤保温杯",
+        "subtitle": "通勤保温杯，适合咖啡热饮。",
+        "description": "适合早八咖啡、办公室热饮和短途出行，杯身易清洗。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Bean Bottle",
+        "category": "通勤杯具",
+        "publishTime": "2026-05-31T23:49:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_023_1",
+            "name": "咖啡",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_023_2",
+            "name": "通勤",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_023_3",
+            "name": "电商",
+            "category": "interest"
+          }
+        ],
+        "stats": {
+          "likeCount": 4,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 2,
+          "exposureCount": 4091,
+          "clickCount": 715
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_dorm_004",
+          "user_rider_005",
+          "user_student_002",
+          "user_runner_001"
+        ],
+        "collectedUserIds": [
+          "user_rider_005"
+        ],
+        "sharedUserIds": [
+          "user_student_002",
+          "user_runner_001"
+        ]
+      },
+      {
+        "adId": "ad_024",
+        "channelIds": [
+          "featured"
+        ],
+        "title": "校园社团招新物料",
+        "subtitle": "社团招新物料，适合活动宣传。",
+        "description": "海报、贴纸、桌牌和社媒图模板，适合社团招新和活动宣传。",
+        "cover": {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Poster Kit",
+        "category": "校园活动",
+        "publishTime": "2026-06-01T00:12:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_024_1",
+            "name": "校园",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_024_2",
+            "name": "学生党",
+            "category": "audience"
+          },
+          {
+            "id": "tag_ad_024_3",
+            "name": "设计",
+            "category": "feature"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 4228,
+          "clickCount": 549
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_rider_005"
+        ],
+        "collectedUserIds": [
+          "user_student_002",
+          "user_runner_001"
+        ],
+        "sharedUserIds": []
+      },
+      {
+        "adId": "ad_025",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "本地周末市集指南",
+        "subtitle": "周末市集指南，覆盖咖啡轻食。",
+        "description": "手作、咖啡、轻食和户外摊位集合，适合周末拍照和朋友同行。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-04.png",
+          "localAssetName": "stitch_ui/images/stitch-04.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#9f6b46",
+          "blurHash": "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Market Walk",
+        "category": "周末市集",
+        "publishTime": "2026-06-01T00:35:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_025_1",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_025_2",
+            "name": "咖啡",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_025_3",
+            "name": "周末",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 2,
+          "commentCount": 1,
+          "collectCount": 3,
+          "shareCount": 1,
+          "exposureCount": 4365,
+          "clickCount": 632
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_student_002",
+          "user_runner_001"
+        ],
+        "collectedUserIds": [
+          "user_runner_001",
+          "user_commuter_003",
+          "user_dorm_004"
+        ],
+        "sharedUserIds": [
+          "user_commuter_003"
+        ]
+      },
+      {
+        "adId": "ad_026",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "运动恢复筋膜球",
+        "subtitle": "运动恢复工具，适合训练后放松。",
+        "description": "训练后放松工具，适合跑步、健身和久坐通勤后的肌肉放松。",
+        "cover": {
+          "url": "stitch_ui/images/stitch-02.png",
+          "localAssetName": "stitch_ui/images/stitch-02.png",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#d64f37",
+          "blurHash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Fit Block",
+        "category": "运动恢复",
+        "publishTime": "2026-06-01T00:58:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_026_1",
+            "name": "运动",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_026_2",
+            "name": "健身",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_026_3",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 3,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 2,
+          "exposureCount": 4502,
+          "clickCount": 720
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_runner_001",
+          "user_commuter_003",
+          "user_dorm_004"
+        ],
+        "collectedUserIds": [
+          "user_commuter_003"
+        ],
+        "sharedUserIds": [
+          "user_dorm_004",
+          "user_rider_005"
+        ]
+      },
+      {
+        "adId": "ad_027",
+        "channelIds": [
+          "featured",
+          "local"
+        ],
+        "title": "城市光影摄影课",
+        "subtitle": "本地摄影课，覆盖夜景和短视频。",
+        "description": "线下小班课程，覆盖手机摄影、夜景构图和短视频拍摄。",
+        "cover": {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        },
+        "video": {
+          "url": "raw/ad_video_study_ai.mp4",
+          "localAssetName": "raw/ad_video_study_ai.mp4",
+          "width": 1280,
+          "height": 720,
+          "cropStrategy": "fitCenter",
+          "dominantColor": "#5b6470",
+          "blurHash": "L35#xT00%Mxu_4t7Rjay~qxuogj["
+        },
+        "adType": "VIDEO",
+        "brand": "Lens Local",
+        "category": "本地课程",
+        "publishTime": "2026-06-01T01:21:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_027_1",
+            "name": "本地",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_027_2",
+            "name": "摄影",
+            "category": "feature"
+          },
+          {
+            "id": "tag_ad_027_3",
+            "name": "视频",
+            "category": "feature"
+          }
+        ],
+        "stats": {
+          "likeCount": 4,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 4639,
+          "clickCount": 811
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_commuter_003",
+          "user_dorm_004",
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_dorm_004",
+          "user_rider_005"
+        ],
+        "sharedUserIds": [],
+        "featured": true
+      },
+      {
+        "adId": "ad_028",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "学生党数码配件包",
+        "subtitle": "数码配件包，适合学生通勤。",
+        "description": "收纳充电线、转接头、U 盘和耳机，适合宿舍、图书馆和通勤。",
+        "cover": {
+          "url": "stitch_ui/images/ad-headphones.svg",
+          "localAssetName": "stitch_ui/images/ad-headphones.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#394d67",
+          "blurHash": "L58W;X_3D%M{_N?bRjM{t7IUxut7"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Cable Box",
+        "category": "数码收纳",
+        "publishTime": "2026-06-01T01:44:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_028_1",
+            "name": "学生党",
+            "category": "audience"
+          },
+          {
+            "id": "tag_ad_028_2",
+            "name": "数码",
+            "category": "interest"
+          },
+          {
+            "id": "tag_ad_028_3",
+            "name": "通勤",
+            "category": "scene"
+          }
+        ],
+        "stats": {
+          "likeCount": 1,
+          "commentCount": 1,
+          "collectCount": 3,
+          "shareCount": 1,
+          "exposureCount": 4776,
+          "clickCount": 620
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "collectedUserIds": [
+          "user_rider_005",
+          "user_student_002",
+          "user_runner_001"
+        ],
+        "sharedUserIds": [
+          "user_student_002"
+        ]
+      },
+      {
+        "adId": "ad_029",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "精选通勤雨伞轻量版",
+        "subtitle": "轻量雨伞，适合通勤校园。",
+        "description": "小包可放、开合顺手，适合梅雨季通勤和校园日常。",
+        "cover": {
+          "url": "stitch_ui/images/ad-cycling-jacket.svg",
+          "localAssetName": "stitch_ui/images/ad-cycling-jacket.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#5b7f72",
+          "blurHash": "L8B:JT0K-;kC_M%M%MRj-;j[Rjay"
+        },
+        "video": null,
+        "adType": "SMALL_IMAGE",
+        "brand": "Rain Go",
+        "category": "通勤装备",
+        "publishTime": "2026-06-01T02:07:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_029_1",
+            "name": "通勤",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_029_2",
+            "name": "校园",
+            "category": "scene"
+          },
+          {
+            "id": "tag_ad_029_3",
+            "name": "轻量",
+            "category": "feature"
+          }
+        ],
+        "stats": {
+          "likeCount": 2,
+          "commentCount": 1,
+          "collectCount": 1,
+          "shareCount": 2,
+          "exposureCount": 4913,
+          "clickCount": 712
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_rider_005",
+          "user_student_002"
+        ],
+        "collectedUserIds": [
+          "user_student_002"
+        ],
+        "sharedUserIds": [
+          "user_runner_001",
+          "user_commuter_003"
+        ]
+      },
+      {
+        "adId": "ad_030",
+        "channelIds": [
+          "featured",
+          "ecommerce"
+        ],
+        "title": "新品展示拍摄套装",
+        "subtitle": "小型商品展示套装，适合社团和宿舍拍摄。",
+        "description": "包含背景板、补光灯和小道具，帮助学生社团、二手转卖和小店主快速拍出干净的商品展示图。",
+        "cover": {
+          "url": "stitch_ui/images/ad-desk-storage.svg",
+          "localAssetName": "stitch_ui/images/ad-desk-storage.svg",
+          "width": 1200,
+          "height": 800,
+          "cropStrategy": "centerCrop",
+          "dominantColor": "#c49a6c",
+          "blurHash": "L9Rymf~q%Mof_3M{RjRj%Mayt7of"
+        },
+        "video": null,
+        "adType": "LARGE_IMAGE",
+        "brand": "Display Lab",
+        "category": "商品展示",
+        "publishTime": "2026-06-01T02:30:00+08:00",
+        "creator": {
+          "userId": "1",
+          "nickname": "NBN 系统管理员",
+          "avatarUrl": "stitch_ui/images/stitch-09.png",
+          "verified": true,
+          "bio": "系统管理员账号，负责发布和维护广告内容。"
+        },
+        "tags": [
+          {
+            "id": "tag_ad_030_1",
+            "name": "展示",
+            "category": "feature"
+          },
+          {
+            "id": "tag_ad_030_2",
+            "name": "拍摄",
+            "category": "feature"
+          },
+          {
+            "id": "tag_ad_030_3",
+            "name": "数码",
+            "category": "interest"
+          }
+        ],
+        "stats": {
+          "likeCount": 3,
+          "commentCount": 1,
+          "collectCount": 2,
+          "shareCount": 0,
+          "exposureCount": 5050,
+          "clickCount": 808
+        },
+        "interactionState": {
+          "liked": false,
+          "collected": false,
+          "followingCreator": false,
+          "shared": false
+        },
+        "likedUserIds": [
+          "user_student_002",
+          "user_runner_001",
+          "user_commuter_003"
+        ],
+        "collectedUserIds": [
+          "user_runner_001",
+          "user_commuter_003"
+        ],
+        "sharedUserIds": []
+      }
+    ]
+  }
+}

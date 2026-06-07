@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nbn_brand">#176B4D</color>
+    <color name="nbn_surface">#FFF1E8</color>
+    <color name="nbn_card">#FFF1E8</color>
+    <color name="nbn_card_stroke">#F0F0F0</color>
+    <color name="nbn_text_primary">#1A1A1A</color>
+    <color name="nbn_text_secondary">#999999</color>
+
+    <!-- ===== 信息流 Feed（人员A）相关配色 ===== -->
+    <!-- 点赞激活态：暖红，用于点赞彩蛋 -->
+    <color name="nbn_like_active">#E5484D</color>
+    <!-- 收藏激活态：琥珀金 -->
+    <color name="nbn_collect_active">#E0A82E</color>
+    <!-- 卡片上的“广告”角标背景 -->
+    <color name="nbn_badge_bg">#33176B4D</color>
+    <!-- 占位图渐变色，模拟图片/视频封面 -->
+    <color name="nbn_placeholder_start">#D8E6DE</color>
+    <color name="nbn_placeholder_end">#B7CFC2</color>
+    <!-- 视频遮罩与播放按钮 -->
+    <color name="nbn_video_scrim">#55000000</color>
+    <!-- 标签 chip 背景与文字 -->
+    <color name="nbn_tag_bg">#EAF2EC</color>
+    <color name="nbn_divider">#ECE5D8</color>
+
+    <!-- ===== UI 精细化增补配色 ===== -->
+    <!-- 卡片阴影色（用于 elevation 或手动阴影层） -->
+    <color name="nbn_card_shadow">#1A000000</color>
+    <!-- 品牌浅底色：用于按钮背景、高亮区域 -->
+    <color name="nbn_brand_light">#E8F5EE</color>
+    <!-- 品牌深色：用于按钮按压态 -->
+    <color name="nbn_brand_dark">#0F5038</color>
+    <!-- 占位图上的品牌 icon 色 -->
+    <color name="nbn_placeholder_icon">#9BBFAC</color>
+    <!-- 空态/错误态的插图底色 -->
+    <color name="nbn_empty_bg">#F0EDE5</color>
+    <!-- 互动栏分割线 -->
+    <color name="nbn_interaction_divider">#F0EBE2</color>
+    <!-- 搜索按钮背景 -->
+    <color name="nbn_search_btn_bg">#E8F5EE</color>
+    <!-- footer 背景 -->
+    <color name="nbn_footer_bg">#FAFAF7</color>
+
+    <!-- Tab 指示器蓝色 -->
+    <color name="nbn_tab_indicator">#4A90D9</color>
+    <!-- 导航栏分割线 -->
+    <color name="nbn_nav_divider">#E0E0E0</color>
+    <!-- 标签多色（每个标签颜色不同） -->
+    <color name="nbn_tag_color_1">#E8F0FE</color>
+    <color name="nbn_tag_text_1">#1967D2</color>
+    <color name="nbn_tag_color_2">#FEE8F0</color>
+    <color name="nbn_tag_text_2">#D91A6B</color>
+    <color name="nbn_tag_color_3">#E8FEF0</color>
+    <color name="nbn_tag_text_3">#1A8C4A</color>
+    <color name="nbn_tag_color_4">#F5E8FE</color>
+    <color name="nbn_tag_text_4">#7B1AD9</color>
+
+    <!-- ===== 统计页图表配色 ===== -->
+    <color name="nbn_chart_large_image">#176B4D</color>
+    <color name="nbn_chart_small_image">#4A90D9</color>
+    <color name="nbn_chart_video">#E0A82E</color>
+
+</resources>

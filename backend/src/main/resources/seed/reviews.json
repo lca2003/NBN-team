@@ -1,0 +1,810 @@
+{
+  "reviewsByAd": {
+    "ad_001": [
+      {
+        "reviewId": "review_001",
+        "userId": "user_runner_001",
+        "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+        "nickname": "晚课后夜跑",
+        "timeText": "2 小时前",
+        "content": "鞋底回弹明显，宿舍到操场来回走也不累。",
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "likeCount": 1,
+        "liked": false
+      },
+      {
+        "reviewId": "review_003",
+        "userId": "user_rider_005",
+        "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+        "nickname": "夜骑下班路",
+        "timeText": "今天",
+        "content": "反光条很实用，晚上骑车能被看见。",
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_002": [
+      {
+        "reviewId": "review_002",
+        "userId": "user_student_002",
+        "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+        "nickname": "周末写论文",
+        "timeText": "昨天",
+        "content": "二楼比较安静，插座多，适合带电脑。",
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_003": [
+      {
+        "reviewId": "review_004",
+        "userId": "user_commuter_003",
+        "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+        "nickname": "地铁早八人",
+        "timeText": "今天",
+        "content": "视频里能看到耳机佩戴和降噪场景，比只看封面更可信。",
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_004": [
+      {
+        "reviewId": "review_005",
+        "userId": "user_dorm_004",
+        "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+        "nickname": "期末复习人",
+        "timeText": "今天",
+        "content": "桌面增高架下面正好放键盘，书和充电线也能分开。",
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_005": [
+      {
+        "reviewId": "review_006",
+        "userId": "user_rider_005",
+        "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+        "nickname": "夜骑下班路",
+        "timeText": "昨天",
+        "content": "背后反光条晚上很明显，收起来也不占包。",
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_006": [
+      {
+        "reviewId": "review_007",
+        "userId": "user_runner_001",
+        "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+        "nickname": "晚课后夜跑",
+        "timeText": "12 分钟前",
+        "content": "本地健身小团课，适合新手体验，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_commuter_003"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_007": [
+      {
+        "reviewId": "review_008",
+        "userId": "user_commuter_003",
+        "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+        "nickname": "地铁早八人",
+        "timeText": "今天",
+        "content": "AI 学习助手，辅助复习整理，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_008": [
+      {
+        "reviewId": "review_009",
+        "userId": "user_dorm_004",
+        "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+        "nickname": "期末复习人",
+        "timeText": "昨天",
+        "content": "周末露营装备，轻量便携，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_rider_005"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_009": [
+      {
+        "reviewId": "review_010",
+        "userId": "user_rider_005",
+        "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+        "nickname": "夜骑下班路",
+        "timeText": "2 小时前",
+        "content": "防泼水双肩包，适合上课通勤，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_010": [
+      {
+        "reviewId": "review_011",
+        "userId": "user_student_002",
+        "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+        "nickname": "周末写论文",
+        "timeText": "刚刚",
+        "content": "社区早餐新店，适合早八通勤，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_011": [
+      {
+        "reviewId": "review_012",
+        "userId": "user_runner_001",
+        "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+        "nickname": "晚课后夜跑",
+        "timeText": "12 分钟前",
+        "content": "轻量运动水杯，适合校园健身，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_commuter_003"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_012": [
+      {
+        "reviewId": "review_013",
+        "userId": "user_commuter_003",
+        "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+        "nickname": "地铁早八人",
+        "timeText": "今天",
+        "content": "新鲜烘焙咖啡豆，适合手冲，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_013": [
+      {
+        "reviewId": "review_014",
+        "userId": "user_dorm_004",
+        "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+        "nickname": "期末复习人",
+        "timeText": "昨天",
+        "content": "本地自习空间，适合复习讨论，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_rider_005"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_014": [
+      {
+        "reviewId": "review_015",
+        "userId": "user_rider_005",
+        "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+        "nickname": "夜骑下班路",
+        "timeText": "2 小时前",
+        "content": "通勤、健身和露营都能复用的轻量装备组合，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_015": [
+      {
+        "reviewId": "review_016",
+        "userId": "user_student_002",
+        "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+        "nickname": "周末写论文",
+        "timeText": "刚刚",
+        "content": "便携蓝牙音箱，适合户外宿舍，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_016": [
+      {
+        "reviewId": "review_017",
+        "userId": "user_runner_001",
+        "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+        "nickname": "晚课后夜跑",
+        "timeText": "12 分钟前",
+        "content": "本地午餐合集，适合快取拼单，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_commuter_003"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_017": [
+      {
+        "reviewId": "review_018",
+        "userId": "user_commuter_003",
+        "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+        "nickname": "地铁早八人",
+        "timeText": "今天",
+        "content": "护眼台灯，适合宿舍学习，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_018": [
+      {
+        "reviewId": "review_019",
+        "userId": "user_dorm_004",
+        "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+        "nickname": "期末复习人",
+        "timeText": "昨天",
+        "content": "城市夜跑路线，适合下班运动，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_rider_005"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_019": [
+      {
+        "reviewId": "review_020",
+        "userId": "user_rider_005",
+        "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+        "nickname": "夜骑下班路",
+        "timeText": "2 小时前",
+        "content": "宠物友好咖啡馆，适合周末聚会，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_020": [
+      {
+        "reviewId": "review_021",
+        "userId": "user_student_002",
+        "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+        "nickname": "周末写论文",
+        "timeText": "刚刚",
+        "content": "平板键盘套，适合移动学习办公，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_021": [
+      {
+        "reviewId": "review_022",
+        "userId": "user_runner_001",
+        "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+        "nickname": "晚课后夜跑",
+        "timeText": "12 分钟前",
+        "content": "城市徒步补给包，轻便实用，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_commuter_003"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_022": [
+      {
+        "reviewId": "review_023",
+        "userId": "user_commuter_003",
+        "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+        "nickname": "地铁早八人",
+        "timeText": "今天",
+        "content": "附近篮球夜场，适合组队运动，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_023": [
+      {
+        "reviewId": "review_024",
+        "userId": "user_dorm_004",
+        "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+        "nickname": "期末复习人",
+        "timeText": "昨天",
+        "content": "通勤保温杯，适合咖啡热饮，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_rider_005"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_024": [
+      {
+        "reviewId": "review_025",
+        "userId": "user_rider_005",
+        "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+        "nickname": "夜骑下班路",
+        "timeText": "2 小时前",
+        "content": "社团招新物料，适合活动宣传，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_025": [
+      {
+        "reviewId": "review_026",
+        "userId": "user_student_002",
+        "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+        "nickname": "周末写论文",
+        "timeText": "刚刚",
+        "content": "周末市集指南，覆盖咖啡轻食，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_026": [
+      {
+        "reviewId": "review_027",
+        "userId": "user_runner_001",
+        "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+        "nickname": "晚课后夜跑",
+        "timeText": "12 分钟前",
+        "content": "运动恢复工具，适合训练后放松，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_commuter_003"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_027": [
+      {
+        "reviewId": "review_028",
+        "userId": "user_commuter_003",
+        "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+        "nickname": "地铁早八人",
+        "timeText": "今天",
+        "content": "本地摄影课，覆盖夜景和短视频，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_dorm_004"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_028": [
+      {
+        "reviewId": "review_029",
+        "userId": "user_dorm_004",
+        "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+        "nickname": "期末复习人",
+        "timeText": "昨天",
+        "content": "数码配件包，适合学生通勤，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_rider_005"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_029": [
+      {
+        "reviewId": "review_030",
+        "userId": "user_rider_005",
+        "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+        "nickname": "夜骑下班路",
+        "timeText": "2 小时前",
+        "content": "轻量雨伞，适合通勤校园，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_student_002"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ],
+    "ad_030": [
+      {
+        "reviewId": "review_031",
+        "userId": "user_student_002",
+        "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+        "nickname": "周末写论文",
+        "timeText": "刚刚",
+        "content": "小型商品展示套装，适合社团和宿舍拍摄，详情里的适用场景写得很清楚，适合先收藏再对比。",
+        "likedUserIds": [
+          "user_runner_001"
+        ],
+        "likeCount": 1,
+        "liked": false
+      }
+    ]
+  },
+  "comments": [
+    {
+      "commentId": "comment_001",
+      "targetType": "ad",
+      "targetId": "ad_001",
+      "parentCommentId": "",
+      "userId": "user_student_002",
+      "nickname": "周末写论文",
+      "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+      "content": "有 41 码库存吗？",
+      "timeText": "刚刚"
+    },
+    {
+      "commentId": "comment_002",
+      "targetType": "ad",
+      "targetId": "ad_002",
+      "parentCommentId": "",
+      "userId": "user_runner_001",
+      "nickname": "晚课后夜跑",
+      "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+      "content": "周日下午人多吗？",
+      "timeText": "12 分钟前"
+    },
+    {
+      "commentId": "comment_004",
+      "targetType": "ad",
+      "targetId": "ad_003",
+      "parentCommentId": "",
+      "userId": "user_commuter_003",
+      "nickname": "地铁早八人",
+      "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+      "content": "地铁里降噪效果明显吗？",
+      "timeText": "6 分钟前"
+    },
+    {
+      "commentId": "comment_005",
+      "targetType": "ad",
+      "targetId": "ad_004",
+      "parentCommentId": "",
+      "userId": "user_dorm_004",
+      "nickname": "期末复习人",
+      "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+      "content": "这个尺寸适合上床下桌吗？",
+      "timeText": "15 分钟前"
+    },
+    {
+      "commentId": "comment_006",
+      "targetType": "ad",
+      "targetId": "ad_005",
+      "parentCommentId": "",
+      "userId": "user_rider_005",
+      "nickname": "夜骑下班路",
+      "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+      "content": "南方梅雨天够用吗？",
+      "timeText": "25 分钟前"
+    },
+    {
+      "commentId": "comment_003",
+      "targetType": "review",
+      "targetId": "review_001",
+      "parentCommentId": "comment_001",
+      "userId": "user_runner_001",
+      "nickname": "晚课后夜跑",
+      "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+      "content": "客服说今晚补货。",
+      "timeText": "1 分钟前"
+    },
+    {
+      "commentId": "comment_007",
+      "targetType": "ad",
+      "targetId": "ad_006",
+      "parentCommentId": "",
+      "userId": "user_commuter_003",
+      "nickname": "地铁早八人",
+      "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "8 分钟前"
+    },
+    {
+      "commentId": "comment_008",
+      "targetType": "ad",
+      "targetId": "ad_007",
+      "parentCommentId": "",
+      "userId": "user_dorm_004",
+      "nickname": "期末复习人",
+      "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "15 分钟前"
+    },
+    {
+      "commentId": "comment_009",
+      "targetType": "ad",
+      "targetId": "ad_008",
+      "parentCommentId": "",
+      "userId": "user_rider_005",
+      "nickname": "夜骑下班路",
+      "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "今天"
+    },
+    {
+      "commentId": "comment_010",
+      "targetType": "ad",
+      "targetId": "ad_009",
+      "parentCommentId": "",
+      "userId": "user_student_002",
+      "nickname": "周末写论文",
+      "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "昨天"
+    },
+    {
+      "commentId": "comment_011",
+      "targetType": "ad",
+      "targetId": "ad_010",
+      "parentCommentId": "",
+      "userId": "user_runner_001",
+      "nickname": "晚课后夜跑",
+      "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "刚刚"
+    },
+    {
+      "commentId": "comment_012",
+      "targetType": "ad",
+      "targetId": "ad_011",
+      "parentCommentId": "",
+      "userId": "user_commuter_003",
+      "nickname": "地铁早八人",
+      "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "8 分钟前"
+    },
+    {
+      "commentId": "comment_013",
+      "targetType": "ad",
+      "targetId": "ad_012",
+      "parentCommentId": "",
+      "userId": "user_dorm_004",
+      "nickname": "期末复习人",
+      "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "15 分钟前"
+    },
+    {
+      "commentId": "comment_014",
+      "targetType": "ad",
+      "targetId": "ad_013",
+      "parentCommentId": "",
+      "userId": "user_rider_005",
+      "nickname": "夜骑下班路",
+      "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "今天"
+    },
+    {
+      "commentId": "comment_015",
+      "targetType": "ad",
+      "targetId": "ad_014",
+      "parentCommentId": "",
+      "userId": "user_student_002",
+      "nickname": "周末写论文",
+      "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "昨天"
+    },
+    {
+      "commentId": "comment_016",
+      "targetType": "ad",
+      "targetId": "ad_015",
+      "parentCommentId": "",
+      "userId": "user_runner_001",
+      "nickname": "晚课后夜跑",
+      "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "刚刚"
+    },
+    {
+      "commentId": "comment_017",
+      "targetType": "ad",
+      "targetId": "ad_016",
+      "parentCommentId": "",
+      "userId": "user_commuter_003",
+      "nickname": "地铁早八人",
+      "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "8 分钟前"
+    },
+    {
+      "commentId": "comment_018",
+      "targetType": "ad",
+      "targetId": "ad_017",
+      "parentCommentId": "",
+      "userId": "user_dorm_004",
+      "nickname": "期末复习人",
+      "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "15 分钟前"
+    },
+    {
+      "commentId": "comment_019",
+      "targetType": "ad",
+      "targetId": "ad_018",
+      "parentCommentId": "",
+      "userId": "user_rider_005",
+      "nickname": "夜骑下班路",
+      "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "今天"
+    },
+    {
+      "commentId": "comment_020",
+      "targetType": "ad",
+      "targetId": "ad_019",
+      "parentCommentId": "",
+      "userId": "user_student_002",
+      "nickname": "周末写论文",
+      "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "昨天"
+    },
+    {
+      "commentId": "comment_021",
+      "targetType": "ad",
+      "targetId": "ad_020",
+      "parentCommentId": "",
+      "userId": "user_runner_001",
+      "nickname": "晚课后夜跑",
+      "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "刚刚"
+    },
+    {
+      "commentId": "comment_022",
+      "targetType": "ad",
+      "targetId": "ad_021",
+      "parentCommentId": "",
+      "userId": "user_commuter_003",
+      "nickname": "地铁早八人",
+      "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "8 分钟前"
+    },
+    {
+      "commentId": "comment_023",
+      "targetType": "ad",
+      "targetId": "ad_022",
+      "parentCommentId": "",
+      "userId": "user_dorm_004",
+      "nickname": "期末复习人",
+      "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "15 分钟前"
+    },
+    {
+      "commentId": "comment_024",
+      "targetType": "ad",
+      "targetId": "ad_023",
+      "parentCommentId": "",
+      "userId": "user_rider_005",
+      "nickname": "夜骑下班路",
+      "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "今天"
+    },
+    {
+      "commentId": "comment_025",
+      "targetType": "ad",
+      "targetId": "ad_024",
+      "parentCommentId": "",
+      "userId": "user_student_002",
+      "nickname": "周末写论文",
+      "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+      "content": "新手第一次使用这套方案合适吗？",
+      "timeText": "昨天"
+    },
+    {
+      "commentId": "comment_026",
+      "targetType": "ad",
+      "targetId": "ad_025",
+      "parentCommentId": "",
+      "userId": "user_runner_001",
+      "nickname": "晚课后夜跑",
+      "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "刚刚"
+    },
+    {
+      "commentId": "comment_027",
+      "targetType": "ad",
+      "targetId": "ad_026",
+      "parentCommentId": "",
+      "userId": "user_commuter_003",
+      "nickname": "地铁早八人",
+      "userAvatarUrl": "stitch_ui/images/stitch-11.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "8 分钟前"
+    },
+    {
+      "commentId": "comment_028",
+      "targetType": "ad",
+      "targetId": "ad_027",
+      "parentCommentId": "",
+      "userId": "user_dorm_004",
+      "nickname": "期末复习人",
+      "userAvatarUrl": "stitch_ui/images/stitch-10.png",
+      "content": "这周末需要提前预约或到店核销吗？",
+      "timeText": "15 分钟前"
+    },
+    {
+      "commentId": "comment_029",
+      "targetType": "ad",
+      "targetId": "ad_028",
+      "parentCommentId": "",
+      "userId": "user_rider_005",
+      "nickname": "夜骑下班路",
+      "userAvatarUrl": "stitch_ui/images/stitch-16.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "今天"
+    },
+    {
+      "commentId": "comment_030",
+      "targetType": "ad",
+      "targetId": "ad_029",
+      "parentCommentId": "",
+      "userId": "user_student_002",
+      "nickname": "周末写论文",
+      "userAvatarUrl": "stitch_ui/images/stitch-13.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "昨天"
+    },
+    {
+      "commentId": "comment_031",
+      "targetType": "ad",
+      "targetId": "ad_030",
+      "parentCommentId": "",
+      "userId": "user_runner_001",
+      "nickname": "晚课后夜跑",
+      "userAvatarUrl": "stitch_ui/images/stitch-12.png",
+      "content": "这个优惠活动到什么时候结束？",
+      "timeText": "刚刚"
+    }
+  ]
+}
